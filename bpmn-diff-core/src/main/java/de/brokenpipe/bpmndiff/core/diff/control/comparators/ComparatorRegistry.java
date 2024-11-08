@@ -1,7 +1,6 @@
 package de.brokenpipe.bpmndiff.core.diff.control.comparators;
 
 import de.brokenpipe.bpmndiff.core.actions.Action;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 
@@ -15,8 +14,11 @@ public class ComparatorRegistry implements Comparator {
 
 	public static ComparatorRegistry INSTANCE = new ComparatorRegistry(List.of(
 			new NameComparator(),
+			new CamundaAsyncAfterComparator(),
+			new CamundaAsyncBeforeComparator(),
 			new CamundaClassComparator(),
 			new CamundaDelegateExpressionComparator(),
+			new CamundaExclusiveComparator(),
 			new CamundaExpressionComparator()));
 
 	@Override

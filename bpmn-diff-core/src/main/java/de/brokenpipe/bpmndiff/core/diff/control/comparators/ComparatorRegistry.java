@@ -15,7 +15,9 @@ public class ComparatorRegistry implements Comparator {
 
 	public static ComparatorRegistry INSTANCE = new ComparatorRegistry(List.of(
 			new NameComparator(),
-			new CamundaDelegateExpressionComparator()));
+			new CamundaClassComparator(),
+			new CamundaDelegateExpressionComparator(),
+			new CamundaExpressionComparator()));
 
 	@Override
 	public Stream<Action> apply(final FlowElement from, final FlowElement to) {

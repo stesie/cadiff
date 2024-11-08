@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.brokenpipe</groupId>
-    <artifactId>bpmn-diff</artifactId>
+    <artifactId>cadiff</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>bpmn-diff-core</module>
-        <module>bpmn-diff-cli</module>
+        <module>cadiff-core</module>
+        <module>cadiff-cli</module>
     </modules>
 
     <properties>

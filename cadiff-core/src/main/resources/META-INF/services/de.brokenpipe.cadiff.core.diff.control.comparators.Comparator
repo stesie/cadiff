@@ -1,0 +1,7 @@
+de.brokenpipe.cadiff.core.diff.control.comparators.NameComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.CamundaAsyncAfterComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.CamundaAsyncBeforeComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.CamundaClassComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.CamundaDelegateExpressionComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.CamundaExclusiveComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.CamundaExpressionComparator

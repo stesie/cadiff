@@ -1,4 +1,7 @@
 package de.brokenpipe.bpmndiff.core.actions;
 
-public record ChangeNameAction(String id, String oldValue, String newValue) implements Action {
+public class ChangeNameAction extends AbstractChangeStringPropertyAction {
+	public ChangeNameAction(final String id, final String oldValue, final String newValue) {
+		super(id, oldValue, newValue);
+	}
 }

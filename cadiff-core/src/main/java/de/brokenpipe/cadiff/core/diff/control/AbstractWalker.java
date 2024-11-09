@@ -21,11 +21,11 @@ abstract class AbstractWalker<T extends BaseElement> {
 		final VoteContext<T> context = partitionElements();
 
 		return mergeStreams(List.of(
-				new RenameHandler<T>(context).apply().stream(),
+				new RenameHandler<>(context).apply().stream(),
+				new AddHandler<>(context).apply().stream(),
 				context.updated().stream()
 						.flatMap(id -> handleUpdated(context.fromMap().get(id), context.toMap().get(id))),
-				context.removed().stream().flatMap(id -> handleRemoved(context.fromMap().get(id))),
-				context.added().stream().flatMap(id -> handleAdded(context.toMap().get(id)))));
+				context.removed().stream().flatMap(id -> handleRemoved(context.fromMap().get(id)))));
 	}
 
 
@@ -50,8 +50,6 @@ abstract class AbstractWalker<T extends BaseElement> {
 	protected Stream<Action> handleRemoved(final T removed) {
 		return Stream.of(new DeleteElementAction(removed.getId()));
 	}
-
-	protected abstract Stream<Action> handleAdded(T added);
 
 	protected static <T> Stream<T> mergeStreams(final Collection<Stream<T>> streams) {
 		return streams.stream().flatMap(x -> x);

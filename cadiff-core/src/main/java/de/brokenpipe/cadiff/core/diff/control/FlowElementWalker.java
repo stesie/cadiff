@@ -2,7 +2,6 @@ package de.brokenpipe.cadiff.core.diff.control;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.diff.control.comparators.ComparatorRegistry;
-import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 
 import java.util.Collection;
@@ -19,8 +18,4 @@ public class FlowElementWalker extends AbstractWalker<FlowElement> {
 		return ComparatorRegistry.INSTANCE.apply(from, to);
 	}
 
-	@Override
-	protected Stream<Action> handleAdded(final FlowElement added) {
-		throw new NotImplementedException();
-	}
 }

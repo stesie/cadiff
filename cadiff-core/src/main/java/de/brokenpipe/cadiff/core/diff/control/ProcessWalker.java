@@ -2,7 +2,6 @@ package de.brokenpipe.cadiff.core.diff.control;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.diff.control.comparators.processes.ProcessNameComparator;
-import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
 import org.camunda.bpm.model.bpmn.instance.Process;
 
 import java.util.Collection;
@@ -27,8 +26,4 @@ public class ProcessWalker extends AbstractWalker<Process> {
 		return new ProcessNameComparator().apply(from, to);
 	}
 
-	@Override
-	protected Stream<Action> handleAdded(final Process added) {
-		throw new NotImplementedException();
-	}
 }

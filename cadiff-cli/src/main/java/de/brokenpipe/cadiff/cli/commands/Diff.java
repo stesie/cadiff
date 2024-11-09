@@ -24,7 +24,7 @@ public class Diff implements Callable<Integer> {
 	File dumpChangeSet;
 
 	@Override
-	public Integer call() throws Exception {
+	public Integer call() {
 		final ChangeSet changeSet = new DiffCommand(files[0], files[1]).execute();
 
 		if (dumpChangeSet != null) {

@@ -2,7 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeIdAction;
-import de.brokenpipe.cadiff.core.actions.DeleteProcessAction;
+import de.brokenpipe.cadiff.core.actions.DeleteElementAction;
 import de.brokenpipe.cadiff.core.diff.control.voters.VoterRegistry;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
 import lombok.RequiredArgsConstructor;
@@ -102,13 +102,13 @@ abstract class AbstractWalker<T extends BaseElement> {
 		final Set<String> added = new HashSet<>(toMap.keySet());
 		added.removeAll(fromMap.keySet());
 
-		return new VoteContext<T>(fromMap, toMap, updated, removed, added);
+		return new VoteContext<>(fromMap, toMap, updated, removed, added);
 	}
 
 	protected abstract Stream<Action> handleUpdated(T from, T to);
 
 	protected Stream<Action> handleRemoved(final T removed) {
-		return Stream.of(new DeleteProcessAction(removed.getId()));
+		return Stream.of(new DeleteElementAction(removed.getId()));
 	}
 
 	protected abstract Stream<Action> handleAdded(T added);

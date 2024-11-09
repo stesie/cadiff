@@ -32,7 +32,7 @@ public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 
 	private void writeLine(final ActionPrintContext context, final AbstractChangePropertyAction<?> change) {
 		final String attributeName = extractAttributeName(change);
-		startChangeLine(context, attributeName, change.getOldValue(), change.getNewValue());
+		printChangeLine(attributeName, change.getOldValue(), change.getNewValue());
 	}
 
 	private static String extractAttributeName(final AbstractChangePropertyAction<?> change) {

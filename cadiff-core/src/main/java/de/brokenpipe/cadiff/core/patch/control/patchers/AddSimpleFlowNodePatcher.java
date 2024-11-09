@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
 
@@ -23,32 +22,22 @@ public class AddSimpleFlowNodePatcher implements Patcher {
 				.findFirst()
 				.orElseThrow(); // FIXME
 
-		final BaseElement addedElement = (BaseElement) bpmnModelInstance.newInstance(elementType, action.id());
+		final BaseElement addedElement = bpmnModelInstance.newInstance(elementType, action.id());
 
 		final Process process = findProcess(bpmnModelInstance);
 		process.addChildElement(addedElement);
 
-		if (addedElement instanceof final Task task) {
-			final var di = bpmnModelInstance.newInstance(BpmnShape.class, action.id() + "_di");
-			di.setBpmnElement(addedElement);
+		final var di = bpmnModelInstance.newInstance(BpmnShape.class, action.id() + "_di");
+		di.setBpmnElement(addedElement);
 
-			final var bounds = bpmnModelInstance.newInstance(Bounds.class);
-			di.setBounds(bounds);
-			bounds.setX(action.bounds().x().doubleValue());
-			bounds.setY(action.bounds().y().doubleValue());
-			bounds.setWidth(action.bounds().width().doubleValue());
-			bounds.setHeight(action.bounds().height().doubleValue());
+		final var bounds = bpmnModelInstance.newInstance(Bounds.class);
+		di.setBounds(bounds);
+		bounds.setX(action.bounds().x().doubleValue());
+		bounds.setY(action.bounds().y().doubleValue());
+		bounds.setWidth(action.bounds().width().doubleValue());
+		bounds.setHeight(action.bounds().height().doubleValue());
 
-			process.getDiagramElement().addChildElement(di);
-
-			//bpmnModelInstance.getDefinitions().getBpmDiagrams().iterator().next().addChildElement(di);
-		}
-
-
-		//final var lookup = bpmnModelInstance.getModelElementById(action.id());
-
-		//flowNode.getModelInstance().newInstance()
-		// return Optional.of(new de.brokenpipe.cadiff.core.actions.AddFlowNodeAction((org.camunda.bpm.model.bpmn.instance.FlowNode) addedElement));
+		process.getDiagramElement().addChildElement(di);
 
 	}
 

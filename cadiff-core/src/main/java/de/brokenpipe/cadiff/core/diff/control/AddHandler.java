@@ -45,7 +45,7 @@ public class AddHandler<T extends BaseElement> {
 		}
 
 		if (!context.added().isEmpty()) {
-			// throw new IllegalStateException("Not all added elements could be handled");
+			throw new IllegalStateException("Not all added elements could be handled");
 		}
 
 		return actions;

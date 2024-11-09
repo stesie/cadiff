@@ -21,9 +21,6 @@ public class ChangeIdActionPrinter extends AbstractActionPrinter {
 		startBlock(context, change.newId(), ChangeType.UPDATE);
 		printChangeLine("id", change.oldId(), change.newId());
 
-		// remove name change for this element, we've just printed the new name
-		removeChangeNameById(context, change.newId());
-
 		new ChangePropertyActionPrinter().printAttributeChangesForId(context, change.newId());
 	}
 }

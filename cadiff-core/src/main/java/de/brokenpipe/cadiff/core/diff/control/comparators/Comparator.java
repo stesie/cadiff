@@ -7,5 +7,4 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public interface Comparator extends BiFunction<FlowElement, FlowElement, Stream<Action>> {
-	// Stream<Action> compare(FlowElement from, FlowElement to);
 }

@@ -13,7 +13,7 @@ public class ComparatorRegistry implements Comparator {
 
 	private final List<Comparator> comparators;
 
-	public static ComparatorRegistry INSTANCE = ComparatorRegistry.init();
+	public static final ComparatorRegistry INSTANCE = ComparatorRegistry.init();
 
 	private static ComparatorRegistry init() {
 		return new ComparatorRegistry(

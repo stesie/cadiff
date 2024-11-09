@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.cli.control.printers;
 
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
+import de.brokenpipe.cadiff.core.actions.ChangeNameAction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
@@ -52,6 +53,14 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 			System.out.print(ansi().bold().a(baseElement.getId()).boldOff());
 		}
 	}
+
+	protected void removeChangeNameById(final ActionPrintContext context, final String id) {
+		context.findChangesForId(id)
+				.filter(x -> x instanceof ChangeNameAction)
+				.findFirst()
+				.ifPresent(x -> context.getChanges().remove(x));
+	}
+
 
 	@Getter
 	@RequiredArgsConstructor

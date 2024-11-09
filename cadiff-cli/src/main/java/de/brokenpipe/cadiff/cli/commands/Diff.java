@@ -26,8 +26,12 @@ public class Diff implements Callable<Integer> {
 	@Parameters(arity = "1", description = "BPMN file to compare")
 	File toFile;
 
-	@Option(names = { "-d", "--dump-changeset" }, paramLabel = "CHANGESET", description = "Dump changeset (in yaml format) to file")
+	@Option(names = { "-d",
+			"--dump-changeset" }, paramLabel = "CHANGESET", description = "Dump changeset (in yaml format) to file")
 	File dumpChangeSet;
+
+	@Option(names = { "--print-id-changes" }, description = "Print changes of element ids")
+	boolean printIdChanges;
 
 	@Override
 	public Integer call() {
@@ -40,14 +44,15 @@ public class Diff implements Callable<Integer> {
 			dumpChangeSet(changeSet);
 		}
 
-		new ChangeSetPrinter(ActionPrintContext.of(changeSet, to)).printAll();
+		new ChangeSetPrinter(ActionPrintContext.of(changeSet, to, printIdChanges)).printAll();
 
 		return Integer.valueOf(0);
 	}
 
 	private void dumpChangeSet(final ChangeSet changeSet) {
 		try {
-			final var mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+			final var mapper = new ObjectMapper(
+					new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
 			mapper.writeValue(dumpChangeSet, changeSet);
 		} catch (final IOException e) {
 			throw new RuntimeException(e);

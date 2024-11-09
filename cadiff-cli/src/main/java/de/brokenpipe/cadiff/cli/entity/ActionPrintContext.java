@@ -18,9 +18,10 @@ public class ActionPrintContext {
 
 	final List<Action> changes;
 	final BpmnModelInstance to;
+	final boolean printIdChanges;
 
-	public static ActionPrintContext of(final ChangeSet changeSet, final BpmnModelInstance to) {
-		return new ActionPrintContext(new ArrayList<>(changeSet.changes()), to);
+	public static ActionPrintContext of(final ChangeSet changeSet, final BpmnModelInstance to, final boolean printIdChanges) {
+		return new ActionPrintContext(new ArrayList<>(changeSet.changes()), to, printIdChanges);
 	}
 
 	public Stream<SingleIdRelatedAction> findChangesForId(final String id) {

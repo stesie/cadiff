@@ -3,9 +3,6 @@ package de.brokenpipe.cadiff.cli.control.printers;
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
 import de.brokenpipe.cadiff.core.actions.AbstractChangePropertyAction;
 import de.brokenpipe.cadiff.core.actions.Action;
-import de.brokenpipe.cadiff.core.actions.SingleIdRelatedAction;
-
-import java.util.Optional;
 
 public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 	@Override
@@ -16,23 +13,15 @@ public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 	@Override
 	public void accept(final ActionPrintContext context, final Action action) {
 		final var change = (AbstractChangePropertyAction<?>) action;
-		printBlock(context, change.getId(), change);
+
+		startBlock(context, change.getId(), ChangeType.UPDATE);
+		writeLine(context, change);
+
+		printAttributeChangesForId(context, change.getId());
 	}
 
-	public void printBlock(final ActionPrintContext context, final String id) {
-		printBlock(context, id, null);
-	}
-
-	private void printBlock(final ActionPrintContext context, final String id, final AbstractChangePropertyAction<?> extra) {
-
-		startBlock(context, id, ChangeType.UPDATE);
-
-		Optional.ofNullable(extra).ifPresent(change -> writeLine(context, change));
-
-		context.getChanges().stream()
-				.filter(c -> c instanceof SingleIdRelatedAction)
-				.map(SingleIdRelatedAction.class::cast)
-				.filter(c -> c.getId().equals(id))
+	public void printAttributeChangesForId(final ActionPrintContext context, final String id) {
+		context.findChangesForId(id)
 				.filter(this::supports)
 				.toList()
 				.forEach(c -> {

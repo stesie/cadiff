@@ -17,15 +17,18 @@ import java.util.concurrent.Callable;
 @Command(name = "diff", description = "Diff two BPMN files")
 public class Diff implements Callable<Integer> {
 
-	@Parameters(arity = "2", description = "two bpmn files to compare")
-	File[] files;
+	@Parameters(arity = "1", description = "BPMN file to compare against")
+	File fromFile;
 
-	@Option(names = { "-d", "--dump-changeset" }, paramLabel = "CHANGESET", description = "the changeset dump file")
+	@Parameters(arity = "1", description = "BPMN file to compare")
+	File toFile;
+
+	@Option(names = { "-d", "--dump-changeset" }, paramLabel = "CHANGESET", description = "Dump changeset (in yaml format) to file")
 	File dumpChangeSet;
 
 	@Override
 	public Integer call() {
-		final ChangeSet changeSet = new DiffCommand(files[0], files[1]).execute();
+		final ChangeSet changeSet = new DiffCommand(fromFile, toFile).execute();
 
 		if (dumpChangeSet != null) {
 			dumpChangeSet(changeSet);

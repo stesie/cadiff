@@ -3,13 +3,13 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 import de.brokenpipe.cadiff.core.actions.AbstractChangePropertyAction;
 import de.brokenpipe.cadiff.core.actions.Action;
 import lombok.SneakyThrows;
-import org.camunda.bpm.model.bpmn.instance.FlowElement;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-interface PropertyComparator<E extends FlowElement, T> extends Comparator {
+interface PropertyComparator<E extends BaseElement, T> extends Comparator {
 
 	@SneakyThrows(value = {
 			InstantiationException.class,

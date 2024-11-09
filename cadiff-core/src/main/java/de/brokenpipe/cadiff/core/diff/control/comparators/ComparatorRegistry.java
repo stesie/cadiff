@@ -2,7 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import lombok.RequiredArgsConstructor;
-import org.camunda.bpm.model.bpmn.instance.FlowElement;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
 
 import java.util.List;
 import java.util.ServiceLoader;
@@ -23,7 +23,7 @@ public class ComparatorRegistry implements Comparator {
 	}
 
 	@Override
-	public Stream<Action> apply(final FlowElement from, final FlowElement to) {
+	public Stream<Action> apply(final BaseElement from, final BaseElement to) {
 		return comparators.stream()
 				.flatMap(comparator -> comparator.apply(from, to));
 	}

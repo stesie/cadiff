@@ -1,0 +1,3 @@
+de.brokenpipe.cadiff.cli.control.printers.ChangeIdActionPrinter
+de.brokenpipe.cadiff.cli.control.printers.ChangeProcessNameActionPrinter
+de.brokenpipe.cadiff.cli.control.printers.ChangePropertyActionPrinter

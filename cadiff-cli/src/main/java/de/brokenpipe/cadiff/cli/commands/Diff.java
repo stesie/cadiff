@@ -3,8 +3,11 @@ package de.brokenpipe.cadiff.cli.commands;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import de.brokenpipe.cadiff.cli.control.ChangeSetPrinter;
+import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
 import de.brokenpipe.cadiff.core.diff.boundary.DiffCommand;
 import de.brokenpipe.cadiff.core.diff.entity.ChangeSet;
+import org.camunda.bpm.model.bpmn.Bpmn;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -28,11 +31,16 @@ public class Diff implements Callable<Integer> {
 
 	@Override
 	public Integer call() {
-		final ChangeSet changeSet = new DiffCommand(fromFile, toFile).execute();
+		final var from = Bpmn.readModelFromFile(fromFile);
+		final var to = Bpmn.readModelFromFile(toFile);
+
+		final ChangeSet changeSet = new DiffCommand(from, to).execute();
 
 		if (dumpChangeSet != null) {
 			dumpChangeSet(changeSet);
 		}
+
+		new ChangeSetPrinter(ActionPrintContext.of(changeSet, to)).printAll();
 
 		return Integer.valueOf(0);
 	}

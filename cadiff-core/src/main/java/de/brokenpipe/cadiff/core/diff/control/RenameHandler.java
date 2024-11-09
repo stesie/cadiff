@@ -37,7 +37,7 @@ public class RenameHandler<T extends BaseElement> {
 		for (final String addId : context.added()) {
 			final List<VoteResult> results = context.removed().stream()
 					.map(removeId -> new VoteResult(removeId, VoterRegistry.INSTANCE.apply(removeId, addId, context)))
-					.sorted(Comparator.comparingInt(VoteResult::score))
+					.sorted(Comparator.comparingInt(VoteResult::score).reversed())
 					.toList();
 
 			if (results.isEmpty()) {

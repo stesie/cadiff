@@ -1,4 +1,6 @@
-package de.brokenpipe.cadiff.core.actions;
+package de.brokenpipe.cadiff.core.actions.processes;
+
+import de.brokenpipe.cadiff.core.actions.Action;
 
 import java.util.Collection;
 

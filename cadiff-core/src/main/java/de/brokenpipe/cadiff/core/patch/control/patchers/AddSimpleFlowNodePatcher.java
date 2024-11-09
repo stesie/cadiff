@@ -5,9 +5,12 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.camunda.bpm.model.bpmn.instance.Collaboration;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class AddSimpleFlowNodePatcher implements Patcher {
@@ -37,15 +40,22 @@ public class AddSimpleFlowNodePatcher implements Patcher {
 		bounds.setWidth(action.bounds().width().doubleValue());
 		bounds.setHeight(action.bounds().height().doubleValue());
 
-		process.getDiagramElement().addChildElement(di);
+		final var diagramRoot = findRootElementByType(bpmnModelInstance, Collaboration.class)
+				.map(BaseElement::getDiagramElement)
+						.orElse(process.getDiagramElement());
+		diagramRoot.addChildElement(di);
 
 	}
 
 	private static Process findProcess(final BpmnModelInstance bpmnModelInstance) {
-		return bpmnModelInstance.getDefinitions().getRootElements().stream()
-				.filter(x -> x instanceof Process)
-				.map(Process.class::cast)
-				.findFirst()
+		return findRootElementByType(bpmnModelInstance, Process.class)
 				.orElseThrow(IllegalStateException::new);
+	}
+
+	private static <T extends BaseElement> Optional<T> findRootElementByType(final BpmnModelInstance bpmnModelInstance, final Class<T> type) {
+		return bpmnModelInstance.getDefinitions().getRootElements().stream()
+				.filter(x -> type.isAssignableFrom(x.getClass()))
+				.map(type::cast)
+				.findFirst();
 	}
 }

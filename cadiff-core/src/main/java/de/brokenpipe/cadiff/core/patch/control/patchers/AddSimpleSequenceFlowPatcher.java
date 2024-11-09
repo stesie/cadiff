@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.impl.instance.Incoming;
 import org.camunda.bpm.model.bpmn.impl.instance.Outgoing;
-import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
+import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class AddSimpleSequenceFlowPatcher implements Patcher {
@@ -50,7 +51,10 @@ public class AddSimpleSequenceFlowPatcher implements Patcher {
 				})
 				.forEach(di::addChildElement);
 
-		process.getDiagramElement().addChildElement(di);
+		final var diagramRoot = findRootElementByType(bpmnModelInstance, Collaboration.class)
+				.map(BaseElement::getDiagramElement)
+				.orElse(process.getDiagramElement());
+		diagramRoot.addChildElement(di);
 
 	}
 
@@ -60,5 +64,12 @@ public class AddSimpleSequenceFlowPatcher implements Patcher {
 				.map(Process.class::cast)
 				.findFirst()
 				.orElseThrow(IllegalStateException::new);
+	}
+
+	private static <T extends BaseElement> Optional<T> findRootElementByType(final BpmnModelInstance bpmnModelInstance, final Class<T> type) {
+		return bpmnModelInstance.getDefinitions().getRootElements().stream()
+				.filter(x -> type.isAssignableFrom(x.getClass()))
+				.map(type::cast)
+				.findFirst();
 	}
 }

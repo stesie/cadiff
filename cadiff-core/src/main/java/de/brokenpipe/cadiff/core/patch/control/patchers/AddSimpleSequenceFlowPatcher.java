@@ -4,6 +4,9 @@ import de.brokenpipe.cadiff.core.actions.AddSimpleSequenceFlowAction;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.impl.instance.Incoming;
+import org.camunda.bpm.model.bpmn.impl.instance.Outgoing;
+import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
@@ -17,8 +20,20 @@ public class AddSimpleSequenceFlowPatcher implements Patcher {
 	public void accept(final BpmnModelInstance bpmnModelInstance) {
 
 		final SequenceFlow addedElement = bpmnModelInstance.newInstance(SequenceFlow.class, action.id());
-		addedElement.setSource(bpmnModelInstance.getModelElementById(action.sourceId()));
-		addedElement.setTarget(bpmnModelInstance.getModelElementById(action.targetId()));
+
+		final FlowNode source = bpmnModelInstance.getModelElementById(action.sourceId());
+		addedElement.setSource(source);
+
+		final Outgoing sourceOutgoing = bpmnModelInstance.newInstance(Outgoing.class);
+		sourceOutgoing.setTextContent(addedElement.getId());
+		source.addChildElement(sourceOutgoing);
+
+		final FlowNode target = bpmnModelInstance.getModelElementById(action.targetId());
+		addedElement.setTarget(target);
+
+		final Incoming targetIncoming = bpmnModelInstance.newInstance(Incoming.class);
+		targetIncoming.setTextContent(addedElement.getId());
+		target.addChildElement(targetIncoming);
 
 		final Process process = findProcess(bpmnModelInstance);
 		process.addChildElement(addedElement);
@@ -36,11 +51,6 @@ public class AddSimpleSequenceFlowPatcher implements Patcher {
 				.forEach(di::addChildElement);
 
 		process.getDiagramElement().addChildElement(di);
-
-		//final var lookup = bpmnModelInstance.getModelElementById(action.id());
-
-		//flowNode.getModelInstance().newInstance()
-		// return Optional.of(new de.brokenpipe.cadiff.core.actions.AddFlowNodeAction((org.camunda.bpm.model.bpmn.instance.FlowNode) addedElement));
 
 	}
 

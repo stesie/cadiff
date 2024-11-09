@@ -1,5 +1,6 @@
 package de.brokenpipe.cadiff.core.diff.control.voters;
 
+import de.brokenpipe.cadiff.core.diff.control.voters.exceptions.VetoVoteException;
 import de.brokenpipe.cadiff.core.diff.entity.Vote;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,8 @@ public class VoterRegistry {
 						.toList());
 	}
 
-	public int apply(final String left, final String right, final VoteContext<? extends BaseElement> context) {
+	public int apply(final String left, final String right, final VoteContext<? extends BaseElement> context)
+			throws VetoVoteException {
 		int score = 0;
 
 		for (final Voter voter : voters) {

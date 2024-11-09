@@ -3,6 +3,7 @@ package de.brokenpipe.cadiff.core.diff.control;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeIdAction;
 import de.brokenpipe.cadiff.core.diff.control.voters.VoterRegistry;
+import de.brokenpipe.cadiff.core.diff.control.voters.exceptions.VetoVoteException;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class RenameHandler<T extends BaseElement> {
@@ -36,7 +38,13 @@ public class RenameHandler<T extends BaseElement> {
 	private Optional<Action> findRenameCandidate() {
 		for (final String addId : context.added()) {
 			final List<VoteResult> results = context.removed().stream()
-					.map(removeId -> new VoteResult(removeId, VoterRegistry.INSTANCE.apply(removeId, addId, context)))
+					.flatMap(removeId -> {
+						try {
+							return Stream.of(new VoteResult(removeId, VoterRegistry.INSTANCE.apply(removeId, addId, context)));
+						} catch (final VetoVoteException e) {
+							return Stream.empty();
+						}
+					})
 					.sorted(Comparator.comparingInt(VoteResult::score).reversed())
 					.toList();
 

@@ -67,3 +67,21 @@ changes:
 ```bash
 $ java -cp cadiff-cli/target/cadiff-cli.jar de.brokenpipe.cadiff.cli.commands.Patch foo.bpmn changes.yaml new-foo.bpmn
 ```
+
+## Architecture & Extensibility
+
+The tool is built around the concept of "Actions". An action is a change that can be applied to a BPMN file. The
+`Diff` command will compare two BPMN files and produce a list of actions, performing the following steps (in order):
+
+1. Run so-called "voters" to determine which elements are likely "equal" in both files, yet have their id changed.
+2. Run so-called "creators" to determine which elements are new in the second file, and which actions are needed to
+   re-create them.
+3. Run so-called "comparators" to determine which attributes are different in both files.
+
+The `Patch` command will apply the actions to a BPMN file, using so-called "patchers".
+
+Last but not least the `Diff` CLI command has the concept of so-called "action printers" to print the actions in a
+human-friendly way.
+
+Any of the aforementioned components can be extended by implementing the respective interfaces and registering them
+using Java's native `ServiceLoader` mechanism.

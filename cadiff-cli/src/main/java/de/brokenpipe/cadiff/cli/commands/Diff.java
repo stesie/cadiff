@@ -30,6 +30,9 @@ public class Diff implements Callable<Integer> {
 			"--dump-changeset" }, paramLabel = "CHANGESET", description = "Dump changeset (in yaml format) to file")
 	File dumpChangeSet;
 
+	@Option(names = { "-q", "--quiet" }, description = "Do not print human-friendly comparison")
+	boolean quiet;
+
 	@Option(names = { "--print-id-changes" }, description = "Print changes of element ids")
 	boolean printIdChanges;
 
@@ -47,7 +50,10 @@ public class Diff implements Callable<Integer> {
 			dumpChangeSet(changeSet);
 		}
 
-		new ChangeSetPrinter(ActionPrintContext.of(changeSet, from, to, printIdChanges, printAllEdgeDeletes)).printAll();
+		if (!quiet) {
+			new ChangeSetPrinter(ActionPrintContext.of(changeSet, from, to, printIdChanges, printAllEdgeDeletes))
+					.printAll();
+		}
 
 		return Integer.valueOf(0);
 	}

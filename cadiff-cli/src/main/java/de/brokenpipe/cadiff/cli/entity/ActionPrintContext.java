@@ -17,11 +17,14 @@ import java.util.stream.Stream;
 public class ActionPrintContext {
 
 	final List<Action> changes;
+	final BpmnModelInstance from;
 	final BpmnModelInstance to;
 	final boolean printIdChanges;
+	final boolean printAllEdgeDeletes;
 
-	public static ActionPrintContext of(final ChangeSet changeSet, final BpmnModelInstance to, final boolean printIdChanges) {
-		return new ActionPrintContext(new ArrayList<>(changeSet.changes()), to, printIdChanges);
+	public static ActionPrintContext of(final ChangeSet changeSet, final BpmnModelInstance from,
+			final BpmnModelInstance to, final boolean printIdChanges, final boolean printAllEdgeDeletes) {
+		return new ActionPrintContext(new ArrayList<>(changeSet.changes()), from, to, printIdChanges, printAllEdgeDeletes);
 	}
 
 	public Stream<SingleIdRelatedAction> findChangesForId(final String id) {

@@ -33,6 +33,9 @@ public class Diff implements Callable<Integer> {
 	@Option(names = { "--print-id-changes" }, description = "Print changes of element ids")
 	boolean printIdChanges;
 
+	@Option(names = { "--print-all-edge-deletes" }, description = "Print edge deletes, even if they are related to a node delete")
+	boolean printAllEdgeDeletes;
+
 	@Override
 	public Integer call() {
 		final var from = Bpmn.readModelFromFile(fromFile);
@@ -44,7 +47,7 @@ public class Diff implements Callable<Integer> {
 			dumpChangeSet(changeSet);
 		}
 
-		new ChangeSetPrinter(ActionPrintContext.of(changeSet, to, printIdChanges)).printAll();
+		new ChangeSetPrinter(ActionPrintContext.of(changeSet, from, to, printIdChanges, printAllEdgeDeletes)).printAll();
 
 		return Integer.valueOf(0);
 	}

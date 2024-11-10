@@ -13,6 +13,10 @@ public class ElementTypeVoter implements Voter {
 		final var removed = context.fromMap().get(removeId);
 		final var added = context.toMap().get(addId);
 
+		if (removed.getClass().equals(added.getClass())) {
+			return Vote.NEUTRAL;
+		}
+
 		throw new VetoVoteException();
 	}
 

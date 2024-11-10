@@ -21,10 +21,10 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		}
 	}
 
-	protected void printChangeLine(final String attributeName, final Object oldValue, final Object newValue) {
+	protected void printChangeLine(final String attributeName, final Object oldValue, final Object newValue, final String leader) {
 
 		indent();
-		System.out.printf(" -> %23s : ", attributeName);
+		System.out.printf("%s%23s : ", leader, attributeName);
 		System.out.print(ansi().fg(Ansi.Color.RED).a("%-40s".formatted(oldValue)).reset());
 		System.out.print(" -> ");
 		System.out.print(ansi().fg(Ansi.Color.GREEN).a("%-40s".formatted(newValue)).reset());

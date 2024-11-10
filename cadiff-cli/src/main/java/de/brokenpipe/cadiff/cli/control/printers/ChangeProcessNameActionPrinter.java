@@ -15,7 +15,7 @@ public class ChangeProcessNameActionPrinter extends AbstractActionPrinter {
 		final var change = (ChangeProcessNameAction) action;
 
 		startBlock(context, change.getId(), ChangeType.UPDATE);
-		printChangeLine("name", change.getOldValue(), change.getNewValue());
+		printChangeLine("name", change.getOldValue(), change.getNewValue(), " -> ");
 
 	}
 

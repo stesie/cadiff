@@ -32,13 +32,17 @@ public class AddHandler<T extends BaseElement> {
 
 			final AddAction action = candidate.get();
 
-			// add elements to from instance
+			// add/replace elements to from instance
 			action.getPatcher().accept(fromInstance);
 
-			action.getIds().forEach(id -> {
+			action.getIdsAdded().forEach(id -> {
 				context.added().remove(id);
 				context.updated().add(id);
 				context.fromMap().put(id, fromInstance.getModelElementById(id));
+			});
+
+			action.getIdsRemoved().forEach(id -> {
+				context.removed().remove(id);
 			});
 
 			actions.add(action);

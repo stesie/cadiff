@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 @RequiredArgsConstructor
-public class AddSimpleSequenceFlowPatcher extends AbstractAddPatcher implements Patcher {
+public class AddSimpleSequenceFlowPatcher extends AbstractPatcher implements Patcher {
 
 	private final AddSimpleSequenceFlowAction action;
 

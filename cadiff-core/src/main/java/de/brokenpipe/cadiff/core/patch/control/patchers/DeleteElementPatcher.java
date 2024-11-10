@@ -9,22 +9,12 @@ import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 @RequiredArgsConstructor
-public class DeleteElementPatcher implements Patcher {
+public class DeleteElementPatcher extends AbstractPatcher implements Patcher {
 
 	private final DeleteElementAction action;
 
 	@Override
 	public void accept(final BpmnModelInstance bpmnModelInstance) {
-		final ModelElementInstance target = bpmnModelInstance.getModelElementById(action.id());
-
-		if (target == null) {
-			throw new TargetElementNotFoundException(action.id());
-		}
-
-		if (target instanceof final SequenceFlow sequenceFlow) {
-			sequenceFlow.getDiagramElement().getParentElement().removeChildElement(sequenceFlow.getDiagramElement());
-		}
-
-		target.getParentElement().removeChildElement(target);
+		deleteElement(bpmnModelInstance, action.id());
 	}
 }

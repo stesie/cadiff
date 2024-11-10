@@ -13,7 +13,7 @@ public record AddSimpleFlowNodeAction(String id, String elementTypeName, Bounds 
 	}
 
 	@Override
-	public List<String> getIds() {
+	public List<String> getIdsAdded() {
 		return List.of(id);
 	}
 }

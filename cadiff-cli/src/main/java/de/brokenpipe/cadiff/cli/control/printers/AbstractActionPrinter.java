@@ -13,8 +13,17 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 public abstract class AbstractActionPrinter implements ActionPrinter {
 
+	protected int indent = 0;
+
+	protected void indent() {
+		if (indent > 0) {
+			System.out.printf("%" + indent + "s", "");
+		}
+	}
+
 	protected void printChangeLine(final String attributeName, final Object oldValue, final Object newValue) {
 
+		indent();
 		System.out.printf(" -> %23s : ", attributeName);
 		System.out.print(ansi().fg(Ansi.Color.RED).a("%-40s".formatted(oldValue)).reset());
 		System.out.print(" -> ");
@@ -27,6 +36,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 			? context.getFrom().getModelElementById(id)
 			: context.getTo().getModelElementById(id);
 
+		indent();
 		System.out.printf(" -> %23s : ", attributeName);
 		printElementName(element);
 		System.out.println();
@@ -39,10 +49,10 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 		System.out.println();
 
+		indent();
 		System.out.print(ansi().reset().fg(type.getColor()).a("%6s : ".formatted(type.getVerb()))
 				.bold().a("%18s".formatted(element.getElementType().getTypeName())).boldOff()
 				.a(" : "));
-
 		printElementName(element);
 
 		System.out.println(ansi().reset());

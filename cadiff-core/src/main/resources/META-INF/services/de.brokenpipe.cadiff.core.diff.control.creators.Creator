@@ -1,2 +1,3 @@
 de.brokenpipe.cadiff.core.diff.control.creators.SimpleFlowNodeCreator
 de.brokenpipe.cadiff.core.diff.control.creators.SimpleSequenceFlowCreator
+de.brokenpipe.cadiff.core.diff.control.creators.InsertNodeOnEdgeCreator

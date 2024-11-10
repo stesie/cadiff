@@ -13,7 +13,7 @@ public record AddSimpleSequenceFlowAction(String id, String sourceId, String tar
 	}
 
 	@Override
-	public List<String> getIds() {
+	public List<String> getIdsAdded() {
 		return List.of(id);
 	}
 }

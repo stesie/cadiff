@@ -1,9 +1,7 @@
 package de.brokenpipe.cadiff.cli.commands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import de.brokenpipe.cadiff.cli.control.ChangeSetPrinter;
+import de.brokenpipe.cadiff.cli.control.Jackson;
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
 import de.brokenpipe.cadiff.core.diff.boundary.DiffCommand;
 import de.brokenpipe.cadiff.core.diff.entity.ChangeSet;
@@ -60,9 +58,7 @@ public class Diff implements Callable<Integer> {
 
 	private void dumpChangeSet(final ChangeSet changeSet) {
 		try {
-			final var mapper = new ObjectMapper(
-					new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
-			mapper.writeValue(dumpChangeSet, changeSet);
+			Jackson.MAPPER.writeValue(dumpChangeSet, changeSet);
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}

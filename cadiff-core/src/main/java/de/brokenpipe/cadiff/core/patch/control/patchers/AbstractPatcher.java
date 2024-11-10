@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
 import de.brokenpipe.cadiff.core.Waypoint;
+import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.impl.instance.Incoming;
 import org.camunda.bpm.model.bpmn.impl.instance.Outgoing;
@@ -9,11 +10,12 @@ import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractAddPatcher {
+public abstract class AbstractPatcher {
 
 	protected void addFlowElement(final BpmnModelInstance bpmnModelInstance, final String id, final String typeName,
 			final de.brokenpipe.cadiff.core.Bounds actionBounds) {
@@ -82,6 +84,20 @@ public abstract class AbstractAddPatcher {
 				.orElse(process.getDiagramElement());
 		diagramRoot.addChildElement(di);
 
+	}
+
+	protected void deleteElement(final BpmnModelInstance bpmnModelInstance, final String id) {
+		final ModelElementInstance target = bpmnModelInstance.getModelElementById(id);
+
+		if (target == null) {
+			throw new TargetElementNotFoundException(id);
+		}
+
+		if (target instanceof final SequenceFlow sequenceFlow) {
+			sequenceFlow.getDiagramElement().getParentElement().removeChildElement(sequenceFlow.getDiagramElement());
+		}
+
+		target.getParentElement().removeChildElement(target);
 	}
 
 	protected static <T extends BaseElement> Optional<T> findRootElementByType(final BpmnModelInstance bpmnModelInstance, final Class<T> type) {

@@ -4,3 +4,4 @@ de.brokenpipe.cadiff.cli.control.printers.ChangePropertyActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.AddSimpleFlowNodePrinter
 de.brokenpipe.cadiff.cli.control.printers.AddSimpleSequenceFlowPrinter
 de.brokenpipe.cadiff.cli.control.printers.DeleteElementActionPrinter
+de.brokenpipe.cadiff.cli.control.printers.InsertNodeOnEdgeActionPrinter

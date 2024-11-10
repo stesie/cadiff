@@ -13,7 +13,7 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 public abstract class AbstractActionPrinter implements ActionPrinter {
 
-	protected int indent = 0;
+	protected static int indent = 0;
 
 	protected void indent() {
 		if (indent > 0) {

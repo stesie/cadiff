@@ -31,7 +31,8 @@ public class InsertNodeOnEdgeActionPrinter extends AbstractActionPrinter impleme
 		System.out.println();
 
 		for (int i = 2; i < change.steps().size() - 1; i += 2) {
-			final ModelElementInstance element = context.getTo().getModelElementById(change.steps().get(i).id());
+			final String elementId = change.steps().get(i).id();
+			final ModelElementInstance element = context.getTo().getModelElementById(elementId);
 
 			indent();
 			System.out.println("    |");
@@ -43,9 +44,10 @@ public class InsertNodeOnEdgeActionPrinter extends AbstractActionPrinter impleme
 			printElementName(element);
 			System.out.println(ansi().reset());
 
-			removeChangeNameById(context, change.steps().get(i).id());
-
 			indent += 4;
+
+			removeChangeNameById(context, elementId);
+			new ChangePropertyActionPrinter().printAttributeChangesForId(context, elementId);
 		}
 
 		indent();

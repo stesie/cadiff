@@ -12,7 +12,7 @@ public class InsertNodeOnEdgePatcher extends AbstractPatcher implements Patcher 
 
 	@Override
 	public void accept(final BpmnModelInstance bpmnModelInstance) {
-		deleteElement(bpmnModelInstance, action.replaceFlowId());
+		action.getIdsRemoved().forEach(id -> deleteElement(bpmnModelInstance, id));
 
 		// steps is a flow like this: SourceNode -> NewEdge -> NewNode -> NewEdge -> NewNode -> NewEdge -> TargetNode
 		// both SourceNode & TargetNode already exist, nodes are on even numbers
@@ -27,6 +27,12 @@ public class InsertNodeOnEdgePatcher extends AbstractPatcher implements Patcher 
 		// insert new edges afterward
 		for (int i = 1; i < action.steps().size() - 1; i += 2) {
 			final InsertNodeOnEdgeAction.Step step = action.steps().get(i);
+
+			if (step.id().equals(action.replaceFlowId())) {
+				// FIXME we must update the source/target of the edge. And maybe also the waypoints !?
+				continue;
+			}
+
 			addSequenceFlow(bpmnModelInstance, step.id(), action.steps().get(i - 1).id(),
 					action.steps().get(i + 1).id(), step.waypoints().orElseThrow());
 		}

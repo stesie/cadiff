@@ -25,36 +25,39 @@ public class InsertNodeOnEdgeCreator implements Creator {
 
 	@Override
 	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
-		return findStartEdges(voteContext)
+		return Stream.concat(
+						findReplacedEdges(voteContext),
+						findRecycledEdges(voteContext))
 				.flatMap(removedEdge -> {
-					final var path = collectPath(voteContext, removedEdge.getSource().getId(), removedEdge.getTarget().getId());
+					final var path = collectPath(voteContext, removedEdge.getSource().getId(),
+							removedEdge.getTarget().getId());
 
 					if (path.isEmpty()) {
 						return Stream.empty();
 					}
 
 					final var steps = path.get().stream().map(
-							stepElementId -> {
-								final var element = voteContext.toMap().get(stepElementId);
+									stepElementId -> {
+										final var element = voteContext.toMap().get(stepElementId);
 
-								if (element instanceof final FlowNode flowNode) {
-									return new InsertNodeOnEdgeAction.Step(stepElementId,
-											flowNode.getElementType().getTypeName(),
-											Optional.of(Bounds.of(flowNode.getDiagramElement())),
-											Optional.empty()
-									);
-								} else if (element instanceof final SequenceFlow sequenceFlow) {
-									return new InsertNodeOnEdgeAction.Step(stepElementId,
-											sequenceFlow.getElementType().getTypeName(),
-											Optional.empty(),
-											Optional.of(sequenceFlow.getDiagramElement().getWaypoints().stream()
-													.map(Waypoint::of)
-													.toList())
-									);
-								} else {
-									throw new NotImplementedException();
-								}
-							})
+										if (element instanceof final FlowNode flowNode) {
+											return new InsertNodeOnEdgeAction.Step(stepElementId,
+													flowNode.getElementType().getTypeName(),
+													Optional.of(Bounds.of(flowNode.getDiagramElement())),
+													Optional.empty()
+											);
+										} else if (element instanceof final SequenceFlow sequenceFlow) {
+											return new InsertNodeOnEdgeAction.Step(stepElementId,
+													sequenceFlow.getElementType().getTypeName(),
+													Optional.empty(),
+													Optional.of(sequenceFlow.getDiagramElement().getWaypoints().stream()
+															.map(Waypoint::of)
+															.toList())
+											);
+										} else {
+											throw new NotImplementedException();
+										}
+									})
 							.toList();
 
 					final AddAction action = new InsertNodeOnEdgeAction(removedEdge.getId(), steps);
@@ -107,11 +110,37 @@ public class InsertNodeOnEdgeCreator implements Creator {
 	/**
 	 * Find edges that have been removed, but connected two nodes before, that remain in the model.
 	 */
-	private Stream<SequenceFlow> findStartEdges(final VoteContext<? extends BaseElement> voteContext) {
+	private Stream<SequenceFlow> findReplacedEdges(final VoteContext<? extends BaseElement> voteContext) {
 		return voteContext.removed().stream()
 				.map(removedId -> voteContext.fromMap().get(removedId))
 				.filter(SequenceFlow.class::isInstance)
 				.map(SequenceFlow.class::cast)
+				.filter(removedEdge -> voteContext.toMap().containsKey(removedEdge.getSource().getId())
+						&& voteContext.toMap().containsKey(removedEdge.getTarget().getId()));
+	}
+
+	/**
+	 * Find <em>updated</em> edges with source or target changed, but connected two nodes before, that remain in the
+	 * model.
+	 */
+	private Stream<SequenceFlow> findRecycledEdges(final VoteContext<? extends BaseElement> voteContext) {
+		return voteContext.updated().stream()
+				.map(updatedId -> voteContext.fromMap().get(updatedId))
+				.filter(SequenceFlow.class::isInstance)
+				.map(SequenceFlow.class::cast)
+				// check for changed source or target (in toMap)
+				.filter(oldEdge -> {
+					final var newObj = voteContext.toMap().get(oldEdge.getId());
+
+					if (newObj instanceof final SequenceFlow newEdge) {
+						return !oldEdge.getSource().getId().equals(newEdge.getSource().getId())
+								|| !oldEdge.getTarget().getId().equals(newEdge.getTarget().getId());
+					}
+
+					// mkay, used to be a sequence flow, but isn't anymore
+					return false;
+				})
+				// check if source and target remained in the process
 				.filter(removedEdge -> voteContext.toMap().containsKey(removedEdge.getSource().getId())
 						&& voteContext.toMap().containsKey(removedEdge.getTarget().getId()));
 	}

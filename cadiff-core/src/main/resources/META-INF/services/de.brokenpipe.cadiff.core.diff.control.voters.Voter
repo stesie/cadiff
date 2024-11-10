@@ -2,3 +2,4 @@ de.brokenpipe.cadiff.core.diff.control.voters.ElementTypeVoter
 de.brokenpipe.cadiff.core.diff.control.voters.SameNameVoter
 de.brokenpipe.cadiff.core.diff.control.voters.CamundaDelegateExpressionVoter
 de.brokenpipe.cadiff.core.diff.control.voters.SingleInstanceVoter
+de.brokenpipe.cadiff.core.diff.control.voters.SimilarEdgeVoter

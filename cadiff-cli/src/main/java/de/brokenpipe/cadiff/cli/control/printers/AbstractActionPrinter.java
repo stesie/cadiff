@@ -46,7 +46,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 	protected void printElementName(final ModelElementInstance element) {
 		if (element instanceof final FlowElement flowElement && flowElement.getName() != null) {
-			System.out.print(ansi().bold().a(flowElement.getName()).boldOff());
+			System.out.print(ansi().bold().a(flowElement.getName().replace('\n', ' ')).boldOff());
 			System.out.printf(" (%s)", flowElement.getId());
 		}
 		else if (element instanceof final BaseElement baseElement) {

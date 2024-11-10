@@ -22,8 +22,10 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		System.out.println();
 	}
 
-	protected void printElementLine(final ActionPrintContext context, final String attributeName, final String id) {
-		final ModelElementInstance element = context.getTo().getModelElementById(id);
+	protected void printElementLine(final ActionPrintContext context, final String attributeName, final String id, final ChangeType type) {
+		final ModelElementInstance element = type == ChangeType.DELETE
+			? context.getFrom().getModelElementById(id)
+			: context.getTo().getModelElementById(id);
 
 		System.out.printf(" -> %23s : ", attributeName);
 		printElementName(element);
@@ -31,7 +33,9 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 	}
 
 	protected void startBlock(final ActionPrintContext context, final String id, final ChangeType type) {
-		final ModelElementInstance element = context.getTo().getModelElementById(id);
+		final ModelElementInstance element = type == ChangeType.DELETE
+				? context.getFrom().getModelElementById(id)
+				: context.getTo().getModelElementById(id);
 
 		System.out.println();
 
@@ -64,7 +68,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 	@Getter
 	@RequiredArgsConstructor
-	enum ChangeType {
+	public enum ChangeType {
 		UPDATE("Update", Ansi.Color.DEFAULT),
 		ADD("Add", Ansi.Color.GREEN),
 		DELETE("Delete", Ansi.Color.RED);

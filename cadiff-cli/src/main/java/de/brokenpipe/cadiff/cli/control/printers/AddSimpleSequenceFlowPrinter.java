@@ -15,8 +15,8 @@ public class AddSimpleSequenceFlowPrinter extends AbstractActionPrinter {
 		final var change = (AddSimpleSequenceFlowAction) action;
 
 		startBlock(context, change.id(), ChangeType.ADD);
-		printElementLine(context, "source", change.sourceId());
-		printElementLine(context, "target", change.targetId());
+		printElementLine(context, "source", change.sourceId(), ChangeType.ADD);
+		printElementLine(context, "target", change.targetId(), ChangeType.ADD);
 
 		// remove name change for this element, we've just printed the new name
 		removeChangeNameById(context, change.id());

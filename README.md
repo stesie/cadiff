@@ -3,7 +3,7 @@ cadiff
 
 Camunda BPMN Diff Utils
 
-**This currently is a better proof of concept than a working tool.**
+**This currently is a better proof of concept than a working tool.**  
 Or to put it differently: Don't expect too much from it (for now).
 
 The goal is to provide a tool to both diff (i.e. "compare") two BPMN files and patch (i.e. apply the differences to

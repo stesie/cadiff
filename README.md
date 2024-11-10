@@ -68,6 +68,29 @@ changes:
 $ java -cp cadiff-cli/target/cadiff-cli.jar de.brokenpipe.cadiff.cli.commands.Patch foo.bpmn changes.yaml new-foo.bpmn
 ```
 
+### Usage with Git
+
+You can use `cadiff` with Git to compare two versions of a BPMN file.
+
+First add the following to the `.gitattributes` file in the root of your repository:
+
+```
+*.bpmn diff=bpmn
+```
+
+Then add the following to the `.git/config` file in the root of your repository:
+
+```
+[diff "bpmn"]
+	command = java -cp <path>/cadiff/cadiff-cli/target/cadiff-cli.jar de.brokenpipe.cadiff.cli.commands.GitDiff
+```
+
+Make sure to pass `--ext-diff` to git invocations, e.g.:
+
+```bash
+$ git show 1fd2abf1c --ext-diff
+```
+
 ## Architecture & Extensibility
 
 The tool is built around the concept of "Actions". An action is a change that can be applied to a BPMN file. The

@@ -16,15 +16,18 @@ public class SimpleFlowNodeCreator implements Creator {
 	}
 
 	@Override
-	public Optional<AddAction> apply(final String addId, final VoteContext<? extends BaseElement> voteContext) {
-		final var addedElement = voteContext.toMap().get(addId);
-
-		if (addedElement instanceof final FlowNode flowNode) {
-			return Optional.of(
-					new AddSimpleFlowNodeAction(flowNode.getId(), flowNode.getElementType().getTypeName(),
-							Bounds.of(flowNode.getDiagramElement())));
-		}
-
-		return Optional.empty();
+	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
+		return voteContext.added().stream()
+				.map(addId -> voteContext.toMap().get(addId))
+				.filter(FlowNode.class::isInstance)
+				.map(FlowNode.class::cast)
+				.map(flowNode -> {
+					// noinspection UnnecessaryLocalVariable
+					final AddAction addAction = new AddSimpleFlowNodeAction(flowNode.getId(),
+							flowNode.getElementType().getTypeName(),
+							Bounds.of(flowNode.getDiagramElement()));
+					return addAction;
+				})
+				.findFirst();
 	}
 }

@@ -28,16 +28,8 @@ public class CreatorRegistry implements Function<VoteContext<? extends BaseEleme
 
 	@Override
 	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
-		for (final Creator creator : creators) {
-			for (final String addId : voteContext.added()) {
-				final Optional<AddAction> action = creator.apply(addId, voteContext);
-
-				if (action.isPresent()) {
-					return action;
-				}
-			}
-		}
-
-		return Optional.empty();
+		return creators.stream()
+				.flatMap(creator -> creator.apply(voteContext).stream())
+				.findFirst();
 	}
 }

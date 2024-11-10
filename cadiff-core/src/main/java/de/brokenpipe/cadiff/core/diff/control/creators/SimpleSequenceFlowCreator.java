@@ -16,18 +16,20 @@ public class SimpleSequenceFlowCreator implements Creator {
 	}
 
 	@Override
-	public Optional<AddAction> apply(final String addId, final VoteContext<? extends BaseElement> voteContext) {
-		final var addedElement = voteContext.toMap().get(addId);
-
-		if (addedElement instanceof final SequenceFlow sequenceFlow) {
-			return Optional.of(
-					new AddSimpleSequenceFlowAction(
+	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
+		return voteContext.added().stream()
+				.map(addId -> voteContext.toMap().get(addId))
+				.filter(SequenceFlow.class::isInstance)
+				.map(SequenceFlow.class::cast)
+				.map(sequenceFlow -> {
+					// noinspection UnnecessaryLocalVariable
+					final AddAction addAction = new AddSimpleSequenceFlowAction(
 							sequenceFlow.getId(),
 							sequenceFlow.getSource().getId(),
 							sequenceFlow.getTarget().getId(),
-							sequenceFlow.getDiagramElement().getWaypoints().stream().map(Waypoint::of).toList()));
-		}
-
-		return Optional.empty();
+							sequenceFlow.getDiagramElement().getWaypoints().stream().map(Waypoint::of).toList());
+					return addAction;
+				})
+				.findFirst();
 	}
 }

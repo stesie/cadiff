@@ -7,10 +7,7 @@ import de.brokenpipe.cadiff.core.actions.AddBranchToGatewayAction;
 import de.brokenpipe.cadiff.core.actions.InsertNodeOnEdgeAction;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
 import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
-import org.camunda.bpm.model.bpmn.instance.BaseElement;
-import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.Gateway;
-import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
+import org.camunda.bpm.model.bpmn.instance.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -63,7 +60,7 @@ public class AddBranchToGatewayCreator implements Creator {
 									})
 							.toList();
 
-					final AddAction action = new AddBranchToGatewayAction(steps);
+					final AddAction action = new AddBranchToGatewayAction(!voteContext.fromMap().containsKey(steps.getLast().id()), steps);
 					return Stream.of(action);
 				})
 				.findFirst();
@@ -95,7 +92,9 @@ public class AddBranchToGatewayCreator implements Creator {
 					nextPath.add(candidate.getId());
 					nextPath.add(id);
 
-					if (!voteContext.added().contains(id)) {
+					final var targetElement = voteContext.toMap().get(id);
+
+					if (!voteContext.added().contains(id) || targetElement instanceof ThrowEvent) {
 						return Stream.of(nextPath);
 					}
 

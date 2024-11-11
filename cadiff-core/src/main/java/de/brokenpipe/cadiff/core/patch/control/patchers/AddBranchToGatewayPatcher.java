@@ -18,7 +18,7 @@ public class AddBranchToGatewayPatcher extends AbstractPatcher implements Patche
 		// both SourceNode & TargetNode already exist, nodes are on even numbers
 
 		// insert new nodes first
-		for (int i = 2; i < action.steps().size() - 1; i += 2) {
+		for (int i = 2; i < action.steps().size() - (action.finalElementIsNew() ? 0 : 1); i += 2) {
 			final InsertNodeOnEdgeAction.Step step = action.steps().get(i);
 			addFlowElement(bpmnModelInstance, step.id(), step.elementTypeName(),
 					step.bounds().orElseThrow());

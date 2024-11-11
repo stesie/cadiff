@@ -5,7 +5,7 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
 
 import java.util.List;
 
-public record AddBranchToGatewayAction(List<Step> steps) implements AddAction {
+public record AddBranchToGatewayAction(boolean finalElementIsNew, List<Step> steps) implements AddAction {
 
 	@Override
 	public Patcher getPatcher() {
@@ -14,7 +14,7 @@ public record AddBranchToGatewayAction(List<Step> steps) implements AddAction {
 
 	@Override
 	public List<String> getIdsAdded() {
-		return steps.subList(1, steps.size() - 1).stream()
+		return steps.subList(1, steps.size() - (finalElementIsNew ? 0 : 1)).stream()
 				.map(Step::id)
 				.toList();
 	}

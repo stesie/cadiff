@@ -54,8 +54,9 @@ public class GitDiff implements Callable<Integer> {
 		final ChangeSet changeSet = new DiffCommand(from, to).execute();
 
 		System.out.print(ansi().bold());
-		System.out.printf("diff --git a/%s b/%s", path, path);
+		System.out.printf("cadiff --git a/%s b/%s", path, path);
 		System.out.println();
+		System.out.print(ansi().bold());
 		System.out.printf("index %s..%s %s", oldHex.substring(0, 9), newHex.substring(0, 9), oldMode);
 		System.out.println(ansi().reset());
 

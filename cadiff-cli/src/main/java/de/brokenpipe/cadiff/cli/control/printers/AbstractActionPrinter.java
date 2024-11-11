@@ -3,6 +3,7 @@ package de.brokenpipe.cadiff.cli.control.printers;
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
 import de.brokenpipe.cadiff.core.actions.AddAction;
 import de.brokenpipe.cadiff.core.actions.ChangeNameAction;
+import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
@@ -70,6 +71,14 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		else if (element instanceof final BaseElement baseElement) {
 			System.out.print(ansi().bold().a(baseElement.getId()).boldOff());
 		}
+		else {
+			throw new NotImplementedException();
+		}
+	}
+
+	protected void printOldElementName(final ActionPrintContext context, final String targetId) {
+		final String origTargetId = Optional.ofNullable(context.getIdMapBackward().get(targetId)).orElse(targetId);
+		printElementName(context.getFrom().getModelElementById(origTargetId));
 	}
 
 	protected void removeChangeNameById(final ActionPrintContext context, final String id) {
@@ -80,9 +89,14 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 	}
 
 	protected void printSteps(final ActionPrintContext context, final List<AddAction.Step> steps) {
+		if (isNewElement(context, steps.getFirst().id())) {
+			System.out.print(ansi().fg(ChangeType.ADD.getColor()));
+			removeChangeNameById(context, steps.getFirst().id());
+		}
 		greenIfNewNode(context, steps.getFirst().id());
 		printElementName(context.getTo().getModelElementById(steps.getFirst().id()));
 		System.out.println(ansi().reset());
+		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getFirst().id());
 
 		for (int i = 2; i < steps.size() - 1; i += 2) {
 			final String edgeId = steps.get(i - 1).id();
@@ -128,10 +142,14 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 	}
 
 	protected void greenIfNewNode(final ActionPrintContext context, final String id) {
-		final String fromId = Optional.ofNullable(context.getIdMapBackward().get(id)).orElse(id);
-		if (context.getFrom().getModelElementById(fromId) == null) {
+		if (isNewElement(context, id)) {
 			System.out.print(ansi().fg(ChangeType.ADD.getColor()));
 		}
+	}
+
+	protected boolean isNewElement(final ActionPrintContext context, final String id) {
+		final String fromId = Optional.ofNullable(context.getIdMapBackward().get(id)).orElse(id);
+		return context.getFrom().getModelElementById(fromId) == null;
 	}
 
 	@Getter

@@ -18,13 +18,15 @@ public class InsertNodeOnEdgeActionPrinter extends AbstractActionPrinter impleme
 		System.out.println("Inserted node on edge:");
 
 		System.out.print("    Before: ");
-		printElementName(context.getFrom().getModelElementById(change.steps().getFirst().id()));
+		printOldElementName(context, change.steps().getFirst().id());
 		System.out.print(" --> ");
-		printElementName(context.getFrom().getModelElementById(change.steps().getLast().id()));
+		printOldElementName(context, change.steps().getLast().id());
 		System.out.println();
+		new ChangePropertyActionPrinter().printAttributeChangesForId(context, change.steps().getFirst().id());
 
 		System.out.print("    After: ");
 
 		printSteps(context, change.steps());
 	}
+
 }

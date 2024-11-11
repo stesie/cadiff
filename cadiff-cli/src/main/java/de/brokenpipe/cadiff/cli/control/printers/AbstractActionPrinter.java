@@ -79,13 +79,6 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 	}
 
 	protected void printSteps(final ActionPrintContext context, final List<AddAction.Step> steps) {
-		System.out.print("    Before: ");
-		printElementName(context.getFrom().getModelElementById(steps.getFirst().id()));
-		System.out.print(" --> ");
-		printElementName(context.getFrom().getModelElementById(steps.getLast().id()));
-		System.out.println();
-
-		System.out.print("    After: ");
 		printElementName(context.getTo().getModelElementById(steps.getFirst().id()));
 		System.out.println();
 

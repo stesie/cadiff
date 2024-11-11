@@ -17,6 +17,8 @@ public class AddBranchToGatewayActionPrinter extends AbstractActionPrinter imple
 		System.out.println();
 		System.out.println("Added branch to gateway:");
 
+		System.out.print("    Gateway: ");
+
 		printSteps(context, change.steps());
 	}
 

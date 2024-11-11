@@ -20,6 +20,6 @@ public class DiffCommand {
 	}
 
 	public ChangeSet execute() {
-		return new DiffEngine(this.from, this.to).compareDocuments();
+		return new DiffEngine(this.from.clone(), this.to).compareDocuments();
 	}
 }

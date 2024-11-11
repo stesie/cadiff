@@ -11,6 +11,7 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.fusesource.jansi.Ansi;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
@@ -79,8 +80,9 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 	}
 
 	protected void printSteps(final ActionPrintContext context, final List<AddAction.Step> steps) {
+		greenIfNewNode(context, steps.getFirst().id());
 		printElementName(context.getTo().getModelElementById(steps.getFirst().id()));
-		System.out.println();
+		System.out.println(ansi().reset());
 
 		for (int i = 2; i < steps.size() - 1; i += 2) {
 			final String edgeId = steps.get(i - 1).id();
@@ -114,10 +116,18 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		System.out.println("    |");
 		indent();
 		System.out.print("    `-> ");
+		greenIfNewNode(context, steps.getLast().id());
 		printElementName(context.getTo().getModelElementById(steps.getLast().id()));
-		System.out.println();
+		System.out.println(ansi().reset());
 
 		indent = 0;
+	}
+
+	protected void greenIfNewNode(final ActionPrintContext context, final String id) {
+		final String fromId = Optional.ofNullable(context.getIdMapBackward().get(id)).orElse(id);
+		if (context.getFrom().getModelElementById(fromId) == null) {
+			System.out.print(ansi().fg(ChangeType.ADD.getColor()));
+		}
 	}
 
 	@Getter

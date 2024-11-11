@@ -120,6 +120,10 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		printElementName(context.getTo().getModelElementById(steps.getLast().id()));
 		System.out.println(ansi().reset());
 
+		indent += 4;
+		removeChangeNameById(context, steps.getLast().id());
+		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getLast().id());
+
 		indent = 0;
 	}
 

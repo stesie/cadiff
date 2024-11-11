@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.cli.control.printers;
 
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
+import de.brokenpipe.cadiff.core.actions.AddAction;
 import de.brokenpipe.cadiff.core.actions.ChangeNameAction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.fusesource.jansi.Ansi;
+
+import java.util.List;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
@@ -75,6 +78,54 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 				.ifPresent(x -> context.getChanges().remove(x));
 	}
 
+	protected void printSteps(final ActionPrintContext context, final List<AddAction.Step> steps) {
+		System.out.print("    Before: ");
+		printElementName(context.getFrom().getModelElementById(steps.getFirst().id()));
+		System.out.print(" --> ");
+		printElementName(context.getFrom().getModelElementById(steps.getLast().id()));
+		System.out.println();
+
+		System.out.print("    After: ");
+		printElementName(context.getTo().getModelElementById(steps.getFirst().id()));
+		System.out.println();
+
+		for (int i = 2; i < steps.size() - 1; i += 2) {
+			final String edgeId = steps.get(i - 1).id();
+			final String elementId = steps.get(i).id();
+			final ModelElementInstance element = context.getTo().getModelElementById(elementId);
+
+			indent();
+			System.out.println("    |");
+			new ChangePropertyActionPrinter().printAttributeChangesForId(context, edgeId, "    | ");
+			indent();
+			System.out.println("    |");
+			indent();
+			System.out.print("    `-> ");
+			System.out.print(ansi().reset().fg(ChangeType.ADD.getColor())
+					.bold().a(element.getElementType().getTypeName()).boldOff()
+					.a(" : "));
+			printElementName(element);
+			System.out.println(ansi().reset());
+
+			indent += 4;
+
+			removeChangeNameById(context, elementId);
+			new ChangePropertyActionPrinter().printAttributeChangesForId(context, elementId);
+		}
+
+		indent();
+		System.out.println("    |");
+		new ChangePropertyActionPrinter().printAttributeChangesForId(context,
+				steps.get(steps.size() - 2).id(), "    | ");
+		indent();
+		System.out.println("    |");
+		indent();
+		System.out.print("    `-> ");
+		printElementName(context.getTo().getModelElementById(steps.getLast().id()));
+		System.out.println();
+
+		indent = 0;
+	}
 
 	@Getter
 	@RequiredArgsConstructor

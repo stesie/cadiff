@@ -48,17 +48,28 @@ public class GitDiff implements Callable<Integer> {
 
 	@Override
 	public Integer call() {
+		System.out.print(ansi().bold());
+		System.out.printf("cadiff --git a/%s b/%s", path, path);
+		System.out.println(ansi().reset());
+
+		if (newMode.equals(".")) {
+			System.out.println("The file was deleted.");
+			return Integer.valueOf(0);
+		}
+
+		if (oldMode.equals(".")) {
+			System.out.println("New file was added.");
+			return Integer.valueOf(0);
+		}
+
+		System.out.print(ansi().bold());
+		System.out.printf("index %s..%s %s", oldHex.substring(0, 9), newHex.substring(0, 9), oldMode);
+		System.out.println(ansi().reset());
+
 		final var from = Bpmn.readModelFromFile(oldFile);
 		final var to = Bpmn.readModelFromFile(newFile);
 
 		final ChangeSet changeSet = new DiffCommand(from, to).execute();
-
-		System.out.print(ansi().bold());
-		System.out.printf("cadiff --git a/%s b/%s", path, path);
-		System.out.println();
-		System.out.print(ansi().bold());
-		System.out.printf("index %s..%s %s", oldHex.substring(0, 9), newHex.substring(0, 9), oldMode);
-		System.out.println(ansi().reset());
 
 		new ChangeSetPrinter(ActionPrintContext.of(changeSet, from, to, printIdChanges, printAllEdgeDeletes))
 				.printAll();

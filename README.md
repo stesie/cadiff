@@ -75,13 +75,13 @@ You can use `cadiff` with Git to compare two versions of a BPMN file.
 First add the following to the `.gitattributes` file in the root of your repository:
 
 ```
-*.bpmn diff=bpmn
+*.bpmn diff=cadiff
 ```
 
 Then add the following to the `.git/config` file in the root of your repository:
 
 ```
-[diff "bpmn"]
+[diff "cadiff"]
 	command = java -cp <path>/cadiff/cadiff-cli/target/cadiff-cli.jar de.brokenpipe.cadiff.cli.commands.GitDiff
 ```
 

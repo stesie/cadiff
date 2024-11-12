@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.cli.commands;
 
 import de.brokenpipe.cadiff.cli.control.ChangeSetPrinter;
 import de.brokenpipe.cadiff.cli.control.Jackson;
+import de.brokenpipe.cadiff.cli.control.SelftestControl;
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
 import de.brokenpipe.cadiff.core.diff.boundary.DiffCommand;
 import de.brokenpipe.cadiff.core.diff.entity.ChangeSet;
@@ -37,6 +38,9 @@ public class Diff implements Callable<Integer> {
 	@Option(names = { "--print-all-edge-deletes" }, description = "Print edge deletes, even if they are related to a node delete")
 	boolean printAllEdgeDeletes;
 
+	@Option(names = { "--selftest" }, description = "Perform selftest (test if the changeset is complete)")
+	boolean performSelftest;
+
 	@Override
 	public Integer call() {
 		final var from = Bpmn.readModelFromFile(fromFile);
@@ -51,6 +55,10 @@ public class Diff implements Callable<Integer> {
 		if (!quiet) {
 			new ChangeSetPrinter(ActionPrintContext.of(changeSet, from, to, printIdChanges, printAllEdgeDeletes))
 					.printAll();
+		}
+
+		if (performSelftest) {
+			new SelftestControl(from, to, changeSet).execute();
 		}
 
 		return Integer.valueOf(0);

@@ -11,6 +11,7 @@ import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.fusesource.jansi.Ansi;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -102,8 +103,14 @@ public class SelftestControl {
 			final String path) {
 
 		type.getAttributes().forEach(attribute -> {
-			final var expectedValue = expected.getAttribute(attribute.getAttributeName());
-			final var actualValue = actual.getAttribute(attribute.getAttributeName());
+			final var defaultValue = Optional.ofNullable(attribute.getDefaultValue())
+					.map(Object::toString)
+					.orElse(null);
+
+			final var expectedValue = Optional.ofNullable(expected.getAttribute(attribute.getAttributeName()))
+					.orElse(defaultValue);
+			final var actualValue = Optional.ofNullable(actual.getAttribute(attribute.getAttributeName()))
+					.orElse(defaultValue);
 
 			compareString(expectedValue, actualValue, path + "/@" + attribute.getAttributeName());
 		});

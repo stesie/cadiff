@@ -5,3 +5,4 @@ de.brokenpipe.cadiff.core.diff.control.comparators.CamundaClassComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaDelegateExpressionComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaExclusiveComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaExpressionComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.AttachedToComparator

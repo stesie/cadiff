@@ -1,18 +1,18 @@
 package de.brokenpipe.cadiff.cli.control.printers;
 
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
-import de.brokenpipe.cadiff.core.actions.AbstractChangePropertyAction;
 import de.brokenpipe.cadiff.core.actions.Action;
+import de.brokenpipe.cadiff.core.actions.ChangePropertyAction;
 
 public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 	@Override
 	public boolean supports(final Action action) {
-		return action instanceof AbstractChangePropertyAction<?>;
+		return action instanceof ChangePropertyAction<?>;
 	}
 
 	@Override
 	public void accept(final ActionPrintContext context, final Action action) {
-		final var change = (AbstractChangePropertyAction<?>) action;
+		final var change = (ChangePropertyAction<?>) action;
 
 		startBlock(context, change.getId(), ChangeType.UPDATE);
 		writeLine(context, change, " -> ");
@@ -29,22 +29,13 @@ public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 				.filter(this::supports)
 				.toList()
 				.forEach(c -> {
-					writeLine(context, (AbstractChangePropertyAction<?>) c, leader);
+					writeLine(context, (ChangePropertyAction<?>) c, leader);
 					context.getChanges().remove(c);
 				});
 	}
 
-	private void writeLine(final ActionPrintContext context, final AbstractChangePropertyAction<?> change, final String leader) {
-		final String attributeName = extractAttributeName(change);
-		printChangeLine(attributeName, change.getOldValue(), change.getNewValue(), leader);
-	}
-
-	private static String extractAttributeName(final AbstractChangePropertyAction<?> change) {
-		final String attributeName = change.getClass().getSimpleName()
-				.replace("Change", "")
-				.replace("Camunda", "")
-				.replace("Action", "");
-		return Character.toLowerCase(attributeName.charAt(0)) + attributeName.substring(1);
+	private void writeLine(final ActionPrintContext context, final ChangePropertyAction<?> change, final String leader) {
+		printChangeLine(change.getAttributeName(), change.getOldValue(), change.getNewValue(), leader);
 	}
 
 }

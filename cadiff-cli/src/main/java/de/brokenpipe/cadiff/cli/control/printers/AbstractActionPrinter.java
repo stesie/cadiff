@@ -85,7 +85,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		context.findChangesForId(id)
 				.filter(x -> x instanceof ChangeNameAction)
 				.findFirst()
-				.ifPresent(x -> context.getChanges().remove(x));
+				.ifPresent(x -> context.getActions().remove(x));
 	}
 
 	protected void printSteps(final ActionPrintContext context, final List<AddAction.Step> steps) {

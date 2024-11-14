@@ -30,7 +30,7 @@ public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 				.toList()
 				.forEach(c -> {
 					writeLine(context, (ChangePropertyAction<?>) c, leader);
-					context.getChanges().remove(c);
+					context.getActions().remove(c);
 				});
 	}
 

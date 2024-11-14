@@ -11,8 +11,8 @@ public class ChangeSetPrinter {
 
 	public void printAll() {
 
-		while (!context.getChanges().isEmpty()) {
-			final var change = context.getChanges().removeFirst();
+		while (!context.getActions().isEmpty()) {
+			final var change = context.getActions().removeFirst();
 			final var printer = ActionPrinterRegistry.INSTANCE.find(change);
 
 			if (printer.isEmpty()) {

@@ -1,11 +1,11 @@
 package de.brokenpipe.cadiff.core.diff.control;
 
 import de.brokenpipe.cadiff.core.actions.Action;
+import de.brokenpipe.cadiff.core.actions.processes.ChangeProcessAction;
 import de.brokenpipe.cadiff.core.diff.control.comparators.processes.ProcessNameComparator;
 import org.camunda.bpm.model.bpmn.instance.Process;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class ProcessWalker extends AbstractWalker<Process> {
@@ -16,10 +16,15 @@ public class ProcessWalker extends AbstractWalker<Process> {
 
 	@Override
 	protected Stream<Action> handleUpdated(final Process from, final Process to) {
-		return mergeStreams(List.of(
-				handleNameChange(from, to),
-				new FlowElementWalker(from.getFlowElements(), to.getFlowElements()).walk()
-		));
+
+		final var actions = new FlowElementWalker(from.getFlowElements(), to.getFlowElements()).walk().toList();
+
+		return Stream.concat(
+				actions.isEmpty()
+						? Stream.empty()
+						: Stream.of(new ChangeProcessAction(from.getId(), actions)),
+				handleNameChange(from, to)
+		);
 	}
 
 	private Stream<Action> handleNameChange(final Process from, final Process to) {

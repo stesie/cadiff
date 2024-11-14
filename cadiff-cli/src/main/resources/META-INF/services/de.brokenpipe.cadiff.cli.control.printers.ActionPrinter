@@ -1,5 +1,5 @@
 de.brokenpipe.cadiff.cli.control.printers.ChangeIdActionPrinter
-de.brokenpipe.cadiff.cli.control.printers.ChangeProcessNameActionPrinter
+de.brokenpipe.cadiff.cli.control.printers.ChangeProcessActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.ChangePropertyActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.AddSimpleFlowNodePrinter
 de.brokenpipe.cadiff.cli.control.printers.AddSimpleSequenceFlowPrinter

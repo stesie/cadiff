@@ -70,11 +70,14 @@ public class SelftestControl {
 		final ModelElementType type = expectation.getModel()
 				.getTypeForName(expected.getNamespaceURI(), expected.getLocalName());
 
-		if (type.getBaseType() == null) {
+		compareAttributes(type, expected, actual, path);
+
+		// ExtensionElements has child elements, despite the type registry listing nothing
+		if (type.getBaseType() == null && !type.equals(expectation.getModel().getType(ExtensionElements.class))) {
 			compareString(expected.getTextContent(), actual.getTextContent(), path + "/@text");
+			return;
 		}
 
-		compareAttributes(type, expected, actual, path);
 		compareChildren(expected, actual, path);
 	}
 

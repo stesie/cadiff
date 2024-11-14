@@ -3,6 +3,7 @@ package de.brokenpipe.cadiff.core.diff.control.creators;
 import de.brokenpipe.cadiff.core.Bounds;
 import de.brokenpipe.cadiff.core.Waypoint;
 import de.brokenpipe.cadiff.core.actions.AddAction;
+import de.brokenpipe.cadiff.core.actions.ChangeIdAction;
 import de.brokenpipe.cadiff.core.actions.InsertNodeOnEdgeAction;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
 import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
@@ -59,6 +60,11 @@ public class InsertNodeOnEdgeCreator implements Creator {
 										}
 									})
 							.toList();
+
+					if (steps.size() == 3) {
+						// special case, this just an edge with a new id
+						return Stream.of(new ChangeIdAction(removedEdge.getId(), steps.get(1).id()));
+					}
 
 					final AddAction action = new InsertNodeOnEdgeAction(removedEdge.getId(), steps);
 					return Stream.of(action);

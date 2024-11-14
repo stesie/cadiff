@@ -55,7 +55,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		System.out.println();
 
 		indent();
-		System.out.print(ansi().reset().fg(type.getColor()).a("%6s : ".formatted(type.getVerb()))
+		System.out.print(ansi().reset().fg(type.getColor()).a("%-6s : ".formatted(type.getVerb()))
 				.bold().a("%18s".formatted(element.getElementType().getTypeName())).boldOff()
 				.a(" : "));
 		printElementName(element);
@@ -89,6 +89,8 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 	}
 
 	protected void printSteps(final ActionPrintContext context, final List<AddAction.Step> steps) {
+		final var restoreIndent = indent;
+
 		if (isNewElement(context, steps.getFirst().id())) {
 			System.out.print(ansi().fg(ChangeType.ADD.getColor()));
 			removeChangeNameById(context, steps.getFirst().id());
@@ -138,7 +140,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		removeChangeNameById(context, steps.getLast().id());
 		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getLast().id());
 
-		indent = 0;
+		indent = restoreIndent;
 	}
 
 	protected void greenIfNewNode(final ActionPrintContext context, final String id) {

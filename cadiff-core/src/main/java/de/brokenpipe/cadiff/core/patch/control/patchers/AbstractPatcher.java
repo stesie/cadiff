@@ -7,8 +7,10 @@ import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.impl.instance.Incoming;
 import org.camunda.bpm.model.bpmn.impl.instance.Outgoing;
-import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.*;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.camunda.bpm.model.bpmn.instance.Collaboration;
+import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
@@ -28,8 +30,8 @@ public abstract class AbstractPatcher {
 
 		final BaseElement addedElement = context.getModelInstance().newInstance(elementType, id);
 
-		final Process process = findProcess(context.getModelInstance());
-		process.addChildElement(addedElement);
+		final BaseElement containerElement = context.getContainerElement();
+		containerElement.addChildElement(addedElement);
 
 		final var di = context.getModelInstance().newInstance(BpmnShape.class, id + "_di");
 		di.setBpmnElement(addedElement);
@@ -43,7 +45,7 @@ public abstract class AbstractPatcher {
 
 		final var diagramRoot = findRootElementByType(context.getModelInstance(), Collaboration.class)
 				.map(BaseElement::getDiagramElement)
-				.orElse(process.getDiagramElement());
+				.orElse(containerElement.getDiagramElement());
 		diagramRoot.addChildElement(di);
 	}
 
@@ -54,8 +56,8 @@ public abstract class AbstractPatcher {
 
 		updateSequenceFlow(context, addedElement, sourceId, targetId);
 
-		final Process process = findProcess(context.getModelInstance());
-		process.addChildElement(addedElement);
+		final BaseElement containerElement = context.getContainerElement();
+		containerElement.addChildElement(addedElement);
 
 		final var di = context.getModelInstance().newInstance(BpmnEdge.class, id + "_di");
 		di.setBpmnElement(addedElement);
@@ -71,7 +73,7 @@ public abstract class AbstractPatcher {
 
 		final var diagramRoot = findRootElementByType(context.getModelInstance(), Collaboration.class)
 				.map(BaseElement::getDiagramElement)
-				.orElse(process.getDiagramElement());
+				.orElse(containerElement.getDiagramElement());
 		diagramRoot.addChildElement(di);
 
 	}
@@ -142,11 +144,6 @@ public abstract class AbstractPatcher {
 				.filter(x -> type.isAssignableFrom(x.getClass()))
 				.map(type::cast)
 				.findFirst();
-	}
-
-	protected static Process findProcess(final BpmnModelInstance bpmnModelInstance) {
-		return findRootElementByType(bpmnModelInstance, Process.class)
-				.orElseThrow(IllegalStateException::new);
 	}
 
 }

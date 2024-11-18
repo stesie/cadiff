@@ -16,7 +16,7 @@ public class ChangeProcessPatcher extends AbstractPatcher implements Patcher {
 	@Override
 	public void accept(final PatcherContext context) {
 		final Process process = findTargetWithType(context, action.id(), Process.class);
-		final PatcherContext innerContext = context.withProcess(process);
+		final PatcherContext innerContext = context.withContainerElem(process);
 
 		for (final Action a : action.actions()) {
 			a.getPatcher().accept(innerContext);

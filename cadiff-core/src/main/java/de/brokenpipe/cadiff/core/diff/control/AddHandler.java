@@ -20,7 +20,8 @@ public class AddHandler<T extends BaseElement> {
 
 	public List<Action> apply() {
 		// TODO add instance to context !?
-		final var fromInstance = (BpmnModelInstance) context.fromMap().values().iterator().next().getModelInstance();
+		final T randomFromElement = context.fromMap().values().iterator().next();
+		final var fromInstance = (BpmnModelInstance) randomFromElement.getModelInstance();
 
 		final List<Action> actions = new ArrayList<>();
 
@@ -34,7 +35,7 @@ public class AddHandler<T extends BaseElement> {
 			final AddAction action = candidate.get();
 
 			// add/replace elements to from instance
-			action.getPatcher().accept(PatcherContext.of(fromInstance)); // FIXME do we need the process here !?
+			action.getPatcher().accept(PatcherContext.of(fromInstance, (BaseElement) randomFromElement.getParentElement())); // FIXME do we need the process here !?
 
 			action.getIdsAdded().forEach(id -> {
 				context.added().remove(id);

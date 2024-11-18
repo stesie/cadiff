@@ -11,13 +11,17 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 public class PatcherContext {
 
 	private final BpmnModelInstance modelInstance;
-	private final BaseElement process;
+	private final BaseElement containerElement;
 
 	public static PatcherContext of(final BpmnModelInstance modelInstance) {
 		return new PatcherContext(modelInstance, null);
 	}
 
-	public PatcherContext withProcess(final BaseElement process) {
+	public static PatcherContext of(final BpmnModelInstance fromInstance, final BaseElement container) {
+		return new PatcherContext(fromInstance, container);
+	}
+
+	public PatcherContext withContainerElem(final BaseElement process) {
 		return new PatcherContext(this.modelInstance, process);
 	}
 }

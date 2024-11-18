@@ -17,7 +17,7 @@ public class ChangeSubProcessPatcher extends AbstractPatcher implements Patcher 
 	public void accept(final PatcherContext context) {
 
 		final SubProcess subProcess = findTargetWithType(context, action.id(), SubProcess.class);
-		final PatcherContext innerContext = context.withProcess(subProcess);
+		final PatcherContext innerContext = context.withContainerElem(subProcess);
 
 		for (final Action a : action.actions()) {
 			a.getPatcher().accept(innerContext);

@@ -1,9 +1,11 @@
 package de.brokenpipe.cadiff.cli.control;
 
+import de.brokenpipe.cadiff.cli.control.exceptions.ElementSetMismatchException;
 import de.brokenpipe.cadiff.cli.control.exceptions.SelftestException;
 import de.brokenpipe.cadiff.core.diff.entity.ChangeSet;
 import de.brokenpipe.cadiff.core.patch.boundary.PatchCommand;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.instance.DomElement;
@@ -54,7 +56,16 @@ public class SelftestControl {
 		final var flowElementsActual = processActual.getFlowElements();
 
 		if (flowElementsExpected.size() != flowElementsActual.size()) {
-			throw new SelftestException("Number of flow elements mismatching in process", processExpected.getId());
+			final var flowElementIdsExpected = flowElementsExpected.stream().map(BaseElement::getId).toList();
+			final var flowElementIdsActual = flowElementsActual.stream().map(BaseElement::getId).toList();
+
+			final var flowElementIdsMissing = flowElementIdsExpected.stream()
+					.filter(id -> !flowElementIdsActual.contains(id))
+					.toList();
+			final var flowElementIdsExcess = flowElementIdsActual.stream()
+					.filter(id -> !flowElementIdsExpected.contains(id))
+					.toList();
+			throw new ElementSetMismatchException(processExpected.getId(), flowElementIdsMissing, flowElementIdsExcess);
 		}
 
 		flowElementsExpected.forEach(feExpected -> {

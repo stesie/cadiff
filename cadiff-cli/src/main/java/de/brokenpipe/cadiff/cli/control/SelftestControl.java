@@ -117,7 +117,10 @@ public class SelftestControl {
 		for (int i = 0; i < expected.getChildElements().size(); i++) {
 			final DomElement expectedChild = expected.getChildElements().get(i);
 			final DomElement actualChild = actual.getChildElements().get(i);
-			compareElements(expectedChild, actualChild, path + "/" + expectedChild.getLocalName());
+
+			final var expectedChildId = expectedChild.getAttribute("id");
+			compareElements(expectedChild, actualChild, path + "/" + expectedChild.getLocalName()
+					+ (expectedChildId == null ? "" : "#" + expectedChildId));
 		}
 	}
 

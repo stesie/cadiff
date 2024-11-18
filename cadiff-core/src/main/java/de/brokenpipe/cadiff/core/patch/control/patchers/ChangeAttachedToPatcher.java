@@ -1,12 +1,11 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
 import de.brokenpipe.cadiff.core.actions.ChangeAttachedToAction;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.ValueMismatchException;
+import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.BoundaryEvent;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
@@ -20,8 +19,8 @@ public class ChangeAttachedToPatcher implements Patcher {
 	private final ChangeAttachedToAction action;
 
 	@Override
-	public void accept(final BpmnModelInstance bpmnModelInstance) {
-		final ModelElementInstance target = bpmnModelInstance.getModelElementById(action.getId());
+	public void accept(final PatcherContext context) {
+		final ModelElementInstance target = context.getModelInstance().getModelElementById(action.getId());
 
 		if (target == null) {
 			throw new TargetElementNotFoundException(action.getId());
@@ -43,7 +42,7 @@ public class ChangeAttachedToPatcher implements Patcher {
 				return;
 			}
 
-			final var attachedTo = bpmnModelInstance.getModelElementById(action.getNewValue());
+			final var attachedTo = context.getModelInstance().getModelElementById(action.getNewValue());
 
 			if (attachedTo == null) {
 				throw new TargetElementNotFoundException(action.getNewValue());

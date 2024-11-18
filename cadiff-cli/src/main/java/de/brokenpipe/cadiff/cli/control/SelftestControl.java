@@ -7,11 +7,13 @@ import de.brokenpipe.cadiff.core.patch.boundary.PatchCommand;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
+import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.fusesource.jansi.Ansi;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -52,20 +54,26 @@ public class SelftestControl {
 			throw new SelftestException("Process missing in test instance", processExpected.getId());
 		}
 
-		final var flowElementsExpected = processExpected.getFlowElements();
-		final var flowElementsActual = processActual.getFlowElements();
+		final Collection<FlowElement> flowElementsExpected = processExpected.getFlowElements();
+		final Collection<FlowElement> flowElementsActual = processActual.getFlowElements();
 
-		if (flowElementsExpected.size() != flowElementsActual.size()) {
-			final var flowElementIdsExpected = flowElementsExpected.stream().map(BaseElement::getId).toList();
-			final var flowElementIdsActual = flowElementsActual.stream().map(BaseElement::getId).toList();
+		compareElements(processExpected.getId(), flowElementsExpected, flowElementsActual);
+	}
 
-			final var flowElementIdsMissing = flowElementIdsExpected.stream()
-					.filter(id -> !flowElementIdsActual.contains(id))
-					.toList();
-			final var flowElementIdsExcess = flowElementIdsActual.stream()
-					.filter(id -> !flowElementIdsExpected.contains(id))
-					.toList();
-			throw new ElementSetMismatchException(processExpected.getId(), flowElementIdsMissing, flowElementIdsExcess);
+	private void compareElements(final String containerId, final Collection<? extends BaseElement> flowElementsExpected,
+			final Collection<? extends BaseElement> flowElementsActual) {
+		final var flowElementIdsExpected = flowElementsExpected.stream().map(BaseElement::getId).toList();
+		final var flowElementIdsActual = flowElementsActual.stream().map(BaseElement::getId).toList();
+
+		final var flowElementIdsMissing = flowElementIdsExpected.stream()
+				.filter(id -> !flowElementIdsActual.contains(id))
+				.toList();
+		final var flowElementIdsExcess = flowElementIdsActual.stream()
+				.filter(id -> !flowElementIdsExpected.contains(id))
+				.toList();
+
+		if (!flowElementIdsMissing.isEmpty() || !flowElementIdsExcess.isEmpty()) {
+			throw new ElementSetMismatchException(containerId, flowElementIdsMissing, flowElementIdsExcess);
 		}
 
 		flowElementsExpected.forEach(feExpected -> {

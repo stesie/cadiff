@@ -2,7 +2,7 @@ package de.brokenpipe.cadiff.core.actions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.brokenpipe.cadiff.core.patch.control.patchers.ChangeErrorEventDefinitionPatcher;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
+import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 
 public record ChangeErrorEventDefinitionAction(String id, String errorDefinitionId, String oldErrorRef,
 											   String newErrorRef) implements Action, ChangePropertyAction<String> {

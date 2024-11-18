@@ -1,7 +1,7 @@
 package de.brokenpipe.cadiff.core.actions;
 
 import de.brokenpipe.cadiff.core.patch.control.patchers.ChangeIdPatcher;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
+import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 
 import java.util.List;
 

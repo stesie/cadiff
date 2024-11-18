@@ -1,10 +1,9 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
 import de.brokenpipe.cadiff.core.actions.ChangeIdAction;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
+import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
@@ -14,8 +13,8 @@ public class ChangeIdPatcher implements Patcher {
 	private final ChangeIdAction action;
 
 	@Override
-	public void accept(final BpmnModelInstance bpmnModelInstance) {
-		final ModelElementInstance target = bpmnModelInstance.getModelElementById(action.oldId());
+	public void accept(final PatcherContext context) {
+		final ModelElementInstance target = context.getModelInstance().getModelElementById(action.oldId());
 
 		if (target == null) {
 			throw new TargetElementNotFoundException(action.oldId());

@@ -2,6 +2,8 @@ package de.brokenpipe.cadiff.core.patch.control.patchers;
 
 import de.brokenpipe.cadiff.core.Waypoint;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
+import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
+import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.impl.instance.Incoming;
 import org.camunda.bpm.model.bpmn.impl.instance.Outgoing;
@@ -17,73 +19,93 @@ import java.util.Optional;
 
 public abstract class AbstractPatcher {
 
-	protected void addFlowElement(final BpmnModelInstance bpmnModelInstance, final String id, final String typeName,
+	protected void addFlowElement(final PatcherContext context, final String id, final String typeName,
 			final de.brokenpipe.cadiff.core.Bounds actionBounds) {
-		final var elementType = bpmnModelInstance.getModel().getTypes().stream()
+		final var elementType = context.getModelInstance().getModel().getTypes().stream()
 				.filter(x -> x.getTypeName().equals(typeName))
 				.findFirst()
 				.orElseThrow(); // FIXME
 
-		final BaseElement addedElement = bpmnModelInstance.newInstance(elementType, id);
+		final BaseElement addedElement = context.getModelInstance().newInstance(elementType, id);
 
-		final Process process = findProcess(bpmnModelInstance);
+		final Process process = findProcess(context.getModelInstance());
 		process.addChildElement(addedElement);
 
-		final var di = bpmnModelInstance.newInstance(BpmnShape.class, id + "_di");
+		final var di = context.getModelInstance().newInstance(BpmnShape.class, id + "_di");
 		di.setBpmnElement(addedElement);
 
-		final var bounds = bpmnModelInstance.newInstance(Bounds.class);
+		final var bounds = context.getModelInstance().newInstance(Bounds.class);
 		di.setBounds(bounds);
 		bounds.setX(actionBounds.x().doubleValue());
 		bounds.setY(actionBounds.y().doubleValue());
 		bounds.setWidth(actionBounds.width().doubleValue());
 		bounds.setHeight(actionBounds.height().doubleValue());
 
-		final var diagramRoot = findRootElementByType(bpmnModelInstance, Collaboration.class)
+		final var diagramRoot = findRootElementByType(context.getModelInstance(), Collaboration.class)
 				.map(BaseElement::getDiagramElement)
 				.orElse(process.getDiagramElement());
 		diagramRoot.addChildElement(di);
 	}
 
-	protected void addSequenceFlow(final BpmnModelInstance bpmnModelInstance, final String id,
+	protected void addSequenceFlow(final PatcherContext context, final String id,
 			final String sourceId, final String targetId, final List<Waypoint> waypoints) {
 
-		final SequenceFlow addedElement = bpmnModelInstance.newInstance(SequenceFlow.class, id);
+		final SequenceFlow addedElement = context.getModelInstance().newInstance(SequenceFlow.class, id);
 
-		final FlowNode source = bpmnModelInstance.getModelElementById(sourceId);
-		addedElement.setSource(source);
+		updateSequenceFlow(context, addedElement, sourceId, targetId);
 
-		final Outgoing sourceOutgoing = bpmnModelInstance.newInstance(Outgoing.class);
-		sourceOutgoing.setTextContent(addedElement.getId());
-		source.addChildElement(sourceOutgoing);
-
-		final FlowNode target = bpmnModelInstance.getModelElementById(targetId);
-		addedElement.setTarget(target);
-
-		final Incoming targetIncoming = bpmnModelInstance.newInstance(Incoming.class);
-		targetIncoming.setTextContent(addedElement.getId());
-		target.addChildElement(targetIncoming);
-
-		final Process process = findProcess(bpmnModelInstance);
+		final Process process = findProcess(context.getModelInstance());
 		process.addChildElement(addedElement);
 
-		final var di = bpmnModelInstance.newInstance(BpmnEdge.class, id + "_di");
+		final var di = context.getModelInstance().newInstance(BpmnEdge.class, id + "_di");
 		di.setBpmnElement(addedElement);
 
 		waypoints.stream()
 				.map(waypoint -> {
-					final var wp = bpmnModelInstance.newInstance(org.camunda.bpm.model.bpmn.instance.di.Waypoint.class);
+					final var wp = context.getModelInstance().newInstance(org.camunda.bpm.model.bpmn.instance.di.Waypoint.class);
 					wp.setX(waypoint.x().doubleValue());
 					wp.setY(waypoint.y().doubleValue());
 					return wp;
 				})
 				.forEach(di::addChildElement);
 
-		final var diagramRoot = findRootElementByType(bpmnModelInstance, Collaboration.class)
+		final var diagramRoot = findRootElementByType(context.getModelInstance(), Collaboration.class)
 				.map(BaseElement::getDiagramElement)
 				.orElse(process.getDiagramElement());
 		diagramRoot.addChildElement(di);
 
+	}
+
+	protected void updateSequenceFlow(final PatcherContext context, final SequenceFlow sequenceFlow,
+			final String sourceId, final String targetId) {
+
+		if (sequenceFlow.getSource() != null) {
+			sequenceFlow.getSource().getOutgoing().stream()
+					.filter(x -> x.getId().equals(sequenceFlow.getId()))
+					.findFirst()
+					.ifPresent(sequenceFlow.getSource()::removeChildElement);
+		}
+
+		final FlowNode source = context.getModelInstance().getModelElementById(sourceId);
+		sequenceFlow.setSource(source);
+
+		final Outgoing sourceOutgoing = context.getModelInstance().newInstance(Outgoing.class);
+		sourceOutgoing.setTextContent(sequenceFlow.getId());
+		source.addChildElement(sourceOutgoing);
+
+		if (sequenceFlow.getTarget() != null) {
+			sequenceFlow.getTarget().getIncoming().stream()
+					.filter(x -> x.getId().equals(sequenceFlow.getId()))
+					.findFirst()
+					.ifPresent(sequenceFlow.getTarget()::removeChildElement);
+		}
+
+		final FlowNode target = context.getModelInstance().getModelElementById(targetId);
+		sequenceFlow.setTarget(target);
+
+		final Incoming targetIncoming = context.getModelInstance().newInstance(Incoming.class);
+		targetIncoming.setTextContent(sequenceFlow.getId());
+		target.addChildElement(targetIncoming);
 	}
 
 	protected void deleteElement(final BpmnModelInstance bpmnModelInstance, final String id) {
@@ -98,6 +120,21 @@ public abstract class AbstractPatcher {
 		}
 
 		target.getParentElement().removeChildElement(target);
+	}
+
+	protected <T extends BaseElement> T findTargetWithType(final PatcherContext context, final String elementId,
+			final Class<T> clazz) {
+		final ModelElementInstance target = context.getModelInstance().getModelElementById(elementId);
+
+		if (target == null) {
+			throw new TargetElementNotFoundException(elementId);
+		}
+
+		if (clazz.isInstance(target)) {
+			return clazz.cast(target);
+		}
+
+		throw new UnexpectedTargetElementTypeException(elementId, target.getClass().getSimpleName(), clazz.getSimpleName());
 	}
 
 	protected static <T extends BaseElement> Optional<T> findRootElementByType(final BpmnModelInstance bpmnModelInstance, final Class<T> type) {

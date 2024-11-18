@@ -3,7 +3,7 @@ package de.brokenpipe.cadiff.core.actions;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.brokenpipe.cadiff.core.patch.control.patchers.ChangeCamundaAsyncAfterPatcher;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
+import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 
 public class ChangeCamundaAsyncAfterAction extends AbstractChangePropertyAction<Boolean> {
 	@JsonCreator

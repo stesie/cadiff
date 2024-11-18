@@ -2,7 +2,7 @@ package de.brokenpipe.cadiff.core.actions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.brokenpipe.cadiff.core.patch.control.patchers.ChangeCamundaDelegateExpressionPatcher;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
+import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 
 public class ChangeCamundaDelegateExpressionAction extends AbstractChangePropertyAction<String> {
 

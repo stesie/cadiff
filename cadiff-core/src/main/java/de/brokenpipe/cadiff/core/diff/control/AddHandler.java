@@ -4,6 +4,7 @@ import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.AddAction;
 import de.brokenpipe.cadiff.core.diff.control.creators.CreatorRegistry;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
+import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
@@ -33,7 +34,7 @@ public class AddHandler<T extends BaseElement> {
 			final AddAction action = candidate.get();
 
 			// add/replace elements to from instance
-			action.getPatcher().accept(fromInstance);
+			action.getPatcher().accept(PatcherContext.of(fromInstance)); // FIXME do we need the process here !?
 
 			action.getIdsAdded().forEach(id -> {
 				context.added().remove(id);

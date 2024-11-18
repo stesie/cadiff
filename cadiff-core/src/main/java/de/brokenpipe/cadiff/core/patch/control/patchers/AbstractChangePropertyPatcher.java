@@ -1,12 +1,11 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
 import de.brokenpipe.cadiff.core.actions.AbstractChangePropertyAction;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.ValueMismatchException;
+import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
@@ -23,8 +22,8 @@ public abstract class AbstractChangePropertyPatcher<ElementT extends BaseElement
 	private final BiConsumer<ElementT, ValueT> setter;
 
 	@Override
-	public void accept(final BpmnModelInstance bpmnModelInstance) {
-		final ModelElementInstance target = bpmnModelInstance.getModelElementById(action.getId());
+	public void accept(final PatcherContext context) {
+		final ModelElementInstance target = context.getModelInstance().getModelElementById(action.getId());
 
 		if (target == null) {
 			throw new TargetElementNotFoundException(action.getId());

@@ -1,9 +1,8 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
 import de.brokenpipe.cadiff.core.actions.AddSimpleSequenceFlowAction;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
+import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 @RequiredArgsConstructor
 public class AddSimpleSequenceFlowPatcher extends AbstractPatcher implements Patcher {
@@ -11,8 +10,8 @@ public class AddSimpleSequenceFlowPatcher extends AbstractPatcher implements Pat
 	private final AddSimpleSequenceFlowAction action;
 
 	@Override
-	public void accept(final BpmnModelInstance bpmnModelInstance) {
-		addSequenceFlow(bpmnModelInstance, action.id(), action.sourceId(), action.targetId(), action.waypoints());
+	public void accept(final PatcherContext context) {
+		addSequenceFlow(context, action.id(), action.sourceId(), action.targetId(), action.waypoints());
 	}
 
 }

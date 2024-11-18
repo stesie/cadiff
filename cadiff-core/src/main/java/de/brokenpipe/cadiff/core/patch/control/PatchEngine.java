@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.patch.control;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.diff.entity.ChangeSet;
+import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
@@ -18,7 +19,7 @@ public class PatchEngine {
 		final List<Action> rejectedChanges = new ArrayList<>();
 
 		for (final Action action : this.changeSet.changes()) {
-			action.getPatcher().accept(this.target);
+			action.getPatcher().accept(PatcherContext.of(this.target));
 		}
 
 		return new ChangeSet(rejectedChanges);

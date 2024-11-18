@@ -2,7 +2,7 @@ package de.brokenpipe.cadiff.core.actions.processes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.brokenpipe.cadiff.core.actions.AbstractChangePropertyAction;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
+import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 import de.brokenpipe.cadiff.core.patch.control.patchers.processes.ChangeProcessNamePatcher;
 
 public class ChangeProcessNameAction extends AbstractChangePropertyAction<String> {

@@ -1,10 +1,10 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
 import de.brokenpipe.cadiff.core.actions.ChangeErrorEventDefinitionAction;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.Patcher;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.ValueMismatchException;
+import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Error;
@@ -20,17 +20,17 @@ public class ChangeErrorEventDefinitionPatcher implements Patcher {
 	private final ChangeErrorEventDefinitionAction action;
 
 	@Override
-	public void accept(final BpmnModelInstance bpmnModelInstance) {
-		final ModelElementInstance target = bpmnModelInstance.getModelElementById(action.id());
+	public void accept(final PatcherContext context) {
+		final ModelElementInstance target = context.getModelInstance().getModelElementById(action.id());
 
 		switch (target) {
 		case null -> throw new TargetElementNotFoundException(action.id());
 
 		case final ThrowEvent throwEvent ->
-				updateEventDefinition(bpmnModelInstance, target, throwEvent.getEventDefinitions());
+				updateEventDefinition(context.getModelInstance(), target, throwEvent.getEventDefinitions());
 
 		case final CatchEvent catchEvent ->
-				updateEventDefinition(bpmnModelInstance, target, catchEvent.getEventDefinitions());
+				updateEventDefinition(context.getModelInstance(), target, catchEvent.getEventDefinitions());
 
 		default -> throw new UnexpectedTargetElementTypeException(action.id(), target.getClass().getSimpleName(),
 				ThrowEvent.class.getSimpleName());

@@ -90,11 +90,7 @@ public abstract class AbstractPatcher {
 			final String sourceId) {
 
 		if (sequenceFlow.getSource() != null) {
-			sequenceFlow.getSource().getOutgoing().stream()
-					.filter(x -> x.getId().equals(sequenceFlow.getId()))
-					.findFirst()
-					.ifPresent(c -> sequenceFlow.getSource().getDomElement().removeChild(c.getDomElement()));
-
+			sequenceFlow.getSource().getOutgoing().remove(sequenceFlow);
 		}
 
 		final FlowNode source = context.getModelInstance().getModelElementById(sourceId);
@@ -109,10 +105,7 @@ public abstract class AbstractPatcher {
 			final String targetId) {
 
 		if (sequenceFlow.getTarget() != null) {
-			sequenceFlow.getTarget().getIncoming().stream()
-					.filter(x -> x.getId().equals(sequenceFlow.getId()))
-					.findFirst()
-					.ifPresent(c -> sequenceFlow.getTarget().getDomElement().removeChild(c.getDomElement()));
+			sequenceFlow.getTarget().getIncoming().remove(sequenceFlow);
 		}
 
 		final FlowNode target = context.getModelInstance().getModelElementById(targetId);

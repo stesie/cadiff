@@ -6,7 +6,7 @@ import org.camunda.bpm.model.bpmn.instance.CallActivity;
 
 import java.util.stream.Stream;
 
-public class CalledElementComparator extends UpcastComperator<CallActivity>
+public class CalledElementComparator extends UpcastComparator<CallActivity>
 		implements StringPropertyComparator<CallActivity> {
 
 	@Override

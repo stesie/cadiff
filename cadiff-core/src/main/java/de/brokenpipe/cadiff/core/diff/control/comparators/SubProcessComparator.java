@@ -7,7 +7,7 @@ import org.camunda.bpm.model.bpmn.instance.SubProcess;
 
 import java.util.stream.Stream;
 
-public class SubProcessComparator extends UpcastComperator<SubProcess> {
+public class SubProcessComparator extends UpcastComparator<SubProcess> {
 	@Override
 	protected Class<SubProcess> getClassType() {
 		return SubProcess.class;

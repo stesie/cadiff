@@ -6,7 +6,7 @@ import org.camunda.bpm.model.bpmn.instance.FlowElement;
 
 import java.util.stream.Stream;
 
-public class NameComparator extends UpcastComperator<FlowElement> implements StringPropertyComparator<FlowElement> {
+public class NameComparator extends UpcastComparator<FlowElement> implements StringPropertyComparator<FlowElement> {
 
 	@Override
 	protected Class<FlowElement> getClassType() {

@@ -8,7 +8,7 @@ import org.camunda.bpm.model.bpmn.instance.BoundaryEvent;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class AttachedToComparator extends UpcastComperator<BoundaryEvent>
+public class AttachedToComparator extends UpcastComparator<BoundaryEvent>
 		implements StringPropertyComparator<BoundaryEvent> {
 
 	@Override

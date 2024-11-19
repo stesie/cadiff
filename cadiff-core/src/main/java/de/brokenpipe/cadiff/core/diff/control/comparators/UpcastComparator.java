@@ -5,7 +5,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 
 import java.util.stream.Stream;
 
-public abstract class UpcastComperator<T extends BaseElement> implements Comparator {
+public abstract class UpcastComparator<T extends BaseElement> implements Comparator {
 
 	protected abstract Class<T> getClassType();
 

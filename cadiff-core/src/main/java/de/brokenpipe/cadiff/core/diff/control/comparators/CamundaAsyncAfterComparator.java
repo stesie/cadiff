@@ -6,7 +6,7 @@ import org.camunda.bpm.model.bpmn.instance.FlowNode;
 
 import java.util.stream.Stream;
 
-public class CamundaAsyncAfterComparator extends UpcastComperator<FlowNode>
+public class CamundaAsyncAfterComparator extends UpcastComparator<FlowNode>
 		implements PropertyComparator<FlowNode, Boolean> {
 
 	@Override

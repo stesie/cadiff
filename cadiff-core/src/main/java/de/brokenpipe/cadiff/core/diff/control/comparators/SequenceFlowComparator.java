@@ -6,7 +6,7 @@ import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 
 import java.util.stream.Stream;
 
-public class SequenceFlowComparator extends UpcastComperator<SequenceFlow> {
+public class SequenceFlowComparator extends UpcastComparator<SequenceFlow> {
 	@Override
 	protected Class<SequenceFlow> getClassType() {
 		return SequenceFlow.class;

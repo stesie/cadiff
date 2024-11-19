@@ -6,7 +6,7 @@ import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 
 import java.util.stream.Stream;
 
-public class CamundaClassComparator extends UpcastComperator<ServiceTask>
+public class CamundaClassComparator extends UpcastComparator<ServiceTask>
 		implements StringPropertyComparator<ServiceTask> {
 
 	@Override

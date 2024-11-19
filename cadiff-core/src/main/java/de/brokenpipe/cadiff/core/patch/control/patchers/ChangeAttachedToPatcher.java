@@ -20,10 +20,10 @@ public class ChangeAttachedToPatcher implements Patcher {
 
 	@Override
 	public void accept(final PatcherContext context) {
-		final ModelElementInstance target = context.getModelInstance().getModelElementById(action.getId());
+		final ModelElementInstance target = context.getModelInstance().getModelElementById(action.id());
 
 		if (target == null) {
-			throw new TargetElementNotFoundException(action.getId());
+			throw new TargetElementNotFoundException(action.id());
 		}
 
 		if (target instanceof final BoundaryEvent boundaryEvent) {
@@ -32,20 +32,20 @@ public class ChangeAttachedToPatcher implements Patcher {
 					.orElse(null);
 
 			if (actualOldValue == null
-					? action.getOldValue() != null
-					: !actualOldValue.equals(action.getOldValue())) {
-				throw new ValueMismatchException(action.getId(), actualOldValue, action.getOldValue());
+					? action.oldValue() != null
+					: !actualOldValue.equals(action.oldValue())) {
+				throw new ValueMismatchException(action.id(), actualOldValue, action.oldValue());
 			}
 
-			if (action.getNewValue() == null) {
+			if (action.newValue() == null) {
 				boundaryEvent.setAttachedTo(null);
 				return;
 			}
 
-			final var attachedTo = context.getModelInstance().getModelElementById(action.getNewValue());
+			final var attachedTo = context.getModelInstance().getModelElementById(action.newValue());
 
 			if (attachedTo == null) {
-				throw new TargetElementNotFoundException(action.getNewValue());
+				throw new TargetElementNotFoundException(action.newValue());
 			}
 
 			if (attachedTo instanceof final Activity attachedToActivity) {
@@ -53,11 +53,11 @@ public class ChangeAttachedToPatcher implements Patcher {
 				return;
 			}
 
-			throw new UnexpectedTargetElementTypeException(action.getNewValue(), target.getClass().getSimpleName(),
+			throw new UnexpectedTargetElementTypeException(action.newValue(), target.getClass().getSimpleName(),
 					Activity.class.getSimpleName());
 		}
 
-		throw new UnexpectedTargetElementTypeException(action.getId(), target.getClass().getSimpleName(),
+		throw new UnexpectedTargetElementTypeException(action.id(), target.getClass().getSimpleName(),
 				BoundaryEvent.class.getSimpleName());
 	}
 }

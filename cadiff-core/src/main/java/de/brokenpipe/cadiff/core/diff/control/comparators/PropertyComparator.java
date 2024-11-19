@@ -1,7 +1,7 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
-import de.brokenpipe.cadiff.core.actions.AbstractChangePropertyAction;
 import de.brokenpipe.cadiff.core.actions.Action;
+import de.brokenpipe.cadiff.core.actions.ChangePropertyAction;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 
 import java.lang.reflect.InvocationTargetException;
@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 interface PropertyComparator<E extends BaseElement, T> extends Comparator {
 
 	default Stream<Action> compareProperty(final Function<E, T> accessor, final Class<T> propertyClass,
-			final Class<? extends AbstractChangePropertyAction<T>> clazz, final E from, final E to) {
+			final Class<? extends ChangePropertyAction<T>> clazz, final E from, final E to) {
 
 		return compareProperty(accessor, (id, oldValue, newValue) -> {
 			try {

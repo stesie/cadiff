@@ -14,10 +14,10 @@ public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 	public void accept(final ActionPrintContext context, final Action action) {
 		final var change = (ChangePropertyAction<?>) action;
 
-		startBlock(context, change.getId(), ChangeType.UPDATE);
+		startBlock(context, change.id(), ChangeType.UPDATE);
 		writeLine(context, change, " -> ");
 
-		printAttributeChangesForId(context, change.getId());
+		printAttributeChangesForId(context, change.id());
 	}
 
 	public void printAttributeChangesForId(final ActionPrintContext context, final String id) {
@@ -35,7 +35,7 @@ public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 	}
 
 	private void writeLine(final ActionPrintContext context, final ChangePropertyAction<?> change, final String leader) {
-		printChangeLine(change.getAttributeName(), change.getOldValue(), change.getNewValue(), leader);
+		printChangeLine(change.attributeName(), change.oldValue(), change.newValue(), leader);
 	}
 
 }

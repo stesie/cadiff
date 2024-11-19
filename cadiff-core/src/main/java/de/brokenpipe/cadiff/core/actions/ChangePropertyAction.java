@@ -4,9 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public interface ChangePropertyAction<T> extends SingleIdRelatedAction {
 
-	T getOldValue();
-	T getNewValue();
+	T oldValue();
+	T newValue();
 
 	@JsonIgnore
-	String getAttributeName();
+	default String attributeName() {
+		final String attributeName = getClass().getSimpleName()
+				.replace("Change", "")
+				.replace("Camunda", "")
+				.replace("Action", "");
+		return Character.toLowerCase(attributeName.charAt(0)) + attributeName.substring(1);
+	}
 }

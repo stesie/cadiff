@@ -54,7 +54,7 @@ public class ActionPrintContext {
 		return actions.stream()
 				.filter(c -> c instanceof SingleIdRelatedAction)
 				.map(SingleIdRelatedAction.class::cast)
-				.filter(c -> c.getId().equals(id));
+				.filter(c -> c.id().equals(id));
 	}
 
 	public ActionPrintContext forSubProcess(final Collection<Action> actions) {

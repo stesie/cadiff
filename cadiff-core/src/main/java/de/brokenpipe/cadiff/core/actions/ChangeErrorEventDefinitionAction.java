@@ -14,24 +14,24 @@ public record ChangeErrorEventDefinitionAction(String id, String errorDefinition
 
 	@Override
 	@JsonIgnore
-	public String getId() {
+	public String id() {
 		return id;
 	}
 
 	@Override
 	@JsonIgnore
-	public String getOldValue() {
+	public String oldValue() {
 		return newErrorRef;
 	}
 
 	@Override
 	@JsonIgnore
-	public String getNewValue() {
+	public String newValue() {
 		return newErrorRef;
 	}
 
 	@Override
-	public String getAttributeName() {
+	public String attributeName() {
 		return "errorRef";
 	}
 }

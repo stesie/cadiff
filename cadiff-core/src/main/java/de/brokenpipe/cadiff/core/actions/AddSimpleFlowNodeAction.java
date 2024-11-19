@@ -8,12 +8,12 @@ import java.util.List;
 
 public record AddSimpleFlowNodeAction(String id, String elementTypeName, Bounds bounds) implements AddAction  {
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new AddSimpleFlowNodePatcher(this);
 	}
 
 	@Override
-	public List<String> getIdsAdded() {
+	public List<String> idsAdded() {
 		return List.of(id);
 	}
 }

@@ -6,7 +6,7 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 public record ChangeCamundaExclusiveAction(String id, Boolean oldValue, Boolean newValue) implements ChangePropertyAction<Boolean> {
 
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new ChangeCamundaExclusivePatcher(this);
 	}
 }

@@ -11,10 +11,10 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 public interface Action {
 
 	@JsonIgnore
-	Patcher getPatcher();
+	Patcher patcher();
 
 	@JsonProperty
-	default String getType() {
+	default String type() {
 		return this.getClass().getName();
 	}
 

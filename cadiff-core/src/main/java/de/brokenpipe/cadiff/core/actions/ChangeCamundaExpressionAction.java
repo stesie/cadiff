@@ -6,7 +6,7 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 public record ChangeCamundaExpressionAction(String id, String oldValue, String newValue) implements ChangePropertyAction<String> {
 
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new ChangeCamundaExpressionPatcher(this);
 	}
 }

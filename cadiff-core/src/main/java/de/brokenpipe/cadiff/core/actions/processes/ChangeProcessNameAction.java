@@ -8,7 +8,7 @@ public record ChangeProcessNameAction(String id, String oldValue, String newValu
 		ChangePropertyAction<String> {
 
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new ChangeProcessNamePatcher(this);
 	}
 }

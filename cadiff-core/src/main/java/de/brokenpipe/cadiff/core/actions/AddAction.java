@@ -11,10 +11,10 @@ import java.util.Optional;
 public interface AddAction extends Action {
 
 	@JsonIgnore
-	List<String> getIdsAdded();
+	List<String> idsAdded();
 
 	@JsonIgnore
-	default List<String> getIdsRemoved() {
+	default List<String> idsRemoved() {
 		return Collections.emptyList();
 	}
 

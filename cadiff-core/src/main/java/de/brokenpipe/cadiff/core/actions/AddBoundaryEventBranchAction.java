@@ -9,12 +9,12 @@ public record AddBoundaryEventBranchAction(String attachedToId, boolean finalEle
 		implements AddAction {
 
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new AddBoundaryEventBranchPatcher(this);
 	}
 
 	@Override
-	public List<String> getIdsAdded() {
+	public List<String> idsAdded() {
 		return steps.subList(0, steps.size() - (finalElementIsNew ? 0 : 1)).stream()
 				.map(Step::id)
 				.toList();

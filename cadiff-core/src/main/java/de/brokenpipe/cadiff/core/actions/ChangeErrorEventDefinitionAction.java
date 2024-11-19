@@ -8,7 +8,7 @@ public record ChangeErrorEventDefinitionAction(String id, String errorDefinition
 											   String newErrorRef) implements Action, ChangePropertyAction<String> {
 
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new ChangeErrorEventDefinitionPatcher(this);
 	}
 

@@ -9,7 +9,7 @@ import java.util.Collection;
 public record ChangeProcessAction(String id, Collection<Action> actions)  implements Action {
 
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new ChangeProcessPatcher(this);
 	}
 }

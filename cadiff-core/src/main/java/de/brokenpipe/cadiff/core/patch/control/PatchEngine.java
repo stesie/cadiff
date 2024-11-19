@@ -19,7 +19,7 @@ public class PatchEngine {
 		final List<Action> rejectedChanges = new ArrayList<>();
 
 		for (final Action action : this.changeSet.changes()) {
-			action.getPatcher().accept(PatcherContext.of(this.target));
+			action.patcher().accept(PatcherContext.of(this.target));
 		}
 
 		return new ChangeSet(rejectedChanges);

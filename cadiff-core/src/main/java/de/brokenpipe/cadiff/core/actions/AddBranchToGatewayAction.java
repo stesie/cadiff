@@ -8,12 +8,12 @@ import java.util.List;
 public record AddBranchToGatewayAction(boolean finalElementIsNew, List<Step> steps) implements AddAction {
 
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new AddBranchToGatewayPatcher(this);
 	}
 
 	@Override
-	public List<String> getIdsAdded() {
+	public List<String> idsAdded() {
 		return steps.subList(1, steps.size() - (finalElementIsNew ? 0 : 1)).stream()
 				.map(Step::id)
 				.toList();

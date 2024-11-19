@@ -16,7 +16,7 @@ public class ChangeSetPrinter {
 			final var printer = ActionPrinterRegistry.INSTANCE.find(change);
 
 			if (printer.isEmpty()) {
-				throw new IllegalStateException("No printer found for action: " + change.getType());
+				throw new IllegalStateException("No printer found for action: " + change.type());
 			}
 
 			printer.get().accept(context, change);

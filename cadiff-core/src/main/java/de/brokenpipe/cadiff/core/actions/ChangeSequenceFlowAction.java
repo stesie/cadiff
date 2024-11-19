@@ -5,7 +5,7 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 
 public record ChangeSequenceFlowAction(String id, String oldSourceId, String newSourceId, String oldTargetId, String newTargetId) implements Action {
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new ChangeSequenceFlowPatcher(this);
 	}
 }

@@ -19,7 +19,7 @@ public class ChangeProcessPatcher extends AbstractPatcher implements Patcher {
 		final PatcherContext innerContext = context.withContainerElem(process);
 
 		for (final Action a : action.actions()) {
-			a.getPatcher().accept(innerContext);
+			a.patcher().accept(innerContext);
 
 		}
 

@@ -35,15 +35,15 @@ public class AddHandler<T extends BaseElement> {
 			final AddAction action = candidate.get();
 
 			// add/replace elements to from instance
-			action.getPatcher().accept(PatcherContext.of(fromInstance, (BaseElement) randomFromElement.getParentElement())); // FIXME do we need the process here !?
+			action.patcher().accept(PatcherContext.of(fromInstance, (BaseElement) randomFromElement.getParentElement())); // FIXME do we need the process here !?
 
-			action.getIdsAdded().forEach(id -> {
+			action.idsAdded().forEach(id -> {
 				context.added().remove(id);
 				context.updated().add(id);
 				context.fromMap().put(id, fromInstance.getModelElementById(id));
 			});
 
-			action.getIdsRemoved().forEach(id -> {
+			action.idsRemoved().forEach(id -> {
 				context.removed().remove(id);
 			});
 

@@ -8,12 +8,12 @@ import java.util.List;
 public record InsertNodeOnEdgeAction(String replaceFlowId, List<Step> steps) implements AddAction {
 
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new InsertNodeOnEdgePatcher(this);
 	}
 
 	@Override
-	public List<String> getIdsAdded() {
+	public List<String> idsAdded() {
 		return steps.subList(1, steps.size() - 1).stream()
 				.map(Step::id)
 				.filter(id -> !id.equals(replaceFlowId))
@@ -21,7 +21,7 @@ public record InsertNodeOnEdgeAction(String replaceFlowId, List<Step> steps) imp
 	}
 
 	@Override
-	public List<String> getIdsRemoved() {
+	public List<String> idsRemoved() {
 		if (steps.stream().anyMatch(step -> step.id().equals(replaceFlowId))) {
 			return List.of();
 		}

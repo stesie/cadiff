@@ -15,7 +15,7 @@ public class InsertNodeOnEdgePatcher extends AbstractPatcher implements Patcher 
 
 	@Override
 	public void accept(final PatcherContext context) {
-		action.getIdsRemoved().forEach(id -> deleteElement(context.getModelInstance(), id));
+		action.idsRemoved().forEach(id -> deleteElement(context.getModelInstance(), id));
 
 		// steps is a flow like this: SourceNode -> NewEdge -> NewNode -> NewEdge -> NewNode -> NewEdge -> TargetNode
 		// both SourceNode & TargetNode already exist, nodes are on even numbers

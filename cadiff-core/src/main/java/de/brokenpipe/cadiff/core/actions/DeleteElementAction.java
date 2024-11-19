@@ -5,7 +5,7 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 
 public record DeleteElementAction(String id) implements Action {
 	@Override
-	public Patcher getPatcher() {
+	public Patcher patcher() {
 		return new DeleteElementPatcher(this);
 	}
 }

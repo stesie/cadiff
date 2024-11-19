@@ -5,8 +5,6 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElement
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.impl.instance.Incoming;
-import org.camunda.bpm.model.bpmn.impl.instance.Outgoing;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.Collaboration;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
@@ -54,10 +52,10 @@ public abstract class AbstractPatcher {
 
 		final SequenceFlow addedElement = context.getModelInstance().newInstance(SequenceFlow.class, id);
 
-		updateSequenceFlow(context, addedElement, sourceId, targetId);
-
 		final BaseElement containerElement = context.getContainerElement();
 		containerElement.addChildElement(addedElement);
+
+		updateSequenceFlow(context, addedElement, sourceId, targetId);
 
 		final var di = context.getModelInstance().newInstance(BpmnEdge.class, id + "_di");
 		di.setBpmnElement(addedElement);
@@ -94,11 +92,8 @@ public abstract class AbstractPatcher {
 		}
 
 		final FlowNode source = context.getModelInstance().getModelElementById(sourceId);
+		source.getOutgoing().add(sequenceFlow);
 		sequenceFlow.setSource(source);
-
-		final Outgoing sourceOutgoing = context.getModelInstance().newInstance(Outgoing.class);
-		sourceOutgoing.setTextContent(sequenceFlow.getId());
-		source.addChildElement(sourceOutgoing);
 	}
 
 	protected void updateSequenceFlowTarget(final PatcherContext context, final SequenceFlow sequenceFlow,
@@ -109,11 +104,8 @@ public abstract class AbstractPatcher {
 		}
 
 		final FlowNode target = context.getModelInstance().getModelElementById(targetId);
+		target.getIncoming().add(sequenceFlow);
 		sequenceFlow.setTarget(target);
-
-		final Incoming targetIncoming = context.getModelInstance().newInstance(Incoming.class);
-		targetIncoming.setTextContent(sequenceFlow.getId());
-		target.addChildElement(targetIncoming);
 	}
 
 	protected void deleteElement(final BpmnModelInstance bpmnModelInstance, final String id) {

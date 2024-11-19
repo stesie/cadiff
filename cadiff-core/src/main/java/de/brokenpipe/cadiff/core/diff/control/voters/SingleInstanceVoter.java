@@ -12,7 +12,26 @@ public class SingleInstanceVoter implements Voter {
 			return Vote.UP;
 		}
 
-		return Vote.NEUTRAL;
+		final var removedType = context.fromMap().get(removeId).getElementType();
+		final var addedType = context.toMap().get(addId).getElementType();
+
+		if (!removedType.equals(addedType)) {
+			return Vote.DOWN;
+		}
+
+		if (context.fromMap().values().stream()
+				.filter(x -> x.getElementType().equals(removedType))
+				.count() > 1) {
+			return Vote.NEUTRAL;
+		}
+
+		if (context.toMap().values().stream()
+				.filter(x -> x.getElementType().equals(removedType))
+				.count() > 1) {
+			return Vote.NEUTRAL;
+		}
+
+		return Vote.UP;
 	}
 
 }

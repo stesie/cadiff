@@ -81,11 +81,20 @@ public abstract class AbstractPatcher {
 	protected void updateSequenceFlow(final PatcherContext context, final SequenceFlow sequenceFlow,
 			final String sourceId, final String targetId) {
 
+		updateSequenceFlowSource(context, sequenceFlow, sourceId);
+
+		updateSequenceFlowTarget(context, sequenceFlow, targetId);
+	}
+
+	protected void updateSequenceFlowSource(final PatcherContext context, final SequenceFlow sequenceFlow,
+			final String sourceId) {
+
 		if (sequenceFlow.getSource() != null) {
 			sequenceFlow.getSource().getOutgoing().stream()
 					.filter(x -> x.getId().equals(sequenceFlow.getId()))
 					.findFirst()
-					.ifPresent(sequenceFlow.getSource()::removeChildElement);
+					.ifPresent(c -> sequenceFlow.getSource().getDomElement().removeChild(c.getDomElement()));
+
 		}
 
 		final FlowNode source = context.getModelInstance().getModelElementById(sourceId);
@@ -94,12 +103,16 @@ public abstract class AbstractPatcher {
 		final Outgoing sourceOutgoing = context.getModelInstance().newInstance(Outgoing.class);
 		sourceOutgoing.setTextContent(sequenceFlow.getId());
 		source.addChildElement(sourceOutgoing);
+	}
+
+	protected void updateSequenceFlowTarget(final PatcherContext context, final SequenceFlow sequenceFlow,
+			final String targetId) {
 
 		if (sequenceFlow.getTarget() != null) {
 			sequenceFlow.getTarget().getIncoming().stream()
 					.filter(x -> x.getId().equals(sequenceFlow.getId()))
 					.findFirst()
-					.ifPresent(sequenceFlow.getTarget()::removeChildElement);
+					.ifPresent(c -> sequenceFlow.getTarget().getDomElement().removeChild(c.getDomElement()));
 		}
 
 		final FlowNode target = context.getModelInstance().getModelElementById(targetId);

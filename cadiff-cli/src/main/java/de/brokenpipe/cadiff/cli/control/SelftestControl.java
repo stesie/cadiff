@@ -134,9 +134,9 @@ public class SelftestControl {
 					.map(Object::toString)
 					.orElse(null);
 
-			final var expectedValue = Optional.ofNullable(expected.getAttribute(attribute.getAttributeName()))
+			final var expectedValue = Optional.ofNullable(expected.getAttribute(attribute.getNamespaceUri(), attribute.getAttributeName()))
 					.orElse(defaultValue);
-			final var actualValue = Optional.ofNullable(actual.getAttribute(attribute.getAttributeName()))
+			final var actualValue = Optional.ofNullable(actual.getAttribute(attribute.getNamespaceUri(), attribute.getAttributeName()))
 					.orElse(defaultValue);
 
 			compareString(expectedValue, actualValue, path + "/@" + attribute.getAttributeName());

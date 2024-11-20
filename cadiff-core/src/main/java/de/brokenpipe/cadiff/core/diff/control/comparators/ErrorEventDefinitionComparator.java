@@ -5,6 +5,7 @@ import de.brokenpipe.cadiff.core.actions.ChangeErrorEventDefinitionAction;
 import org.camunda.bpm.model.bpmn.instance.*;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -33,7 +34,7 @@ public class ErrorEventDefinitionComparator
 				.flatMap(eventDefinitionId -> compareProperty(
 						baseElement -> {
 							final var ed = eventDefAccessor.apply(baseElement).stream()
-									.filter(x -> x.getId().equals(eventDefinitionId))
+									.filter(x -> Objects.equals(x.getId(), eventDefinitionId))
 									.findFirst();
 
 							if (ed.isEmpty()) {

@@ -7,7 +7,7 @@ import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-public class FlowElementWalker extends AbstractWalker<FlowElement> {
+public class FlowElementWalker extends AbstractVoteAddWalker<FlowElement> {
 
 	public FlowElementWalker(final Collection<FlowElement> from, final Collection<FlowElement> to) {
 		super(from, to);

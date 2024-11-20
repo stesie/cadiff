@@ -8,7 +8,7 @@ import org.camunda.bpm.model.bpmn.instance.Process;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-public class ProcessWalker extends AbstractWalker<Process> {
+public class ProcessWalker extends AbstractVoteAddWalker<Process> {
 
 	public ProcessWalker(final Collection<Process> fromProcesses, final Collection<Process> toProcesses) {
 		super(fromProcesses, toProcesses);

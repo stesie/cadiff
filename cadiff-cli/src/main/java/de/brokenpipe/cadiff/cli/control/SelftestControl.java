@@ -9,6 +9,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaInputOutput;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.fusesource.jansi.Ansi;
@@ -92,7 +93,8 @@ public class SelftestControl {
 		compareAttributes(type, expected, actual, path);
 
 		// ExtensionElements has child elements, despite the type registry listing nothing
-		if (type.getBaseType() == null && !type.equals(expectation.getModel().getType(ExtensionElements.class))) {
+		if (type.getBaseType() == null && !type.equals(expectation.getModel().getType(ExtensionElements.class))
+				&& !type.equals(expectation.getModel().getType(CamundaInputOutput.class))) {
 			compareString(expected.getTextContent(), actual.getTextContent(), path + "/@text");
 			return;
 		}

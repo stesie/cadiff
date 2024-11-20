@@ -11,3 +11,4 @@ de.brokenpipe.cadiff.core.diff.control.comparators.ErrorEventDefinitionComparato
 de.brokenpipe.cadiff.core.diff.control.comparators.SequenceFlowComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.ExecutionListenerComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CalledElementComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.InputParameterComparator

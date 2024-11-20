@@ -22,7 +22,6 @@ public class InsertNodeOnEdgeActionPrinter extends AbstractActionPrinter impleme
 		System.out.print(" --> ");
 		printOldElementName(context, change.steps().getLast().id());
 		System.out.println();
-		new ChangePropertyActionPrinter().printAttributeChangesForId(context, change.steps().getFirst().id());
 
 		System.out.print("    After: ");
 

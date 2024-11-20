@@ -19,8 +19,8 @@ public class ChangeIdActionPrinter extends AbstractActionPrinter {
 		final var change = (ChangeIdAction) action;
 
 		startBlock(context, change.newId(), ChangeType.UPDATE);
-		printChangeLine("id", change.oldId(), change.newId(), " -> ");
+		printChangeLine("id", change.oldId(), change.newId(), " -> ", ChangeType.UPDATE);
 
-		new ChangePropertyActionPrinter().printAttributeChangesForId(context, change.newId());
+		new ChangePropertyActionPrinter().printAttributeChangesForId(context, change.newId(), ChangeType.UPDATE);
 	}
 }

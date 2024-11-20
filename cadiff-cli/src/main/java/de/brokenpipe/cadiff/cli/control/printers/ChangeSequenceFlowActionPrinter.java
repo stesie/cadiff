@@ -17,11 +17,11 @@ public class ChangeSequenceFlowActionPrinter extends AbstractActionPrinter {
 		startBlock(context, change.id(), ChangeType.UPDATE);
 
 		if (!change.oldSourceId().equals(change.newSourceId())) {
-			printChangeLine("source", change.oldSourceId(), change.newSourceId(), " -> ");
+			printChangeLine("source", change.oldSourceId(), change.newSourceId(), " -> ", ChangeType.UPDATE);
 		}
 
 		if (!change.oldTargetId().equals(change.newTargetId())) {
-			printChangeLine("target", change.oldTargetId(), change.newTargetId(), " -> ");
+			printChangeLine("target", change.oldTargetId(), change.newTargetId(), " -> ", ChangeType.UPDATE);
 		}
 	}
 

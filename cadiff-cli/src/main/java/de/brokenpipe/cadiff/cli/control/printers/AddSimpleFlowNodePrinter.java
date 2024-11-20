@@ -19,7 +19,7 @@ public class AddSimpleFlowNodePrinter extends AbstractActionPrinter {
 		// remove name change for this element, we've just printed the new name
 		removeChangeNameById(context, change.id());
 
-		new ChangePropertyActionPrinter().printAttributeChangesForId(context, change.id());
+		new ChangePropertyActionPrinter().printAttributeChangesForId(context, change.id(), ChangeType.ADD);
 	}
 
 }

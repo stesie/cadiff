@@ -26,12 +26,17 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		}
 	}
 
-	protected void printChangeLine(final String attributeName, final Object oldValue, final Object newValue, final String leader) {
+	protected void printChangeLine(final String attributeName, final Object oldValue, final Object newValue,
+			final String leader, final ChangeType type) {
 
 		indent();
 		System.out.printf("%s%35s : ", leader, attributeName);
-		System.out.print(ansi().fg(Ansi.Color.RED).a("%-40s".formatted(oldValue)).reset());
-		System.out.print(" -> ");
+
+		if (type != ChangeType.ADD) {
+			System.out.print(ansi().fg(Ansi.Color.RED).a("%-40s".formatted(oldValue)).reset());
+			System.out.print(" -> ");
+		}
+
 		System.out.print(ansi().fg(Ansi.Color.GREEN).a("%-40s".formatted(newValue)).reset());
 		System.out.println();
 	}
@@ -98,7 +103,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		greenIfNewNode(context, steps.getFirst().id());
 		printElementName(context.getTo().getModelElementById(steps.getFirst().id()));
 		System.out.println(ansi().reset());
-		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getFirst().id());
+		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getFirst().id(), ChangeType.UPDATE);
 
 		for (int i = 2; i < steps.size() - 1; i += 2) {
 			final String edgeId = steps.get(i - 1).id();
@@ -107,7 +112,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 			indent();
 			System.out.println("    |");
-			new ChangePropertyActionPrinter().printAttributeChangesForId(context, edgeId, "    | ");
+			new ChangePropertyActionPrinter().printAttributeChangesForId(context, edgeId, "    | ", ChangeType.ADD);
 			indent();
 			System.out.println("    |");
 			indent();
@@ -121,13 +126,13 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 			indent += 4;
 
 			removeChangeNameById(context, elementId);
-			new ChangePropertyActionPrinter().printAttributeChangesForId(context, elementId);
+			new ChangePropertyActionPrinter().printAttributeChangesForId(context, elementId, ChangeType.ADD);
 		}
 
 		indent();
 		System.out.println("    |");
 		new ChangePropertyActionPrinter().printAttributeChangesForId(context,
-				steps.get(steps.size() - 2).id(), "    | ");
+				steps.get(steps.size() - 2).id(), "    | ", ChangeType.ADD);
 		indent();
 		System.out.println("    |");
 		indent();
@@ -138,7 +143,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 		indent += 4;
 		removeChangeNameById(context, steps.getLast().id());
-		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getLast().id());
+		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getLast().id(), ChangeType.UPDATE);
 
 		indent = restoreIndent;
 	}

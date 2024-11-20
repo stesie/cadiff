@@ -15,27 +15,29 @@ public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 		final var change = (ChangePropertyAction<?>) action;
 
 		startBlock(context, change.id(), ChangeType.UPDATE);
-		writeLine(context, change, " -> ");
+		writeLine(context, change, " -> ", ChangeType.UPDATE);
 
-		printAttributeChangesForId(context, change.id());
+		printAttributeChangesForId(context, change.id(), ChangeType.UPDATE);
 	}
 
-	public void printAttributeChangesForId(final ActionPrintContext context, final String id) {
-		printAttributeChangesForId(context, id, " -> ");
+	public void printAttributeChangesForId(final ActionPrintContext context, final String id, final ChangeType changeType) {
+		printAttributeChangesForId(context, id, " -> ", changeType);
 	}
 
-	public void printAttributeChangesForId(final ActionPrintContext context, final String id, final String leader) {
+	public void printAttributeChangesForId(final ActionPrintContext context, final String id, final String leader,
+			final ChangeType changeType) {
 		context.findChangesForId(id)
 				.filter(this::supports)
 				.toList()
 				.forEach(c -> {
-					writeLine(context, (ChangePropertyAction<?>) c, leader);
+					writeLine(context, (ChangePropertyAction<?>) c, leader, changeType);
 					context.getActions().remove(c);
 				});
 	}
 
-	private void writeLine(final ActionPrintContext context, final ChangePropertyAction<?> change, final String leader) {
-		printChangeLine(change.attributeName(), change.oldValue(), change.newValue(), leader);
+	private void writeLine(final ActionPrintContext context, final ChangePropertyAction<?> change, final String leader,
+			final ChangeType changeType) {
+		printChangeLine(change.attributeName(), change.oldValue(), change.newValue(), leader, changeType);
 	}
 
 }

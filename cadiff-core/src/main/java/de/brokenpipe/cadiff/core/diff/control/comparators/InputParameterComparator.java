@@ -1,5 +1,6 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
+import de.brokenpipe.cadiff.core.Value;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeInputParameterAction;
 import de.brokenpipe.cadiff.core.diff.control.AbstractSimpleWalker;
@@ -49,7 +50,7 @@ public class InputParameterComparator implements Comparator {
 			@Override
 			protected Stream<Action> handleAdded(final CamundaInputParameter added) {
 				return Stream.of(new ChangeInputParameterAction(to.getId(), added.getCamundaName(), null,
-						added.getTextContent()));
+						Value.of(added)));
 			}
 
 			@Override
@@ -58,13 +59,13 @@ public class InputParameterComparator implements Comparator {
 				return ipFrom.getTextContent().equals(ipTo.getTextContent())
 						? Stream.empty()
 						: Stream.of(new ChangeInputParameterAction(to.getId(), ipFrom.getCamundaName(),
-								ipFrom.getTextContent(), ipTo.getTextContent()));
+								Value.of(ipFrom), Value.of(ipTo)));
 			}
 
 			@Override
 			protected Stream<Action> handleRemoved(final CamundaInputParameter removed) {
 				return Stream.of(
-						new ChangeInputParameterAction(to.getId(), removed.getCamundaName(), removed.getTextContent(),
+						new ChangeInputParameterAction(to.getId(), removed.getCamundaName(), Value.of(removed),
 								null));
 			}
 		}.walk();

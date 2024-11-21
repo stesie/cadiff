@@ -1,5 +1,6 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
+import de.brokenpipe.cadiff.core.Value;
 import de.brokenpipe.cadiff.core.actions.ChangeInputParameterAction;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.NameAlreadyPresentException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.NameNotFoundException;
@@ -50,7 +51,7 @@ public class ChangeInputParameterPatcher extends AbstractPatcher implements Patc
 
 			final var newInput = inputOutput.getModelInstance().newInstance(CamundaInputParameter.class);
 			newInput.setCamundaName(action.name());
-			newInput.setTextContent(action.newValue());
+			action.newValue().accept(newInput);
 
 			inputOutput.getCamundaInputParameters().add(newInput);
 			return;
@@ -66,10 +67,10 @@ public class ChangeInputParameterPatcher extends AbstractPatcher implements Patc
 			return;
 		}
 
-		if (!existing.get().getTextContent().equals(action.oldValue())) {
+		if (!Value.of(existing.get()).equals(action.oldValue())) {
 			throw new NameValueMismatchException(action.id(), action.name(), action.oldValue(), action.newValue());
 		}
 
-		existing.get().setTextContent(action.newValue());
+		action.newValue().accept(existing.get());
 	}
 }

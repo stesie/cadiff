@@ -16,10 +16,7 @@ import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.fusesource.jansi.Ansi;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.fusesource.jansi.Ansi.ansi;
@@ -120,13 +117,39 @@ public class SelftestControl {
 			throw new SelftestException("Number of child elements mismatching", path);
 		}
 
-		for (int i = 0; i < expected.getChildElements().size(); i++) {
-			final DomElement expectedChild = expected.getChildElements().get(i);
-			final DomElement actualChild = actual.getChildElements().get(i);
+		// compare child elements grouped by type
+		expected.getChildElements().stream().map(DomElement::getNamespaceURI).distinct().forEach(nsURI -> {
+			expected.getChildElements().stream()
+					.filter(c -> nsURI.equals(c.getNamespaceURI()))
+					.map(DomElement::getLocalName)
+					.distinct()
+					.forEach(localName -> {
+						final var expectedChildren = expected.getChildElementsByNameNs(nsURI, localName);
+						final var actualChildren = actual.getChildElementsByNameNs(nsURI, localName);
 
-			final var expectedChildId = expectedChild.getAttribute("id");
-			compareElements(expectedChild, actualChild, path + "/" + expectedChild.getLocalName()
-					+ (expectedChildId == null ? "" : "#" + expectedChildId));
+						if ("http://www.omg.org/spec/BPMN/20100524/MODEL".equals(nsURI)
+								&& ("incoming".equals(localName) || "outgoing".equals(localName))) {
+							compareNameSoup(expectedChildren, actualChildren, path);
+							return;
+						}
+
+						for (int i = 0; i < expectedChildren.size(); i++) {
+							final var expectedChildId = expectedChildren.get(i).getAttribute("id");
+
+							compareElements(expectedChildren.get(i), actualChildren.get(i),
+									path + "/" + localName + (expectedChildId == null ? "" : "#" + expectedChildId));
+						}
+					});
+		});
+	}
+
+	private void compareNameSoup(final List<DomElement> expectedChildren, final List<DomElement> actualChildren,
+			final String path) {
+		final var expectedNames = expectedChildren.stream().map(DomElement::getTextContent).sorted().toList();
+		final var actualNames = actualChildren.stream().map(DomElement::getTextContent).sorted().toList();
+
+		if (!expectedNames.equals(actualNames)) {
+			throw new SelftestException("Name soup mismatch", path, expectedNames.toString(), actualNames.toString());
 		}
 	}
 

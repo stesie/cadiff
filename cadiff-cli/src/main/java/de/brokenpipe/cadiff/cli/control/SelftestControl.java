@@ -9,10 +9,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormData;
-import org.camunda.bpm.model.bpmn.instance.camunda.CamundaInputOutput;
-import org.camunda.bpm.model.bpmn.instance.camunda.CamundaInputParameter;
-import org.camunda.bpm.model.bpmn.instance.camunda.CamundaList;
+import org.camunda.bpm.model.bpmn.instance.camunda.*;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.fusesource.jansi.Ansi;
@@ -30,6 +27,7 @@ public class SelftestControl {
 	private final ChangeSet changeSet;
 
 	private final Set<ModelElementType> ignoreIfEmpty;
+	private final Set<ModelElementType> compareByName;
 
 	public SelftestControl(final BpmnModelInstance from, final BpmnModelInstance to, final ChangeSet changeSet) {
 		this.test = from.clone();
@@ -40,6 +38,9 @@ public class SelftestControl {
 				Set.of(ExtensionElements.class, CamundaFormData.class).stream()
 						.map(expectation.getModel()::getType)
 						.collect(Collectors.toSet());
+		compareByName = Set.of(CamundaInputParameter.class, CamundaOutputParameter.class).stream()
+				.map(expectation.getModel()::getType)
+				.collect(Collectors.toSet());
 	}
 
 	public void execute() {
@@ -136,6 +137,12 @@ public class SelftestControl {
 								&& ("incoming".equals(localName) || "outgoing".equals(localName))) {
 							compareNameSoup(expectedChildren, actualChildren, path);
 							return;
+						}
+
+						if (compareByName.stream().anyMatch(type -> type.getTypeNamespace().equals(nsURI)
+								&& type.getTypeName().equals(localName))) {
+							expectedChildren.sort(Comparator.comparing(c -> c.getAttribute("name")));
+							actualChildren.sort(Comparator.comparing(c -> c.getAttribute("name")));
 						}
 
 						for (int i = 0; i < expectedChildren.size(); i++) {

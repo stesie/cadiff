@@ -21,3 +21,4 @@ de.brokenpipe.cadiff.core.diff.control.comparators.CamundaCandidateGroupsCompara
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaDueDateComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaFormKeyComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaResultVariableComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.CamundaDecisionRefComparator

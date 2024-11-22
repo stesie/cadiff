@@ -17,3 +17,4 @@ de.brokenpipe.cadiff.core.diff.control.comparators.CamundaVariableMappingDelegat
 de.brokenpipe.cadiff.core.diff.control.comparators.ExclusiveGatewayDefaultComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.ConditionExpressionComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaCandidateGroupsComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.CamundaDueDateComparator

@@ -9,6 +9,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormData;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaInputOutput;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaInputParameter;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaList;
@@ -17,6 +18,7 @@ import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.fusesource.jansi.Ansi;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.fusesource.jansi.Ansi.ansi;
@@ -34,7 +36,10 @@ public class SelftestControl {
 		this.expectation = to.clone();
 		this.changeSet = changeSet;
 
-		ignoreIfEmpty = Set.of(expectation.getModel().getType(ExtensionElements.class));
+		ignoreIfEmpty =
+				Set.of(ExtensionElements.class, CamundaFormData.class).stream()
+						.map(expectation.getModel()::getType)
+						.collect(Collectors.toSet());
 	}
 
 	public void execute() {
@@ -161,9 +166,11 @@ public class SelftestControl {
 					.map(Object::toString)
 					.orElse(null);
 
-			final var expectedValue = Optional.ofNullable(expected.getAttribute(attribute.getNamespaceUri(), attribute.getAttributeName()))
+			final var expectedValue = Optional.ofNullable(
+							expected.getAttribute(attribute.getNamespaceUri(), attribute.getAttributeName()))
 					.orElse(defaultValue);
-			final var actualValue = Optional.ofNullable(actual.getAttribute(attribute.getNamespaceUri(), attribute.getAttributeName()))
+			final var actualValue = Optional.ofNullable(
+							actual.getAttribute(attribute.getNamespaceUri(), attribute.getAttributeName()))
 					.orElse(defaultValue);
 
 			compareString(expectedValue, actualValue, path + "/@" + attribute.getAttributeName());

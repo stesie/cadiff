@@ -14,3 +14,4 @@ de.brokenpipe.cadiff.core.diff.control.comparators.CalledElementComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.InputParameterComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaVariableMappingDelegateExpressionComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.ExclusiveGatewayDefaultComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.ConditionExpressionComparator

@@ -6,7 +6,6 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTar
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.ValueMismatchException;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Error;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
@@ -14,8 +13,10 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import java.util.Collection;
 import java.util.Optional;
 
+import static org.camunda.bpm.model.bpmn.impl.BpmnModelConstants.BPMN_ATTRIBUTE_ERROR_REF;
+
 @RequiredArgsConstructor
-public class ChangeErrorEventDefinitionPatcher implements Patcher {
+public class ChangeErrorEventDefinitionPatcher extends AbstractPatcher implements Patcher {
 
 	private final ChangeErrorEventDefinitionAction action;
 
@@ -27,20 +28,20 @@ public class ChangeErrorEventDefinitionPatcher implements Patcher {
 		case null -> throw new TargetElementNotFoundException(action.id());
 
 		case final ThrowEvent throwEvent ->
-				updateEventDefinition(context.getModelInstance(), target, throwEvent.getEventDefinitions());
+				updateEventDefinition(context, target, throwEvent.getEventDefinitions());
 
 		case final CatchEvent catchEvent ->
-				updateEventDefinition(context.getModelInstance(), target, catchEvent.getEventDefinitions());
+				updateEventDefinition(context, target, catchEvent.getEventDefinitions());
 
 		default -> throw new UnexpectedTargetElementTypeException(action.id(), target.getClass().getSimpleName(),
 				ThrowEvent.class.getSimpleName());
 		}
 	}
 
-	private void updateEventDefinition(final BpmnModelInstance bpmnModelInstance, final ModelElementInstance target,
+	private void updateEventDefinition(final PatcherContext context, final ModelElementInstance target,
 			final Collection<EventDefinition> eventDefinitions) {
 
-		final Optional<ErrorEventDefinition> existingErrorDef = eventDefinitions.stream()
+		final ErrorEventDefinition errorDef = eventDefinitions.stream()
 				.filter(x -> x.getId().equals(action.errorDefinitionId()))
 				.findFirst()
 				.map(eventDefinition -> {
@@ -51,9 +52,15 @@ public class ChangeErrorEventDefinitionPatcher implements Patcher {
 					throw new UnexpectedTargetElementTypeException(action.errorDefinitionId(),
 							target.getClass().getSimpleName(),
 							ErrorEventDefinition.class.getSimpleName());
+				})
+				.orElseGet(() -> {
+					final var ed = context.getModelInstance()
+							.newInstance(ErrorEventDefinition.class, action.errorDefinitionId());
+					target.addChildElement(ed);
+					return ed;
 				});
 
-		final String actualOldValue = existingErrorDef.map(x -> x.getError().getId()).orElse(null);
+		final String actualOldValue = Optional.ofNullable(errorDef.getError()).map(BaseElement::getId).orElse(null);
 
 		if (actualOldValue == null
 				? action.oldErrorRef() != null
@@ -63,30 +70,11 @@ public class ChangeErrorEventDefinitionPatcher implements Patcher {
 		}
 
 		if (action.newErrorRef() == null) {
-			existingErrorDef.ifPresent(ed -> ed.getParentElement().removeChildElement(ed));
+			errorDef.removeAttribute(BPMN_ATTRIBUTE_ERROR_REF);
 			return;
 		}
 
-		final var ref = bpmnModelInstance.getModelElementById(action.newErrorRef());
-
-		if (ref == null) {
-			throw new TargetElementNotFoundException(action.newErrorRef());
-		}
-
-		if (ref instanceof final Error refError) {
-			if (existingErrorDef.isPresent()) {
-				existingErrorDef.get().setError(refError);
-			} else {
-				final ErrorEventDefinition ed = bpmnModelInstance.newInstance(ErrorEventDefinition.class,
-						action.errorDefinitionId());
-				ed.setError(refError);
-				target.addChildElement(ed);
-			}
-
-			return;
-		}
-
-		throw new UnexpectedTargetElementTypeException(action.newErrorRef(), target.getClass().getSimpleName(),
-				Error.class.getSimpleName());
+		final Error refError = findTargetWithType(context, action.newErrorRef(), Error.class);
+		errorDef.setError(refError);
 	}
 }

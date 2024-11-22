@@ -13,7 +13,6 @@ public record ChangeErrorEventDefinitionAction(String id, String errorDefinition
 	}
 
 	@Override
-	@JsonIgnore
 	public String id() {
 		return id;
 	}

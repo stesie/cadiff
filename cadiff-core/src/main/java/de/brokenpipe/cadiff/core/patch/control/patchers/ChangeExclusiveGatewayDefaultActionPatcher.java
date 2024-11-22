@@ -27,6 +27,11 @@ public class ChangeExclusiveGatewayDefaultActionPatcher extends AbstractPatcher 
 			throw new ValueMismatchException(action.id(), oldValue, action.oldValue());
 		}
 
+		if (action.newValue() == null) {
+			targetElement.setDefault(null);
+			return;
+		}
+
 		final SequenceFlow newTarget = findTargetWithType(context, action.newValue(), SequenceFlow.class);
 		targetElement.setDefault(newTarget);
 	}

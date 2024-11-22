@@ -5,10 +5,7 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElement
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.BaseElement;
-import org.camunda.bpm.model.bpmn.instance.Collaboration;
-import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
+import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
@@ -144,4 +141,14 @@ public abstract class AbstractPatcher {
 				.findFirst();
 	}
 
+	protected ExtensionElements findExtensionElements(final PatcherContext context, final String id) {
+		final var baseEl = findTargetWithType(context, id, BaseElement.class);
+
+		return Optional.ofNullable(baseEl.getExtensionElements())
+				.orElseGet(() -> {
+					final var newExtEl = context.getModelInstance().newInstance(ExtensionElements.class);
+					baseEl.setExtensionElements(newExtEl);
+					return newExtEl;
+				});
+	}
 }

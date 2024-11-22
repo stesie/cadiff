@@ -1,25 +1,25 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
-import de.brokenpipe.cadiff.core.actions.DeleteExecutionListenerAction;
+import de.brokenpipe.cadiff.core.actions.DeleteTaskListenerAction;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.PatchNotApplicableException;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
-import org.camunda.bpm.model.bpmn.instance.camunda.CamundaExecutionListener;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaTaskListener;
 
 import java.util.Objects;
 
 @RequiredArgsConstructor
-public class DeleteExecutionListenerPatcher extends AbstractPatcher implements Patcher {
+public class DeleteTaskListenerPatcher extends AbstractPatcher implements Patcher {
 
-	private final DeleteExecutionListenerAction action;
+	private final DeleteTaskListenerAction action;
 
 	@Override
 	public void accept(final PatcherContext context) {
 		final ExtensionElements extEl = findExtensionElements(context, action.id());
 
 		final var existingListener = extEl.getElementsQuery()
-				.filterByType(CamundaExecutionListener.class).list().stream()
+				.filterByType(CamundaTaskListener.class).list().stream()
 				.filter(this::extensionListenerEquals)
 				.findFirst();
 
@@ -30,7 +30,7 @@ public class DeleteExecutionListenerPatcher extends AbstractPatcher implements P
 		extEl.getDomElement().removeChild(existingListener.get().getDomElement());
 	}
 
-	private boolean extensionListenerEquals(final CamundaExecutionListener a) {
+	private boolean extensionListenerEquals(final CamundaTaskListener a) {
 		return Objects.equals(a.getCamundaEvent(), action.camundaEvent())
 				&& Objects.equals(a.getCamundaClass(), action.camundaClass())
 				&& Objects.equals(a.getCamundaDelegateExpression(), action.camundaDelegateExpression())

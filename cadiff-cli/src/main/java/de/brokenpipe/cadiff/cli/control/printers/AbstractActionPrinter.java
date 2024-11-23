@@ -100,15 +100,17 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 	protected void printSteps(final ActionPrintContext context, final List<AddAction.Step> steps) {
 		final var restoreIndent = indent;
+		ChangeType firstElementChangeType = ChangeType.UPDATE;
 
 		if (isNewElement(context, steps.getFirst().id())) {
 			System.out.print(ansi().fg(ChangeType.ADD.getColor()));
 			removeChangeNameById(context, steps.getFirst().id());
+			firstElementChangeType = ChangeType.ADD;
 		}
-		greenIfNewNode(context, steps.getFirst().id());
+
 		printElementName(context.getTo().getModelElementById(steps.getFirst().id()));
 		System.out.println(ansi().reset());
-		printAttributeChangesForId(context, steps.getFirst().id(), ChangeType.UPDATE);
+		printAttributeChangesForId(context, steps.getFirst().id(), firstElementChangeType);
 
 		for (int i = 2; i < steps.size() - 1; i += 2) {
 			final String edgeId = steps.get(i - 1).id();
@@ -148,7 +150,8 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 		indent += 4;
 		removeChangeNameById(context, steps.getLast().id());
-		printAttributeChangesForId(context, steps.getLast().id(), ChangeType.UPDATE);
+		printAttributeChangesForId(context, steps.getLast().id(),
+				isNewElement(context, steps.getLast().id()) ? ChangeType.ADD : ChangeType.UPDATE);
 
 		indent = restoreIndent;
 	}

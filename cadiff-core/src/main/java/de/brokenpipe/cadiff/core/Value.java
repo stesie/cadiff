@@ -3,6 +3,7 @@ package de.brokenpipe.cadiff.core;
 import org.camunda.bpm.model.bpmn.instance.BpmnModelElementInstance;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaList;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaValue;
+import org.camunda.bpm.model.xml.instance.DomElement;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -52,8 +53,9 @@ public interface Value extends Consumer<BpmnModelElementInstance> {
 					})
 					.toList());
 
-			elementInstance.getDomElement().getChildElements().clear();
-			elementInstance.getDomElement().insertChildElementAfter(list.getDomElement(), null); // .getChildElements().add(list.getDomElement());
+			final DomElement domElement = elementInstance.getDomElement();
+			domElement.getChildElements().forEach(domElement::removeChild);
+			domElement.insertChildElementAfter(list.getDomElement(), null);
 		}
 
 		@Override

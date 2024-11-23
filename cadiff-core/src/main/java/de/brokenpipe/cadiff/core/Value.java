@@ -31,6 +31,11 @@ public interface Value extends Consumer<BpmnModelElementInstance> {
 		public void accept(final BpmnModelElementInstance elementInstance) {
 			elementInstance.getDomElement().setTextContent(value);
 		}
+
+		@Override
+		public String toString() {
+			return value;
+		}
 	}
 
 	record ListValue(List<String> values) implements Value {
@@ -49,6 +54,11 @@ public interface Value extends Consumer<BpmnModelElementInstance> {
 
 			elementInstance.getDomElement().getChildElements().clear();
 			elementInstance.getDomElement().insertChildElementAfter(list.getDomElement(), null); // .getChildElements().add(list.getDomElement());
+		}
+
+		@Override
+		public String toString() {
+			return String.join(", ", values);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.cli.control.printers;
 
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
+import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.AddAction;
 import de.brokenpipe.cadiff.core.actions.ChangeNameAction;
 import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
@@ -87,8 +88,12 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 	}
 
 	protected void removeChangeNameById(final ActionPrintContext context, final String id) {
+		removeByIdAndActionType(context, id, ChangeNameAction.class);
+	}
+
+	protected void removeByIdAndActionType(final ActionPrintContext context, final String id, final Class<? extends Action> actionType) {
 		context.findChangesForId(id)
-				.filter(x -> x instanceof ChangeNameAction)
+				.filter(actionType::isInstance)
 				.findFirst()
 				.ifPresent(x -> context.getActions().remove(x));
 	}

@@ -3,6 +3,7 @@ package de.brokenpipe.cadiff.cli.control.printers;
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.AddBoundaryEventBranchAction;
+import de.brokenpipe.cadiff.core.actions.ChangeAttachedToAction;
 
 public class AddBoundaryEventBranchActionPrinter extends AbstractActionPrinter implements ActionPrinter {
 	@Override
@@ -20,6 +21,9 @@ public class AddBoundaryEventBranchActionPrinter extends AbstractActionPrinter i
 		System.out.println();
 
 		System.out.print("    Boundary Event: ");
+
+		// don't repeat attachedTo (we just printed it above)
+		removeByIdAndActionType(context, change.steps().getFirst().id(), ChangeAttachedToAction.class);
 
 		printSteps(context, change.steps());
 	}

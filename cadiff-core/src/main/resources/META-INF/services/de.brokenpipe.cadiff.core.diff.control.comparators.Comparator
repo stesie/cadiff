@@ -24,3 +24,4 @@ de.brokenpipe.cadiff.core.diff.control.comparators.CamundaResultVariableComparat
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaDecisionRefComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.CamundaMapDecisionResultComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.DocumentationComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.InMappingAllComparator

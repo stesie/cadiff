@@ -3,8 +3,10 @@ package de.brokenpipe.cadiff.cli.control.printers;
 import de.brokenpipe.cadiff.cli.entity.ActionPrintContext;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangePropertyAction;
+import de.brokenpipe.cadiff.core.actions.SingleIdRelatedAction;
 
-public class ChangePropertyActionPrinter extends AbstractActionPrinter {
+public class ChangePropertyActionPrinter extends AbstractActionPrinter implements SingleIdRelatedActionPrinter {
+
 	@Override
 	public boolean supports(final Action action) {
 		return action instanceof ChangePropertyAction<?>;
@@ -20,23 +22,12 @@ public class ChangePropertyActionPrinter extends AbstractActionPrinter {
 		printAttributeChangesForId(context, change.id(), ChangeType.UPDATE);
 	}
 
-	public void printAttributeChangesForId(final ActionPrintContext context, final String id, final ChangeType changeType) {
-		printAttributeChangesForId(context, id, " -> ", changeType);
-	}
 
-	public void printAttributeChangesForId(final ActionPrintContext context, final String id, final String leader,
+	@Override
+	public void writeLine(final ActionPrintContext context, final SingleIdRelatedAction action, final String leader,
 			final ChangeType changeType) {
-		context.findChangesForId(id)
-				.filter(this::supports)
-				.toList()
-				.forEach(c -> {
-					writeLine(context, (ChangePropertyAction<?>) c, leader, changeType);
-					context.getActions().remove(c);
-				});
-	}
+		final var change = (ChangePropertyAction<?>) action;
 
-	private void writeLine(final ActionPrintContext context, final ChangePropertyAction<?> change, final String leader,
-			final ChangeType changeType) {
 		printChangeLine(change.attributeName(), change.oldValue(), change.newValue(), leader, changeType);
 	}
 

@@ -103,7 +103,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		greenIfNewNode(context, steps.getFirst().id());
 		printElementName(context.getTo().getModelElementById(steps.getFirst().id()));
 		System.out.println(ansi().reset());
-		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getFirst().id(), ChangeType.UPDATE);
+		printAttributeChangesForId(context, steps.getFirst().id(), ChangeType.UPDATE);
 
 		for (int i = 2; i < steps.size() - 1; i += 2) {
 			final String edgeId = steps.get(i - 1).id();
@@ -112,7 +112,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 			indent();
 			System.out.println("    |");
-			new ChangePropertyActionPrinter().printAttributeChangesForId(context, edgeId, "    | ", ChangeType.ADD);
+			printAttributeChangesForId(context, edgeId, "    | ", ChangeType.ADD);
 			indent();
 			System.out.println("    |");
 			indent();
@@ -126,7 +126,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 			indent += 4;
 
 			removeChangeNameById(context, elementId);
-			new ChangePropertyActionPrinter().printAttributeChangesForId(context, elementId, ChangeType.ADD);
+			printAttributeChangesForId(context, elementId, ChangeType.ADD);
 		}
 
 		indent();
@@ -143,7 +143,7 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 
 		indent += 4;
 		removeChangeNameById(context, steps.getLast().id());
-		new ChangePropertyActionPrinter().printAttributeChangesForId(context, steps.getLast().id(), ChangeType.UPDATE);
+		printAttributeChangesForId(context, steps.getLast().id(), ChangeType.UPDATE);
 
 		indent = restoreIndent;
 	}
@@ -158,6 +158,29 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		final String fromId = Optional.ofNullable(context.getIdMapBackward().get(id)).orElse(id);
 		return context.getFrom().getModelElementById(fromId) == null;
 	}
+
+	protected void printAttributeChangesForId(final ActionPrintContext context, final String id, final ChangeType changeType) {
+		printAttributeChangesForId(context, id, " -> ", changeType);
+	}
+
+	protected void printAttributeChangesForId(final ActionPrintContext context, final String id, final String leader,
+			final ChangeType changeType) {
+		context.findChangesForId(id)
+				.toList()
+				.forEach(change -> {
+					final var printer = ActionPrinterRegistry.INSTANCE.find(change);
+
+					if (printer.isEmpty() || !printer.get().supports(change)) {
+						return;
+					}
+
+					if (printer.get() instanceof final SingleIdRelatedActionPrinter singleIdRelatedActionPrinter) {
+						singleIdRelatedActionPrinter.writeLine(context, change, leader, changeType);
+						context.getActions().remove(change);
+					}
+				});
+	}
+
 
 	@Getter
 	@RequiredArgsConstructor

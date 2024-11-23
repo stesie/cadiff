@@ -17,7 +17,7 @@ public class ChangeProcessActionPrinter extends AbstractActionPrinter {
 		final var change = (ChangeProcessAction) action;
 
 		startBlock(context, change.id(), AbstractActionPrinter.ChangeType.UPDATE);
-		new ChangePropertyActionPrinter().printAttributeChangesForId(context, change.id(), ChangeType.UPDATE);
+		printAttributeChangesForId(context, change.id(), ChangeType.UPDATE);
 
 		new ChangeSetPrinter(context.forSubProcess(change.actions())).printAll();
 

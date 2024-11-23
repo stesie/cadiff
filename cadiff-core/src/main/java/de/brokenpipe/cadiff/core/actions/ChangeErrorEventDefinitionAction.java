@@ -20,7 +20,7 @@ public record ChangeErrorEventDefinitionAction(String id, String errorDefinition
 	@Override
 	@JsonIgnore
 	public String oldValue() {
-		return newErrorRef;
+		return oldErrorRef;
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class InMappingAllComparator
 		return in.stream()
 				.filter(x -> "all".equals(x.getCamundaVariables()))
 				.findFirst()
-				.map(camundaIn -> new ChangeInMappingAllAction.Config(Boolean.TRUE,
+				.map(camundaIn -> new ChangeInMappingAllAction.Config(true,
 						Boolean.valueOf(camundaIn.getCamundaLocal())))
 				.orElseGet(ChangeInMappingAllAction.Config::disabled);
 	}

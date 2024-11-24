@@ -38,7 +38,7 @@ interface PropertyComparator<E extends BaseElement, T> extends Comparator {
 			return Stream.empty();
 		}
 
-		return Stream.of(actionCreator.apply(from.getId(), accessor.apply(from), accessor.apply(to)));
+		return Stream.of(actionCreator.apply(to.getId(), accessor.apply(from), accessor.apply(to)));
 	}
 
 	@FunctionalInterface

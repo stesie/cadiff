@@ -10,9 +10,9 @@ public record ChangeInMappingAllAction(String id, Config oldValue, Config newVal
 		return new ChangeInMappingAllPatcher(this);
 	}
 
-	public record Config(Boolean enabled, Boolean local) {
+	public record Config(boolean enabled, Boolean local) {
 		public static Config disabled() {
-			return new Config(Boolean.FALSE, null);
+			return new Config(false, null);
 		}
 	}
 }

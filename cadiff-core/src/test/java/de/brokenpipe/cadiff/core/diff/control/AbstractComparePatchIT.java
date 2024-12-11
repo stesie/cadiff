@@ -1,14 +1,12 @@
 package de.brokenpipe.cadiff.core.diff.control;
 
-import de.brokenpipe.cadiff.core.actions.Action;
+import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
 import de.brokenpipe.cadiff.core.diff.boundary.DiffCommand;
 import de.brokenpipe.cadiff.core.diff.entity.ChangeSet;
 import de.brokenpipe.cadiff.core.patch.boundary.PatchCommand;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,12 +16,12 @@ public abstract class AbstractComparePatchIT {
 	final BpmnModelInstance from;
 	final BpmnModelInstance to;
 
-	protected abstract void verifyForwardChanges(final List<Action> changes);
+	protected abstract void verifyForwardChanges(final ActionCollectionAssertions changes);
 
 	@Test
 	void shouldCreateCorrectChanges() {
 		final ChangeSet changeSet = new DiffCommand(from, to).execute();
-		verifyForwardChanges(changeSet.changes());
+		verifyForwardChanges(new ActionCollectionAssertions(changeSet.changes()));
 	}
 
 	@Test

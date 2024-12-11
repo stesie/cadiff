@@ -1,15 +1,10 @@
 package de.brokenpipe.cadiff.core.diff.control;
 
-import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.AddSimpleFlowNodeAction;
 import de.brokenpipe.cadiff.core.actions.ChangeNameAction;
-import de.brokenpipe.cadiff.core.actions.processes.ChangeProcessAction;
+import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
+import de.brokenpipe.cadiff.core.assertions.ChangeProcessActionAssertions;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-
-import java.util.Collection;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateStartEventIT extends AbstractComparePatchIT {
 
@@ -19,27 +14,27 @@ public class CreateStartEventIT extends AbstractComparePatchIT {
 	}
 
 	@Override
-	protected void verifyForwardChanges(final List<Action> changes) {
-		assertEquals(1, changes.size());
-		assertInstanceOf(ChangeProcessAction.class, changes.getFirst());
+	protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
 
-		final ChangeProcessAction changeProcessAction = (ChangeProcessAction) changes.getFirst();
-		assertEquals("Process_132av6t", changeProcessAction.id());
+		final ChangeProcessActionAssertions changeProcessAction = changes
+				.assertSize(1)
+				.assertExactlyOneChangeProcessAction();
 
-		final Collection<Action> actions = changeProcessAction.actions();
-		assertEquals(2, actions.size());
+		final ActionCollectionAssertions changeProcessActions = changeProcessAction
+				.assertId("Process_132av6t")
+				.actions();
 
-		final var actionIterator = actions.iterator();
+		changeProcessActions.assertSize(2);
 
-		final var addSimpleFlowNodeAction = actionIterator.next();
-		assertInstanceOf(AddSimpleFlowNodeAction.class, addSimpleFlowNodeAction);
-		assertEquals("StartEvent_1", ((AddSimpleFlowNodeAction) addSimpleFlowNodeAction).id());
-		assertEquals("startEvent", ((AddSimpleFlowNodeAction) addSimpleFlowNodeAction).elementTypeName());
+		changeProcessActions.nextAction()
+				.assertInstanceOf(AddSimpleFlowNodeAction.class)
+				.assertEquals("StartEvent_1", AddSimpleFlowNodeAction::id)
+				.assertEquals("startEvent", AddSimpleFlowNodeAction::elementTypeName);
 
-		final var changeNameAction = actionIterator.next();
-		assertInstanceOf(ChangeNameAction.class, changeNameAction);
-		assertEquals("StartEvent_1", ((ChangeNameAction) changeNameAction).id());
-		assertNull(((ChangeNameAction) changeNameAction).oldValue());
-		assertEquals("just a start event", ((ChangeNameAction) changeNameAction).newValue());
+		changeProcessActions.nextAction()
+				.assertInstanceOf(ChangeNameAction.class)
+				.assertEquals("StartEvent_1", ChangeNameAction::id)
+				.assertEquals("just a start event", ChangeNameAction::newValue);
+
 	}
 }

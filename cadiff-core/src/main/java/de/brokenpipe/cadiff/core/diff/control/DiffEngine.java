@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.core.diff.control;
 
 import de.brokenpipe.cadiff.core.diff.entity.ChangeSet;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
@@ -18,6 +19,6 @@ public class DiffEngine {
 	private final BpmnModelInstance to;
 
 	public ChangeSet compareDocuments() {
-		return new ChangeSet(new DocumentWalker(from.getDefinitions(), to.getDefinitions()).walk().toList());
+		return new ChangeSet(new DocumentWalker(new CompareContext<>(from, from.getDefinitions(), to.getDefinitions())).walk().toList());
 	}
 }

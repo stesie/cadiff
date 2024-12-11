@@ -4,6 +4,7 @@ import de.brokenpipe.cadiff.core.Value;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeInputParameterAction;
 import de.brokenpipe.cadiff.core.diff.control.AbstractSimpleWalker;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaInputOutput;
@@ -20,11 +21,11 @@ import java.util.stream.Stream;
  */
 public class InputParameterComparator implements Comparator {
 	@Override
-	public Stream<Action> apply(final BaseElement from, final BaseElement to) {
-		final List<CamundaInputOutput> fromIOs = Optional.ofNullable(from.getExtensionElements())
+	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {
+		final List<CamundaInputOutput> fromIOs = Optional.ofNullable(compareContext.from().getExtensionElements())
 				.map(x -> x.getElementsQuery().filterByType(CamundaInputOutput.class).list())
 				.orElse(Collections.emptyList());
-		final List<CamundaInputOutput> toIOs = Optional.ofNullable(to.getExtensionElements())
+		final List<CamundaInputOutput> toIOs = Optional.ofNullable(compareContext.to().getExtensionElements())
 				.map(x -> x.getElementsQuery().filterByType(CamundaInputOutput.class).list())
 				.orElse(Collections.emptyList());
 
@@ -49,7 +50,7 @@ public class InputParameterComparator implements Comparator {
 
 			@Override
 			protected Stream<Action> handleAdded(final CamundaInputParameter added) {
-				return Stream.of(new ChangeInputParameterAction(to.getId(), added.getCamundaName(), null,
+				return Stream.of(new ChangeInputParameterAction(compareContext.to().getId(), added.getCamundaName(), null,
 						Value.of(added)));
 			}
 
@@ -58,14 +59,14 @@ public class InputParameterComparator implements Comparator {
 					final CamundaInputParameter ipTo) {
 				return ipFrom.getTextContent().equals(ipTo.getTextContent())
 						? Stream.empty()
-						: Stream.of(new ChangeInputParameterAction(to.getId(), ipFrom.getCamundaName(),
+						: Stream.of(new ChangeInputParameterAction(compareContext.to().getId(), ipFrom.getCamundaName(),
 								Value.of(ipFrom), Value.of(ipTo)));
 			}
 
 			@Override
 			protected Stream<Action> handleRemoved(final CamundaInputParameter removed) {
 				return Stream.of(
-						new ChangeInputParameterAction(to.getId(), removed.getCamundaName(), Value.of(removed),
+						new ChangeInputParameterAction(compareContext.to().getId(), removed.getCamundaName(), Value.of(removed),
 								null));
 			}
 		}.walk();

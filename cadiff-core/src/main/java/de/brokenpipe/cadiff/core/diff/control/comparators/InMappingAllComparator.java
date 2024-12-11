@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeInMappingAllAction;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaIn;
 
@@ -14,10 +15,9 @@ public class InMappingAllComparator
 		implements Comparator, PropertyComparator<BaseElement, ChangeInMappingAllAction.Config> {
 
 	@Override
-	public Stream<Action> apply(final BaseElement from, final BaseElement to) {
+	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {
 		return compareProperty(el -> mapInAllToConfig(extractCamundaIns(el)),
-				ChangeInMappingAllAction::new,
-				from, to);
+				ChangeInMappingAllAction::new, compareContext);
 	}
 
 	private static List<CamundaIn> extractCamundaIns(final BaseElement el) {

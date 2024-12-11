@@ -3,6 +3,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.AddExecutionListenerAction;
 import de.brokenpipe.cadiff.core.actions.DeleteExecutionListenerAction;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaExecutionListener;
 
@@ -18,21 +19,21 @@ import java.util.stream.Stream;
  */
 public class ExecutionListenerComparator implements Comparator {
 	@Override
-	public Stream<Action> apply(final BaseElement from, final BaseElement to) {
-		final List<CamundaExecutionListener> fromListeners = Optional.ofNullable(from.getExtensionElements())
+	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {
+		final List<CamundaExecutionListener> fromListeners = Optional.ofNullable(compareContext.from().getExtensionElements())
 				.map(x -> x.getElementsQuery().filterByType(CamundaExecutionListener.class).list())
 				.orElse(Collections.emptyList());
-		final List<CamundaExecutionListener> toListeners = Optional.ofNullable(to.getExtensionElements())
+		final List<CamundaExecutionListener> toListeners = Optional.ofNullable(compareContext.to().getExtensionElements())
 				.map(x -> x.getElementsQuery().filterByType(CamundaExecutionListener.class).list())
 				.orElse(Collections.emptyList());
 
 		return Stream.concat(
 				toListeners.stream()
 						.filter(a -> fromListeners.stream().noneMatch(b -> extensionListenerEquals(a, b)))
-						.map(a -> createExecutionListener(to.getId(), a)),
+						.map(a -> createExecutionListener(compareContext.to().getId(), a)),
 				fromListeners.stream()
 						.filter(a -> toListeners.stream().noneMatch(b -> extensionListenerEquals(a, b)))
-						.map(a -> deleteExecutionListener(from.getId(), a))
+						.map(a -> deleteExecutionListener(compareContext.from().getId(), a))
 		);
 	}
 

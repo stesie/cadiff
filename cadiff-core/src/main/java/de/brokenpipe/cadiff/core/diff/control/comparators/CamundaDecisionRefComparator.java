@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeCamundaDecisionRefAction;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.BusinessRuleTask;
 
 import java.util.stream.Stream;
@@ -15,8 +16,8 @@ public class CamundaDecisionRefComparator extends UpcastComparator<BusinessRuleT
 	}
 
 	@Override
-	protected Stream<Action> compare(final BusinessRuleTask from, final BusinessRuleTask to) {
+	protected Stream<Action> compare(final CompareContext<BusinessRuleTask> compareContext) {
 		return compareStringProperty(BusinessRuleTask::getCamundaDecisionRef,
-				ChangeCamundaDecisionRefAction.class, from, to);
+				ChangeCamundaDecisionRefAction.class, compareContext);
 	}
 }

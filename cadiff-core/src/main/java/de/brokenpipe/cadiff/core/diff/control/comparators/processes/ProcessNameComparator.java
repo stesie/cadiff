@@ -4,6 +4,7 @@ import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.processes.ChangeProcessNameAction;
 import de.brokenpipe.cadiff.core.diff.control.comparators.StringPropertyComparator;
 import de.brokenpipe.cadiff.core.diff.control.comparators.UpcastComparator;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.Process;
 
 import java.util.stream.Stream;
@@ -16,8 +17,8 @@ public class ProcessNameComparator extends UpcastComparator<Process> implements 
 	}
 
 	@Override
-	public Stream<Action> compare(final Process from, final Process to) {
-		return compareStringProperty(Process::getName, ChangeProcessNameAction.class, from, to);
+	public Stream<Action> compare(final CompareContext<Process> compareContext) {
+		return compareStringProperty(Process::getName, ChangeProcessNameAction.class, compareContext);
 	}
 
 }

@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeExclusiveGatewayDefaultAction;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 
@@ -17,8 +18,8 @@ public class ExclusiveGatewayDefaultComparator extends UpcastComparator<Exclusiv
 	}
 
 	@Override
-	protected Stream<Action> compare(final ExclusiveGateway from, final ExclusiveGateway to) {
+	protected Stream<Action> compare(final CompareContext<ExclusiveGateway> compareContext) {
 		return compareStringProperty(x -> Optional.ofNullable(x.getDefault()).map(BaseElement::getId).orElse(null),
-				ChangeExclusiveGatewayDefaultAction.class, from, to);
+				ChangeExclusiveGatewayDefaultAction.class, compareContext);
 	}
 }

@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeCamundaDelegateExpressionAction;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.SendTask;
 
 import java.util.stream.Stream;
@@ -15,8 +16,8 @@ public class SendTaskCamundaDelegateExpressionComparator extends UpcastComparato
 	}
 
 	@Override
-	protected Stream<Action> compare(final SendTask from, final SendTask to) {
+	protected Stream<Action> compare(final CompareContext<SendTask> compareContext) {
 		return compareStringProperty(SendTask::getCamundaDelegateExpression,
-				ChangeCamundaDelegateExpressionAction.class, from, to);
+				ChangeCamundaDelegateExpressionAction.class, compareContext);
 	}
 }

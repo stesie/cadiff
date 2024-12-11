@@ -1,19 +1,18 @@
 package de.brokenpipe.cadiff.core.diff.control;
 
 import de.brokenpipe.cadiff.core.actions.Action;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.Definitions;
 import org.camunda.bpm.model.bpmn.instance.Process;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class DocumentWalker {
 
-	private final Definitions from;
-	private final Definitions to;
+	private final CompareContext<Definitions> compareContext;
 
 	public Stream<Action> walk() {
 
@@ -21,10 +20,7 @@ public class DocumentWalker {
 	}
 
 	private Stream<Action> walkProcesses() {
-		final Collection<Process> fromProcesses = findProcesses(from);
-		final Collection<Process> toProcesses = findProcesses(to);
-
-		return (new ProcessWalker(fromProcesses, toProcesses).walk());
+		return (new ProcessWalker(compareContext.map(this::findProcesses)).walk());
 	}
 
 	private List<Process> findProcesses(final Definitions definition) {

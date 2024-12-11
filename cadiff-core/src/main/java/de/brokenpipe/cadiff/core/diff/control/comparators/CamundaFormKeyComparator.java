@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeCamundaFormKeyAction;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 
 import java.util.stream.Stream;
@@ -15,8 +16,8 @@ public class CamundaFormKeyComparator extends UpcastComparator<UserTask>
 	}
 
 	@Override
-	protected Stream<Action> compare(final UserTask from, final UserTask to) {
+	protected Stream<Action> compare(final CompareContext<UserTask> compareContext) {
 		return compareStringProperty(UserTask::getCamundaFormKey,
-				ChangeCamundaFormKeyAction.class, from, to);
+				ChangeCamundaFormKeyAction.class, compareContext);
 	}
 }

@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 
@@ -23,8 +24,8 @@ public class ComparatorRegistry implements Comparator {
 	}
 
 	@Override
-	public Stream<Action> apply(final BaseElement from, final BaseElement to) {
+	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {
 		return comparators.stream()
-				.flatMap(comparator -> comparator.apply(from, to));
+				.flatMap(comparator -> comparator.apply(compareContext));
 	}
 }

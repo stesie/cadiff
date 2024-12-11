@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeErrorEventDefinitionAction;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.*;
 
 import java.util.Collection;
@@ -14,22 +15,23 @@ public class ErrorEventDefinitionComparator
 		implements PropertyComparator<BaseElement, String> {
 
 	@Override
-	public Stream<Action> apply(final BaseElement from, final BaseElement to) {
+	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {
 
-		if (from instanceof final ThrowEvent fromThrowEvent && to instanceof final ThrowEvent toThrowEvent) {
-			return compare(x -> ((ThrowEvent) x).getEventDefinitions(), fromThrowEvent, toThrowEvent);
+		if (compareContext.from() instanceof final ThrowEvent fromThrowEvent && compareContext.to() instanceof final ThrowEvent toThrowEvent) {
+			return compare(x -> ((ThrowEvent) x).getEventDefinitions(), compareContext);
 		}
 
-		if (from instanceof final CatchEvent fromCatchEvent && to instanceof final CatchEvent toCatchEvent) {
-			return compare(x -> ((CatchEvent) x).getEventDefinitions(), fromCatchEvent, toCatchEvent);
+		if (compareContext.from() instanceof final CatchEvent fromCatchEvent && compareContext.to() instanceof final CatchEvent toCatchEvent) {
+			return compare(x -> ((CatchEvent) x).getEventDefinitions(), compareContext);
 		}
 
 		return Stream.empty();
 	}
 
 	private Stream<Action> compare(final Function<BaseElement, Collection<EventDefinition>> eventDefAccessor,
-			final BaseElement from, final BaseElement to) {
-		return Stream.concat(eventDefAccessor.apply(from).stream(), eventDefAccessor.apply(to).stream())
+			final CompareContext<? extends BaseElement> compareContext) {
+		return Stream.concat(eventDefAccessor.apply(compareContext.from()).stream(),
+						eventDefAccessor.apply(compareContext.to()).stream())
 				.map(BaseElement::getId)
 				.distinct()
 				.flatMap(eventDefinitionId -> {
@@ -52,7 +54,7 @@ public class ErrorEventDefinitionComparator
 							},
 							(x, oldValue, newValue) ->
 									new ChangeErrorEventDefinitionAction(x, eventDefinitionId, oldValue, newValue),
-							from, to)
+							compareContext)
 							.findFirst();
 
 					// if we already have a compare result -> fine
@@ -61,12 +63,12 @@ public class ErrorEventDefinitionComparator
 					}
 
 					// special case: error definition created, but no error referenced
-					if (eventDefAccessor.apply(from).stream().map(BaseElement::getId)
+					if (eventDefAccessor.apply(compareContext.from()).stream().map(BaseElement::getId)
 							.noneMatch(x -> Objects.equals(x, eventDefinitionId))
-							&& eventDefAccessor.apply(to).stream().map(BaseElement::getId)
+							&& eventDefAccessor.apply(compareContext.to()).stream().map(BaseElement::getId)
 							.anyMatch(x -> Objects.equals(x, eventDefinitionId))) {
 						return Stream.of(
-								new ChangeErrorEventDefinitionAction(to.getId(), eventDefinitionId, null, null));
+								new ChangeErrorEventDefinitionAction(compareContext.to().getId(), eventDefinitionId, null, null));
 					}
 
 					return Stream.empty();

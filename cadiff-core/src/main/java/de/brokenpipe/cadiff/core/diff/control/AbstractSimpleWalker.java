@@ -4,9 +4,11 @@ import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
+
+import static de.brokenpipe.cadiff.core.diff.control.StreamUtils.mergeStreams;
 
 /**
  * Simple walker that compares both collections and runs add/update/remove handlers.
@@ -20,7 +22,7 @@ public abstract class AbstractSimpleWalker<T> {
 
 	public Stream<Action> walk() {
 
-		final VoteContext<T> context = partitionElements();
+		final VoteContext<T> context = VoteContext.partition(this::extractId, from, to);
 
 		return mergeStreams(List.of(
 				context.added().stream()
@@ -28,22 +30,6 @@ public abstract class AbstractSimpleWalker<T> {
 				context.updated().stream()
 						.flatMap(id -> handleUpdated(context.fromMap().get(id), context.toMap().get(id))),
 				context.removed().stream().flatMap(id -> handleRemoved(context.fromMap().get(id)))));
-	}
-
-	protected VoteContext<T> partitionElements() {
-		final Map<String, T> fromMap = from.stream().collect(Collectors.toMap(this::extractId, e -> e));
-		final Map<String, T> toMap = to.stream().collect(Collectors.toMap(this::extractId, e -> e));
-
-		final Set<String> updated = new HashSet<>(fromMap.keySet());
-		updated.retainAll(toMap.keySet());
-
-		final Set<String> removed = new HashSet<>(fromMap.keySet());
-		removed.removeAll(toMap.keySet());
-
-		final Set<String> added = new HashSet<>(toMap.keySet());
-		added.removeAll(fromMap.keySet());
-
-		return new VoteContext<>(fromMap, toMap, updated, removed, added);
 	}
 
 	protected abstract String extractId(final T element);
@@ -54,7 +40,4 @@ public abstract class AbstractSimpleWalker<T> {
 
 	protected abstract Stream<Action> handleRemoved(final T removed);
 
-	protected static <T> Stream<T> mergeStreams(final Collection<Stream<T>> streams) {
-		return streams.stream().flatMap(x -> x);
-	}
 }

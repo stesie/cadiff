@@ -2,48 +2,43 @@ package de.brokenpipe.cadiff.core.diff.control;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.DeleteElementAction;
+import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static de.brokenpipe.cadiff.core.diff.control.StreamUtils.mergeStreams;
+
 /**
  * Abstract class to walk through two collections of elements and create a list of actions to transform the first
  * collection into the second. New elements are handled by trying to detect id changes first through a round of voting,
  * afterward by running the {@link AddHandler}.
  */
-abstract class AbstractVoteAddWalker<T extends BaseElement> extends AbstractSimpleWalker<T> {
+@RequiredArgsConstructor
+abstract class AbstractVoteAddWalker<T extends BaseElement> {
 
-	public AbstractVoteAddWalker(final Collection<T> from, final Collection<T> to) {
-		super(from, to);
-	}
+	protected final CompareContext<Collection<T>> compareContext;
 
-	@Override
-	protected String extractId(final T element) {
-		return element.getId();
-	}
-
-	@Override
 	public Stream<Action> walk() {
 
-		final VoteContext<T> context = partitionElements();
+		final VoteContext<T> voteContext = VoteContext.partition(BaseElement::getId, compareContext.from(), compareContext.to()); // partitionElements();
 
 		return mergeStreams(List.of(
-				new RenameHandler<>(context).apply().stream(),
-				new AddHandler<>(context).apply().stream(),
-				context.updated().stream()
-						.flatMap(id -> handleUpdated(context.fromMap().get(id), context.toMap().get(id))),
-				context.removed().stream().flatMap(id -> handleRemoved(context.fromMap().get(id)))));
+				new RenameHandler<>(voteContext).apply().stream(),
+				new AddHandler<>(voteContext).apply().stream(),
+				voteContext.updated().stream()
+						.flatMap(id -> handleUpdated(
+								new CompareContext<>(compareContext.fromInstance(), voteContext.fromMap().get(id), voteContext.toMap().get(id))
+								)),
+				voteContext.removed().stream().flatMap(id -> handleRemoved(voteContext.fromMap().get(id)))));
 	}
 
-	@Override
-	protected Stream<Action> handleAdded(final T added) {
-		throw new IllegalStateException("This method should not be called");
-	}
+	protected abstract Stream<Action> handleUpdated(final CompareContext<T> context);
 
-	@Override
 	protected Stream<Action> handleRemoved(final T removed) {
 		return Stream.of(new DeleteElementAction(removed.getId()));
 	}

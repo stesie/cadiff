@@ -3,7 +3,6 @@ package de.brokenpipe.cadiff.core.diff.control;
 import de.brokenpipe.cadiff.core.actions.AddSimpleFlowNodeAction;
 import de.brokenpipe.cadiff.core.actions.ChangeNameAction;
 import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
-import de.brokenpipe.cadiff.core.assertions.ChangeProcessActionAssertions;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 public class CreateStartEventIT extends AbstractComparePatchIT {
@@ -16,15 +15,12 @@ public class CreateStartEventIT extends AbstractComparePatchIT {
 	@Override
 	protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
 
-		final ChangeProcessActionAssertions changeProcessAction = changes
+		final ActionCollectionAssertions changeProcessActions = changes
 				.assertSize(1)
-				.assertExactlyOneChangeProcessAction();
-
-		final ActionCollectionAssertions changeProcessActions = changeProcessAction
+				.assertExactlyOneChangeProcessAction()
 				.assertId("Process_132av6t")
-				.actions();
-
-		changeProcessActions.assertSize(2);
+				.actions()
+				.assertSize(2);
 
 		changeProcessActions.nextAction()
 				.assertInstanceOf(AddSimpleFlowNodeAction.class)

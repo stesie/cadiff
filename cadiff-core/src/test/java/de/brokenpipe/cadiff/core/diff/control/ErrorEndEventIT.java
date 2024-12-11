@@ -7,7 +7,7 @@ import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Nested;
 
-public class CreateErrorEndEventIT {
+public class ErrorEndEventIT {
 
 	@Nested
 	public class WithoutRef extends AbstractComparePatchIT {

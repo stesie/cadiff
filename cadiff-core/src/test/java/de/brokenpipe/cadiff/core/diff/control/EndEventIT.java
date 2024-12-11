@@ -5,12 +5,12 @@ import de.brokenpipe.cadiff.core.actions.ChangeNameAction;
 import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
-public class CreateEndEventIT extends AbstractComparePatchIT {
+public class EndEventIT extends AbstractComparePatchIT {
 
 	public static final String PROCESS_ID = "Process_132av6t";
 	public static final String ELEMENT_ID = "EndEvent_1";
 
-	public CreateEndEventIT(@BpmnFile("empty-diagram.bpmn") final BpmnModelInstance from,
+	public EndEventIT(@BpmnFile("empty-diagram.bpmn") final BpmnModelInstance from,
 			@BpmnFile("end-event.bpmn") final BpmnModelInstance to) {
 		super(from, to);
 	}

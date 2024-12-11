@@ -7,6 +7,9 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 public class CreateStartEventIT extends AbstractComparePatchIT {
 
+	public static final String PROCESS_ID = "Process_132av6t";
+	public static final String ELEMENT_ID = "StartEvent_1";
+
 	public CreateStartEventIT(@BpmnFile("empty-diagram.bpmn") final BpmnModelInstance from,
 			@BpmnFile("start-event.bpmn") final BpmnModelInstance to) {
 		super(from, to);
@@ -18,18 +21,18 @@ public class CreateStartEventIT extends AbstractComparePatchIT {
 		final ActionCollectionAssertions changeProcessActions = changes
 				.assertSize(1)
 				.assertExactlyOneChangeProcessAction()
-				.assertId("Process_132av6t")
+				.assertId(PROCESS_ID)
 				.actions()
 				.assertSize(2);
 
 		changeProcessActions.nextAction()
 				.assertInstanceOf(AddSimpleFlowNodeAction.class)
-				.assertEquals("StartEvent_1", AddSimpleFlowNodeAction::id)
+				.assertEquals(ELEMENT_ID, AddSimpleFlowNodeAction::id)
 				.assertEquals("startEvent", AddSimpleFlowNodeAction::elementTypeName);
 
 		changeProcessActions.nextAction()
 				.assertInstanceOf(ChangeNameAction.class)
-				.assertEquals("StartEvent_1", ChangeNameAction::id)
+				.assertEquals(ELEMENT_ID, ChangeNameAction::id)
 				.assertEquals("just a start event", ChangeNameAction::newValue);
 
 	}

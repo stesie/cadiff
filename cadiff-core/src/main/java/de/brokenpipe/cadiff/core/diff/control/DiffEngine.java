@@ -19,6 +19,6 @@ public class DiffEngine {
 	private final BpmnModelInstance to;
 
 	public ChangeSet compareDocuments() {
-		return new ChangeSet(new DocumentWalker(new CompareContext<>(from, from.getDefinitions(), to.getDefinitions())).walk().toList());
+		return new ChangeSet(new DocumentWalker(new CompareContext<>(from, null, from.getDefinitions(), to.getDefinitions())).walk().toList());
 	}
 }

@@ -19,7 +19,8 @@ public class ProcessWalker extends AbstractVoteAddWalker<Process> {
 	protected Stream<Action> handleUpdated(final CompareContext<Process> updateContext) {
 
 
-		final var actions = new FlowElementWalker(updateContext.map(Process::getFlowElements)).walk().toList();
+		final var actions = new FlowElementWalker(updateContext.map(Process::getFlowElements)
+				.withFromContainer(updateContext.from())).walk().toList();
 
 		return Stream.concat(
 				actions.isEmpty()

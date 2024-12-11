@@ -19,7 +19,8 @@ public class SubProcessComparator extends UpcastComparator<SubProcess> {
 
 		// FIXME handle add & delete !?
 
-		final var actions =  new FlowElementWalker(compareContext.map(SubProcess::getFlowElements)).walk().toList();
+		final var actions = new FlowElementWalker(compareContext.map(SubProcess::getFlowElements)
+				.withFromContainer(compareContext.from())).walk().toList();
 
 		if (actions.isEmpty()) {
 			return Stream.empty();

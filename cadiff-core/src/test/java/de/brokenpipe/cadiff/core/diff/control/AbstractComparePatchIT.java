@@ -34,4 +34,16 @@ public abstract class AbstractComparePatchIT {
 		final ChangeSet emptyChangeSet = new DiffEngine(fromClone, to).compareDocuments();
 		assertEquals(0, emptyChangeSet.changes().size());
 	}
+
+	@Test
+	void shouldCreateEmptyChangeSetAfterApplyingReverseChanges() {
+		final var toClone = to.clone();
+
+		final ChangeSet changeSet = new DiffCommand(to, from).execute();
+		new PatchCommand(toClone, changeSet).execute();
+
+		final ChangeSet emptyChangeSet = new DiffEngine(toClone, from).compareDocuments();
+		assertEquals(0, emptyChangeSet.changes().size());
+	}
+
 }

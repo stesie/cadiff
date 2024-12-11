@@ -13,6 +13,8 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import java.util.Collection;
 import java.util.Optional;
 
+import static org.camunda.bpm.model.bpmn.impl.BpmnModelConstants.BPMN_ATTRIBUTE_ERROR_REF;
+
 @RequiredArgsConstructor
 public class ChangeErrorEventDefinitionPatcher extends AbstractPatcher implements Patcher {
 
@@ -68,9 +70,7 @@ public class ChangeErrorEventDefinitionPatcher extends AbstractPatcher implement
 		}
 
 		if (action.newErrorRef() == null) {
-			// FIXME what shall newErrorRef mean? Remove the whole error definition? or just the errorRef?
-			// errorDef.removeAttribute(BPMN_ATTRIBUTE_ERROR_REF);
-			errorDef.getParentElement().removeChildElement(errorDef);
+			errorDef.removeAttribute(BPMN_ATTRIBUTE_ERROR_REF);
 			return;
 		}
 

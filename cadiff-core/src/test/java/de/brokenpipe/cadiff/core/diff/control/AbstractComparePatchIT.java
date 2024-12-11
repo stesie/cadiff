@@ -9,6 +9,7 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RequiredArgsConstructor
 public abstract class AbstractComparePatchIT {
@@ -32,7 +33,8 @@ public abstract class AbstractComparePatchIT {
 		new PatchCommand(fromClone, changeSet).execute();
 
 		final ChangeSet emptyChangeSet = new DiffEngine(fromClone, to).compareDocuments();
-		assertEquals(0, emptyChangeSet.changes().size());
+		assertTrue(emptyChangeSet.changes().isEmpty(),
+				"change set should be empty, after applying changes. but got: %s".formatted(emptyChangeSet));
 	}
 
 	@Test

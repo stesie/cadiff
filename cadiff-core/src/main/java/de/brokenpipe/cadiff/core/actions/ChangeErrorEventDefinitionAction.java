@@ -13,9 +13,9 @@ public record ChangeErrorEventDefinitionAction(String id, String errorDefinition
 
 	@Override
 	public Patcher patcher() {
-		return new ChangeEventDefinitionPatcher<>(this, ErrorEventDefinition.class, Error.class,
-				ChangeErrorEventDefinitionAction::errorDefinitionId, ErrorEventDefinition::getError,
-				ErrorEventDefinition::setError, BPMN_ATTRIBUTE_ERROR_REF);
+		return new ChangeEventDefinitionPatcher<>(id, errorDefinitionId, oldErrorRef, newErrorRef,
+				ErrorEventDefinition.class, Error.class, ErrorEventDefinition::getError, ErrorEventDefinition::setError,
+				BPMN_ATTRIBUTE_ERROR_REF);
 	}
 
 	@Override

@@ -13,8 +13,8 @@ public record ChangeSignalEventDefinitionAction(String id, String signalDefiniti
 
 	@Override
 	public Patcher patcher() {
-		return new ChangeEventDefinitionPatcher<>(this, SignalEventDefinition.class, Signal.class,
-				ChangeSignalEventDefinitionAction::signalDefinitionId, SignalEventDefinition::getSignal,
+		return new ChangeEventDefinitionPatcher<>(id, signalDefinitionId, oldSignalRef, newSignalRef,
+				SignalEventDefinition.class, Signal.class, SignalEventDefinition::getSignal,
 				SignalEventDefinition::setSignal, BPMN_ATTRIBUTE_SIGNAL_REF);
 	}
 

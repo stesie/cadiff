@@ -9,8 +9,7 @@ import org.camunda.bpm.model.bpmn.instance.BoundaryEvent;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class AttachedToComparator extends UpcastComparator<BoundaryEvent>
-		implements StringPropertyComparator<BoundaryEvent> {
+public class AttachedToComparator extends UpcastComparator<BoundaryEvent> {
 
 	@Override
 	protected Class<BoundaryEvent> getClassType() {
@@ -19,7 +18,7 @@ public class AttachedToComparator extends UpcastComparator<BoundaryEvent>
 
 	@Override
 	protected Stream<Action> compare(final CompareContext<BoundaryEvent> compareContext) {
-		return compareStringProperty(e -> Optional.ofNullable(e.getAttachedTo())
+		return PropertyComparator.compareStringProperty(e -> Optional.ofNullable(e.getAttachedTo())
 						.map(BaseElement::getId)
 						.orElse(null),
 				ChangeAttachedToAction.class, compareContext);

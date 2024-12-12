@@ -11,17 +11,18 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class ErrorEventDefinitionComparator
-		implements PropertyComparator<BaseElement, String> {
+import static de.brokenpipe.cadiff.core.diff.control.comparators.PropertyComparator.compareProperty;
+
+public class ErrorEventDefinitionComparator implements Comparator {
 
 	@Override
 	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {
 
-		if (compareContext.from() instanceof final ThrowEvent fromThrowEvent && compareContext.to() instanceof final ThrowEvent toThrowEvent) {
+		if (compareContext.from() instanceof ThrowEvent && compareContext.to() instanceof ThrowEvent) {
 			return compare(x -> ((ThrowEvent) x).getEventDefinitions(), compareContext);
 		}
 
-		if (compareContext.from() instanceof final CatchEvent fromCatchEvent && compareContext.to() instanceof final CatchEvent toCatchEvent) {
+		if (compareContext.from() instanceof CatchEvent && compareContext.to() instanceof CatchEvent) {
 			return compare(x -> ((CatchEvent) x).getEventDefinitions(), compareContext);
 		}
 

@@ -9,8 +9,9 @@ import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ExclusiveGatewayDefaultComparator extends UpcastComparator<ExclusiveGateway>
-		implements StringPropertyComparator<ExclusiveGateway> {
+import static de.brokenpipe.cadiff.core.diff.control.comparators.PropertyComparator.compareStringProperty;
+
+public class ExclusiveGatewayDefaultComparator extends UpcastComparator<ExclusiveGateway> {
 
 	@Override
 	protected Class<ExclusiveGateway> getClassType() {

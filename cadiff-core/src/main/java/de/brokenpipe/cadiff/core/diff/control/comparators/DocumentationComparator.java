@@ -11,7 +11,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class DocumentationComparator implements StringPropertyComparator<BaseElement> {
+import static de.brokenpipe.cadiff.core.diff.control.comparators.PropertyComparator.compareStringProperty;
+
+public class DocumentationComparator implements Comparator {
 
 	@Override
 	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {

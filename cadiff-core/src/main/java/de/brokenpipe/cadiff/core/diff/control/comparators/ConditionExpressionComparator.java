@@ -9,8 +9,9 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ConditionExpressionComparator extends UpcastComparator<SequenceFlow>
-		implements StringPropertyComparator<SequenceFlow> {
+import static de.brokenpipe.cadiff.core.diff.control.comparators.PropertyComparator.compareStringProperty;
+
+public class ConditionExpressionComparator extends UpcastComparator<SequenceFlow> {
 
 	@Override
 	protected Class<SequenceFlow> getClassType() {

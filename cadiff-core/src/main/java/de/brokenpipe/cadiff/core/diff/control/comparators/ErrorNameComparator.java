@@ -7,7 +7,9 @@ import org.camunda.bpm.model.bpmn.instance.Error;
 
 import java.util.stream.Stream;
 
-public class ErrorNameComparator extends UpcastComparator<Error> implements StringPropertyComparator<Error> {
+import static de.brokenpipe.cadiff.core.diff.control.comparators.PropertyComparator.compareStringProperty;
+
+public class ErrorNameComparator extends UpcastComparator<Error> {
 
 	@Override
 	protected Class<Error> getClassType() {

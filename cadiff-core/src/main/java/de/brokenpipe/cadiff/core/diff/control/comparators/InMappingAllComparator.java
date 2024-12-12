@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class InMappingAllComparator
-		implements Comparator, PropertyComparator<BaseElement, ChangeInMappingAllAction.Config> {
+import static de.brokenpipe.cadiff.core.diff.control.comparators.PropertyComparator.compareProperty;
+
+public class InMappingAllComparator implements Comparator {
 
 	@Override
 	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {

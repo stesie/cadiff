@@ -1,15 +1,21 @@
 package de.brokenpipe.cadiff.core.actions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.brokenpipe.cadiff.core.patch.control.patchers.ChangeSignalEventDefinitionPatcher;
+import de.brokenpipe.cadiff.core.patch.control.patchers.ChangeEventDefinitionPatcher;
 import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
+import org.camunda.bpm.model.bpmn.instance.Signal;
+import org.camunda.bpm.model.bpmn.instance.SignalEventDefinition;
+
+import static org.camunda.bpm.model.bpmn.impl.BpmnModelConstants.BPMN_ATTRIBUTE_SIGNAL_REF;
 
 public record ChangeSignalEventDefinitionAction(String id, String signalDefinitionId, String oldSignalRef,
 												String newSignalRef) implements Action, ChangePropertyAction<String> {
 
 	@Override
 	public Patcher patcher() {
-		return new ChangeSignalEventDefinitionPatcher(this);
+		return new ChangeEventDefinitionPatcher<>(this, SignalEventDefinition.class, Signal.class,
+				ChangeSignalEventDefinitionAction::signalDefinitionId, SignalEventDefinition::getSignal,
+				SignalEventDefinition::setSignal, BPMN_ATTRIBUTE_SIGNAL_REF);
 	}
 
 	@Override

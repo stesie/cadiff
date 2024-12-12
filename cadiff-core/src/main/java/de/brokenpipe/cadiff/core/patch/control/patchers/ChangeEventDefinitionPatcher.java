@@ -1,24 +1,32 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
-import de.brokenpipe.cadiff.core.actions.ChangeErrorEventDefinitionAction;
+import de.brokenpipe.cadiff.core.actions.ChangePropertyAction;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.ValueMismatchException;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
-import org.camunda.bpm.model.bpmn.instance.Error;
-import org.camunda.bpm.model.bpmn.instance.*;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.camunda.bpm.model.bpmn.instance.CatchEvent;
+import org.camunda.bpm.model.bpmn.instance.EventDefinition;
+import org.camunda.bpm.model.bpmn.instance.ThrowEvent;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.util.Collection;
 import java.util.Optional;
-
-import static org.camunda.bpm.model.bpmn.impl.BpmnModelConstants.BPMN_ATTRIBUTE_ERROR_REF;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
-public class ChangeErrorEventDefinitionPatcher extends AbstractPatcher implements Patcher {
+public class ChangeEventDefinitionPatcher<AT extends ChangePropertyAction<String>, ED extends EventDefinition, T extends BaseElement> extends AbstractPatcher implements Patcher {
 
-	private final ChangeErrorEventDefinitionAction action;
+	private final AT action;
+	private final Class<ED> edClass;
+	private final Class<T> tClass;
+	private final Function<AT, String> definitionIdReader;
+	private final Function<ED, T> getter;
+	private final BiConsumer<ED, T> setter;
+	private final String attributeName;
 
 	@Override
 	public void accept(final PatcherContext context) {
@@ -41,40 +49,40 @@ public class ChangeErrorEventDefinitionPatcher extends AbstractPatcher implement
 	private void updateEventDefinition(final PatcherContext context, final ModelElementInstance target,
 			final Collection<EventDefinition> eventDefinitions) {
 
-		final ErrorEventDefinition errorDef = eventDefinitions.stream()
-				.filter(x -> x.getId().equals(action.errorDefinitionId()))
+		final ED def = eventDefinitions.stream()
+				.filter(x -> x.getId().equals(definitionIdReader.apply(action)))
 				.findFirst()
 				.map(eventDefinition -> {
-					if (eventDefinition instanceof final ErrorEventDefinition errorEventDefinition) {
-						return errorEventDefinition;
+					if (edClass.isInstance(eventDefinition)) {
+						return edClass.cast(eventDefinition);
 					}
 
-					throw new UnexpectedTargetElementTypeException(action.errorDefinitionId(),
+					throw new UnexpectedTargetElementTypeException(definitionIdReader.apply(action),
 							target.getClass().getSimpleName(),
-							ErrorEventDefinition.class.getSimpleName());
+							edClass.getSimpleName());
 				})
 				.orElseGet(() -> {
 					final var ed = context.getModelInstance()
-							.newInstance(ErrorEventDefinition.class, action.errorDefinitionId());
+							.newInstance(edClass, definitionIdReader.apply(action));
 					target.addChildElement(ed);
 					return ed;
 				});
 
-		final String actualOldValue = Optional.ofNullable(errorDef.getError()).map(BaseElement::getId).orElse(null);
+		final String actualOldValue = Optional.ofNullable(getter.apply(def)).map(BaseElement::getId).orElse(null);
 
 		if (actualOldValue == null
-				? action.oldErrorRef() != null
-				: !actualOldValue.equals(action.oldErrorRef())) {
-			throw new ValueMismatchException(action.id() + "/" + action.errorDefinitionId(), actualOldValue,
-					action.oldErrorRef());
+				? action.oldValue() != null
+				: !actualOldValue.equals(action.oldValue())) {
+			throw new ValueMismatchException(action.id() + "/" + definitionIdReader.apply(action), actualOldValue,
+					action.oldValue());
 		}
 
-		if (action.newErrorRef() == null) {
-			errorDef.removeAttribute(BPMN_ATTRIBUTE_ERROR_REF);
+		if (action.newValue() == null) {
+			def.removeAttribute(attributeName);
 			return;
 		}
 
-		final Error refError = findTargetWithType(context, action.newErrorRef(), Error.class);
-		errorDef.setError(refError);
+		final T ref = findTargetWithType(context, action.newValue(), tClass);
+		setter.accept(def, ref);
 	}
 }

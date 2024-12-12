@@ -4,3 +4,4 @@ de.brokenpipe.cadiff.core.diff.control.creators.InsertNodeOnEdgeCreator
 de.brokenpipe.cadiff.core.diff.control.creators.AddBranchToGatewayCreator
 de.brokenpipe.cadiff.core.diff.control.creators.AddBoundaryEventBranchCreator
 de.brokenpipe.cadiff.core.diff.control.creators.ErrorCreator
+de.brokenpipe.cadiff.core.diff.control.creators.SignalCreator

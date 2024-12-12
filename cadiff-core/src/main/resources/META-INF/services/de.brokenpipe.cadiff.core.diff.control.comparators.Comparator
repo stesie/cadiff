@@ -1,7 +1,7 @@
 de.brokenpipe.cadiff.core.diff.control.comparators.GenericPropertyComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.SubProcessComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.AttachedToComparator
-de.brokenpipe.cadiff.core.diff.control.comparators.ErrorEventDefinitionComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.EventDefinitionComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.SequenceFlowComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.ExecutionListenerComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.TaskListenerComparator

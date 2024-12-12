@@ -14,10 +14,6 @@ public class PatcherContext {
 	private final BpmnModelInstance modelInstance;
 	private final BpmnModelElementInstance containerElement;
 
-	public static PatcherContext of(final BpmnModelInstance modelInstance) {
-		return new PatcherContext(modelInstance, null);
-	}
-
 	public static PatcherContext of(final BpmnModelInstance fromInstance, final BpmnModelElementInstance container) {
 		return new PatcherContext(fromInstance, container);
 	}

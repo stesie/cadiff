@@ -89,4 +89,56 @@ public class ErrorEndEventIT {
 
 		}
 	}
+
+
+	@Nested
+	public class RemoveRefFromExistingEndEvent extends AbstractComparePatchIT {
+
+		public RemoveRefFromExistingEndEvent(@BpmnFile("error-end-event-with-ref.bpmn") final BpmnModelInstance from,
+				@BpmnFile("error-end-event.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+			// expect exactly on change, removal of the global error, the rest should just cascade
+			changes.assertSize(1)
+					.assertExactlyOneInstanceOf(DeleteElementAction.class)
+					.assertEquals(ERROR_ID, DeleteElementAction::id);
+
+		}
+	}
+
+	@Nested
+	public class AddRefToExistingEndEvent extends AbstractComparePatchIT {
+
+		public AddRefToExistingEndEvent(@BpmnFile("error-end-event.bpmn") final BpmnModelInstance from,
+				@BpmnFile("error-end-event-with-ref.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+			changes.assertSize(3);
+
+			changes.assertExactlyOneInstanceOf(AddErrorAction.class)
+					.assertEquals(ERROR_ID, AddErrorAction::id);
+
+			changes.assertExactlyOneInstanceOf(ChangeErrorNameAction.class)
+					.assertEquals(ERROR_ID, ChangeErrorNameAction::id)
+					.assertEquals("Validation failed", ChangeErrorNameAction::newValue);
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions()
+					.assertSize(1);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeErrorEventDefinitionAction.class)
+					.assertEquals(ELEMENT_ID, ChangeErrorEventDefinitionAction::id)
+					.assertEquals("ErrorEventDefinition_1ki687q", ChangeErrorEventDefinitionAction::errorDefinitionId);
+
+		}
+	}
 }

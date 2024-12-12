@@ -9,6 +9,6 @@ import de.brokenpipe.cadiff.core.actions.SingleIdRelatedAction;
  */
 public interface SingleIdRelatedActionPrinter extends ActionPrinter {
 
-	public void writeLine(final ActionPrintContext context, final SingleIdRelatedAction action, final String leader,
+	void writeLine(final ActionPrintContext context, final SingleIdRelatedAction action, final String leader,
 			final AbstractActionPrinter.ChangeType changeType);
 }

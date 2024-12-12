@@ -3,6 +3,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeErrorEventDefinitionAction;
 import de.brokenpipe.cadiff.core.actions.ChangeSignalEventDefinitionAction;
+import de.brokenpipe.cadiff.core.actions.RemoveEventDefinitionAction;
 import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.*;
 
@@ -44,6 +45,14 @@ public class EventDefinitionComparator implements Comparator {
 									.filter(x -> Objects.equals(x.getId(), eventDefinitionId))
 									.findFirst();
 
+					final var edFrom = edLookup.apply(compareContext.from());
+					final var edTo = edLookup.apply(compareContext.to());
+
+					// special case, event definition removed completely
+					if (edFrom.isPresent() && edTo.isEmpty()) {
+						return Stream.of(new RemoveEventDefinitionAction(compareContext.from().getId(), edFrom.get().getId()));
+					}
+
 					final Optional<Action> compareResult = compareProperty(
 							baseElement -> {
 								final Optional<EventDefinition> ed = edLookup.apply(baseElement);
@@ -80,8 +89,6 @@ public class EventDefinitionComparator implements Comparator {
 						return compareResult.stream();
 					}
 
-					final var edFrom = edLookup.apply(compareContext.from());
-					final var edTo = edLookup.apply(compareContext.to());
 
 					// special case: error definition created, but no error referenced
 					if (edFrom.isEmpty() && edTo.isPresent()) {

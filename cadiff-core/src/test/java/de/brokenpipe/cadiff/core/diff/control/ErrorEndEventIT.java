@@ -10,6 +10,7 @@ public class ErrorEndEventIT {
 	public static final String ERROR_ID = "Error_170pjce";
 	public static final String PROCESS_ID = "Process_132av6t";
 	public static final String ELEMENT_ID = "EndEvent_1";
+	public static final String ERROR_EVENT_DEFINITION_ID = "ErrorEventDefinition_1ki687q";
 
 	@Nested
 	public class WithoutRef extends AbstractComparePatchIT {
@@ -42,7 +43,7 @@ public class ErrorEndEventIT {
 			changeProcessActions.nextAction()
 					.assertInstanceOf(ChangeErrorEventDefinitionAction.class)
 					.assertEquals(ELEMENT_ID, ChangeErrorEventDefinitionAction::id)
-					.assertEquals("ErrorEventDefinition_1ki687q", ChangeErrorEventDefinitionAction::errorDefinitionId);
+					.assertEquals(ERROR_EVENT_DEFINITION_ID, ChangeErrorEventDefinitionAction::errorDefinitionId);
 
 		}
 	}
@@ -85,7 +86,7 @@ public class ErrorEndEventIT {
 			changeProcessActions.nextAction()
 					.assertInstanceOf(ChangeErrorEventDefinitionAction.class)
 					.assertEquals(ELEMENT_ID, ChangeErrorEventDefinitionAction::id)
-					.assertEquals("ErrorEventDefinition_1ki687q", ChangeErrorEventDefinitionAction::errorDefinitionId);
+					.assertEquals(ERROR_EVENT_DEFINITION_ID, ChangeErrorEventDefinitionAction::errorDefinitionId);
 
 		}
 	}
@@ -137,8 +138,74 @@ public class ErrorEndEventIT {
 			changeProcessActions.nextAction()
 					.assertInstanceOf(ChangeErrorEventDefinitionAction.class)
 					.assertEquals(ELEMENT_ID, ChangeErrorEventDefinitionAction::id)
-					.assertEquals("ErrorEventDefinition_1ki687q", ChangeErrorEventDefinitionAction::errorDefinitionId);
+					.assertEquals(ERROR_EVENT_DEFINITION_ID, ChangeErrorEventDefinitionAction::errorDefinitionId);
 
 		}
 	}
+
+	@Nested
+	public class ConvertErrorEndEventToRegularEndEvent extends AbstractComparePatchIT {
+
+		public ConvertErrorEndEventToRegularEndEvent(@BpmnFile("error-end-event-with-ref.bpmn") final BpmnModelInstance from,
+				@BpmnFile("end-event.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+			changes.assertSize(2);
+
+			changes.assertExactlyOneInstanceOf(DeleteElementAction.class)
+					.assertEquals(ERROR_ID, DeleteElementAction::id);
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions()
+					.assertSize(2);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeNameAction.class)
+					.assertEquals(ELEMENT_ID, ChangeNameAction::id)
+					.assertEquals("validation failed", ChangeNameAction::oldValue)
+					.assertEquals("just a end event", ChangeNameAction::newValue);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(RemoveEventDefinitionAction.class)
+					.assertEquals(ELEMENT_ID, RemoveEventDefinitionAction::id)
+					.assertEquals(ERROR_EVENT_DEFINITION_ID, RemoveEventDefinitionAction::eventDefinitionId);
+		}
+	}
+
+
+	@Nested
+	public class ConvertErrorEndEventToRegularEndEventKeepError extends AbstractComparePatchIT {
+
+		public ConvertErrorEndEventToRegularEndEventKeepError(@BpmnFile("error-end-event-with-ref.bpmn") final BpmnModelInstance from,
+				@BpmnFile("end-event-with-error-def.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions()
+					.assertSize(2);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeNameAction.class)
+					.assertEquals(ELEMENT_ID, ChangeNameAction::id)
+					.assertEquals("validation failed", ChangeNameAction::oldValue)
+					.assertEquals("just a end event", ChangeNameAction::newValue);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(RemoveEventDefinitionAction.class)
+					.assertEquals(ELEMENT_ID, RemoveEventDefinitionAction::id)
+					.assertEquals(ERROR_EVENT_DEFINITION_ID, RemoveEventDefinitionAction::eventDefinitionId);
+		}
+	}
+
 }

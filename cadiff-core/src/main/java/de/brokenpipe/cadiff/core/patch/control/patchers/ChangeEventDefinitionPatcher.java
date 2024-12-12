@@ -1,76 +1,41 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
-import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.ValueMismatchException;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
-import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
-import org.camunda.bpm.model.bpmn.instance.CatchEvent;
 import org.camunda.bpm.model.bpmn.instance.EventDefinition;
-import org.camunda.bpm.model.bpmn.instance.ThrowEvent;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-@RequiredArgsConstructor
-public class ChangeEventDefinitionPatcher<ED extends EventDefinition, T extends BaseElement> extends AbstractPatcher implements Patcher {
+public class ChangeEventDefinitionPatcher<ED extends EventDefinition, T extends BaseElement>
+	extends AbstractChangeEventDefinitionPatcher<ED> {
 
-	private final String id;
-	private final String definitionId;
 	private final String oldValue;
 	private final String newValue;
-	
-	private final Class<ED> edClass;
+
 	private final Class<T> tClass;
 	private final Function<ED, T> getter;
 	private final BiConsumer<ED, T> setter;
 	private final String attributeName;
 
-	@Override
-	public void accept(final PatcherContext context) {
-		final ModelElementInstance target = context.getModelInstance().getModelElementById(id);
+	public ChangeEventDefinitionPatcher(final String id, final String definitionId, final String oldValue,
+			final String newValue, final Class<ED> edClass, final Class<T> tClass, final Function<ED, T> getter,
+			final BiConsumer<ED, T> setter, final String attributeName) {
+		super(id, definitionId, edClass);
 
-		switch (target) {
-		case null -> throw new TargetElementNotFoundException(id);
-
-		case final ThrowEvent throwEvent ->
-				updateEventDefinition(context, target, throwEvent.getEventDefinitions());
-
-		case final CatchEvent catchEvent ->
-				updateEventDefinition(context, target, catchEvent.getEventDefinitions());
-
-		default -> throw new UnexpectedTargetElementTypeException(id, target.getClass().getSimpleName(),
-				ThrowEvent.class.getSimpleName());
-		}
+		this.oldValue = oldValue;
+		this.newValue = newValue;
+		this.tClass = tClass;
+		this.getter = getter;
+		this.setter = setter;
+		this.attributeName = attributeName;
 	}
 
-	private void updateEventDefinition(final PatcherContext context, final ModelElementInstance target,
-			final Collection<EventDefinition> eventDefinitions) {
-
-		final ED def = eventDefinitions.stream()
-				.filter(x -> x.getId().equals(definitionId))
-				.findFirst()
-				.map(eventDefinition -> {
-					if (edClass.isInstance(eventDefinition)) {
-						return edClass.cast(eventDefinition);
-					}
-
-					throw new UnexpectedTargetElementTypeException(definitionId,
-							target.getClass().getSimpleName(),
-							edClass.getSimpleName());
-				})
-				.orElseGet(() -> {
-					final var ed = context.getModelInstance()
-							.newInstance(edClass, definitionId);
-					target.addChildElement(ed);
-					return ed;
-				});
-
+	@Override
+	protected void applyChange(final PatcherContext context, final ED def) {
 		final String actualOldValue = Optional.ofNullable(getter.apply(def)).map(BaseElement::getId).orElse(null);
 
 		if (!Objects.equals(actualOldValue, oldValue)) {

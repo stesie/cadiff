@@ -34,12 +34,16 @@ public abstract class AbstractActionPrinter implements ActionPrinter {
 		System.out.printf("%s%35s : ", leader, attributeName);
 
 		if (type != ChangeType.ADD) {
-			System.out.print(ansi().fg(Ansi.Color.RED).a("%-40s".formatted(oldValue)).reset());
+			System.out.print(ansi().fg(Ansi.Color.RED).a("%-40s".formatted(normalize(oldValue))).reset());
 			System.out.print(" -> ");
 		}
 
-		System.out.print(ansi().fg(Ansi.Color.GREEN).a("%-40s".formatted(newValue)).reset());
+		System.out.print(ansi().fg(Ansi.Color.GREEN).a("%-40s".formatted(normalize(newValue))).reset());
 		System.out.println();
+	}
+
+	protected String normalize(final Object value) {
+		return String.valueOf(value).replace('\n', ' ');
 	}
 
 	protected void printElementLine(final ActionPrintContext context, final String attributeName, final String id, final ChangeType type) {

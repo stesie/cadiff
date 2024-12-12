@@ -1,12 +1,13 @@
 package de.brokenpipe.cadiff.core.actions;
 
-import de.brokenpipe.cadiff.core.patch.control.patchers.ChangeCamundaClassPatcher;
+import de.brokenpipe.cadiff.core.patch.control.patchers.GenericChangePropertyPatcher;
 import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
+import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 
 public record ChangeCamundaClassAction(String id, String oldValue, String newValue) implements ChangePropertyAction<String> {
 
 	@Override
 	public Patcher patcher() {
-		return new ChangeCamundaClassPatcher(this);
+		return new GenericChangePropertyPatcher<>(this, ServiceTask.class, ServiceTask::getCamundaClass, ServiceTask::setCamundaClass);
 	}
 }

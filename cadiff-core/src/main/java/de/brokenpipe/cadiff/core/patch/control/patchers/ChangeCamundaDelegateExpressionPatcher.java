@@ -6,7 +6,7 @@ import org.camunda.bpm.model.bpmn.instance.SendTask;
 import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.camunda.bpm.model.bpmn.instance.Task;
 
-public class ChangeCamundaDelegateExpressionPatcher extends AbstractChangePropertyPatcher<Task, String> {
+public class ChangeCamundaDelegateExpressionPatcher extends GenericChangePropertyPatcher<Task, String> {
 
 	public ChangeCamundaDelegateExpressionPatcher(final ChangeCamundaDelegateExpressionAction action) {
 		super(action, Task.class,

@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public abstract class AbstractChangePropertyPatcher<ElementT extends BaseElement, ValueT>
+public class GenericChangePropertyPatcher<ElementT extends BaseElement, ValueT>
 		extends AbstractPatcher implements Patcher {
 
 	private final ChangePropertyAction<ValueT> action;

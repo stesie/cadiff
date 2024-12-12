@@ -18,11 +18,8 @@ public class ActionCollectionAssertions {
 		this.actionsIterator = actions.iterator();
 	}
 
-	public <T> T assertExactlyOneInstanceOf(final Class<T> clazz) {
-		final var matches = actions.stream().filter(clazz::isInstance).toList();
-		assertEquals(1, matches.size(), "only one action of type '%s' expected, but got %d"
-				.formatted(clazz.getSimpleName(), Long.valueOf(matches.size())));
-		return clazz.cast(matches.getFirst());
+	public <T extends Action> ActionAssertions<T> assertExactlyOneInstanceOf(final Class<T> clazz) {
+		return new ActionAssertions<>(findExactlyOneInstanceOf(clazz));
 	}
 
 	public ActionCollectionAssertions assertSize(final int count) {
@@ -32,11 +29,19 @@ public class ActionCollectionAssertions {
 	}
 
 	public ChangeProcessActionAssertions assertExactlyOneChangeProcessAction() {
-		final var process = assertExactlyOneInstanceOf(ChangeProcessAction.class);
+		final var process = findExactlyOneInstanceOf(ChangeProcessAction.class);
 		return new ChangeProcessActionAssertions(process);
 	}
 
 	public ActionAssertions<Action> nextAction() {
 		return new ActionAssertions<>(actionsIterator.next());
 	}
+
+	private <T> T findExactlyOneInstanceOf(final Class<T> clazz) {
+		final var matches = actions.stream().filter(clazz::isInstance).toList();
+		assertEquals(1, matches.size(), "only one action of type '%s' expected, but got %d"
+				.formatted(clazz.getSimpleName(), Long.valueOf(matches.size())));
+		return clazz.cast(matches.getFirst());
+	}
+
 }

@@ -10,23 +10,28 @@ import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.util.List;
 import java.util.Optional;
 
 public abstract class AbstractPatcher {
 
+	protected BaseElement addElement(final PatcherContext context, final String id, final ModelElementType elementType) {
+		final BaseElement addedElement = context.getModelInstance().newInstance(elementType, id);
+		context.getContainerElement().addChildElement(addedElement);
+
+		return addedElement;
+	}
+
 	protected void addFlowElement(final PatcherContext context, final String id, final String typeName,
 			final de.brokenpipe.cadiff.core.Bounds actionBounds) {
-		final var elementType = context.getModelInstance().getModel().getTypes().stream()
+		final ModelElementType elementType = context.getModelInstance().getModel().getTypes().stream()
 				.filter(x -> x.getTypeName().equals(typeName))
 				.findFirst()
 				.orElseThrow(); // FIXME
 
-		final BaseElement addedElement = context.getModelInstance().newInstance(elementType, id);
-
-		final BaseElement containerElement = context.getContainerElement();
-		containerElement.addChildElement(addedElement);
+		final BaseElement addedElement = addElement(context, id, elementType);
 
 		final var di = context.getModelInstance().newInstance(BpmnShape.class, id + "_di");
 		di.setBpmnElement(addedElement);
@@ -37,6 +42,12 @@ public abstract class AbstractPatcher {
 		bounds.setY(actionBounds.y().doubleValue());
 		bounds.setWidth(actionBounds.width().doubleValue());
 		bounds.setHeight(actionBounds.height().doubleValue());
+
+		final BpmnModelElementInstance container = context.getContainerElement();
+
+		if (!(container instanceof final BaseElement containerElement)) {
+			throw new IllegalStateException("Container element is not a BaseElement, cannot create diagramElement");
+		}
 
 		final var diagramRoot = findRootElementByType(context.getModelInstance(), Collaboration.class)
 				.map(BaseElement::getDiagramElement)
@@ -49,7 +60,12 @@ public abstract class AbstractPatcher {
 
 		final SequenceFlow addedElement = context.getModelInstance().newInstance(SequenceFlow.class, id);
 
-		final BaseElement containerElement = context.getContainerElement();
+		final BpmnModelElementInstance container = context.getContainerElement();
+
+		if (!(container instanceof final BaseElement containerElement)) {
+			throw new IllegalStateException("Container element is not a BaseElement, cannot create diagramElement");
+		}
+
 		containerElement.addChildElement(addedElement);
 
 		updateSequenceFlow(context, addedElement, sourceId, targetId);

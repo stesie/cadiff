@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1qcpojs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
+  <bpmn:process id="Process_132av6t" isExecutable="true">
+    <bpmn:endEvent id="EndEvent_1" name="validation failed">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1ki687q" errorRef="Error_170pjce" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:error id="Error_170pjce" name="Validation failed" errorCode="VALIDATION_FAILED" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_132av6t">
+      <bpmndi:BPMNShape id="Event_09pqmpk_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="122" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

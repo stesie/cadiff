@@ -6,6 +6,7 @@ import org.camunda.bpm.model.bpmn.instance.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -35,6 +36,12 @@ public class GenericPropertyComparator implements Comparator {
 					Boolean.class, ChangeCamundaAsyncBeforeAction.class),
 			new GenericPropertyMappingRecord<>(FlowNode.class, FlowNode::isCamundaExclusive,
 					Boolean.class, ChangeCamundaExclusiveAction.class),
+
+			new GenericPropertyMappingRecord<>(Participant.class, Participant::getName,
+					String.class, ChangeParticipantNameAction.class),
+			new GenericPropertyMappingRecord<>(Participant.class,
+					p -> Optional.ofNullable(p.getProcess()).map(BaseElement::getId).orElse(null),
+					String.class, ChangeParticipantProcessAction.class),
 
 			new GenericPropertyMappingRecord<>(SendTask.class, SendTask::getCamundaDelegateExpression,
 					String.class, ChangeCamundaDelegateExpressionAction.class),

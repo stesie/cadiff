@@ -19,7 +19,11 @@ public class DocumentWalker {
 
 	public Stream<Action> walk() {
 
-		return StreamUtils.mergeStreams(List.of(walkErrors(), walkSignals(), walkProcesses()));
+		return StreamUtils.mergeStreams(List.of(walkErrors(), walkSignals(), walkProcesses(), walkCollaboration()));
+	}
+
+	private Stream<Action> walkCollaboration() {
+		return (new CollaborationWalker(compareContext.map(findRootElementsOfType(Collaboration.class))).walk());
 	}
 
 	private Stream<Action> walkProcesses() {

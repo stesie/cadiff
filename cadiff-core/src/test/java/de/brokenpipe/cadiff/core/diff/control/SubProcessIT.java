@@ -2,8 +2,12 @@ package de.brokenpipe.cadiff.core.diff.control;
 
 import de.brokenpipe.cadiff.core.actions.AddSimpleFlowNodeAction;
 import de.brokenpipe.cadiff.core.actions.ChangeNameAction;
+import de.brokenpipe.cadiff.core.actions.DeleteElementAction;
 import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
+import de.brokenpipe.cadiff.core.diff.boundary.DiffCommand;
+import de.brokenpipe.cadiff.core.diff.entity.ChangeSet;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.junit.jupiter.api.Test;
 
 public class SubProcessIT extends AbstractComparePatchIT {
 
@@ -58,4 +62,28 @@ public class SubProcessIT extends AbstractComparePatchIT {
 				.assertEquals(START_EVENT_IN_SUB_PROCESS_ID, ChangeNameAction::id)
 				.assertEquals("start event in sub process", ChangeNameAction::newValue);
 	}
+
+	@Test
+	void shouldCreateCorrectReverseChanges() {
+		final ChangeSet changeSet = new DiffCommand(to, from).execute();
+		final var changes = new ActionCollectionAssertions(changeSet.changes());
+
+		// top level
+		final ActionCollectionAssertions changeProcessActions = changes
+				.assertSize(1)
+				.assertExactlyOneChangeProcessAction()
+				.assertId(PROCESS_ID)
+				.actions()
+				.assertSize(2);
+
+		// expect subprocess and start event to be removed (-> the sub process elements are removed implicitly)
+		changeProcessActions.nextAction()
+				.assertInstanceOf(DeleteElementAction.class)
+				.assertEquals(SUB_PROCESS_ID, DeleteElementAction::id);
+
+		changeProcessActions.nextAction()
+				.assertInstanceOf(DeleteElementAction.class)
+				.assertEquals(ELEMENT_ID, DeleteElementAction::id);
+	}
+
 }

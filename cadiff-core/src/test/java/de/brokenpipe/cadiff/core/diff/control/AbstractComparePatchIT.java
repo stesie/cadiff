@@ -20,7 +20,7 @@ public abstract class AbstractComparePatchIT {
 	protected abstract void verifyForwardChanges(final ActionCollectionAssertions changes);
 
 	@Test
-	void shouldCreateCorrectChanges() {
+	void shouldCreateCorrectForwardChanges() {
 		final ChangeSet changeSet = new DiffCommand(from, to).execute();
 		verifyForwardChanges(new ActionCollectionAssertions(changeSet.changes()));
 	}

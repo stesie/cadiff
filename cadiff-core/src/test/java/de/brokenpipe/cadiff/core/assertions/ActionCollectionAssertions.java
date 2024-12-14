@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.assertions;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.processes.ChangeProcessAction;
+import de.brokenpipe.cadiff.core.actions.processes.ChangeSubProcessAction;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -30,6 +31,11 @@ public class ActionCollectionAssertions {
 
 	public ChangeProcessActionAssertions assertExactlyOneChangeProcessAction() {
 		final var process = findExactlyOneInstanceOf(ChangeProcessAction.class);
+		return new ChangeProcessActionAssertions(process);
+	}
+
+	public ChangeProcessActionAssertions assertExactlyOneChangeSubProcessAction() {
+		final var process = findExactlyOneInstanceOf(ChangeSubProcessAction.class);
 		return new ChangeProcessActionAssertions(process);
 	}
 

@@ -9,6 +9,7 @@ import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
+import org.camunda.bpm.model.bpmn.instance.di.DiagramElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
@@ -43,16 +44,29 @@ public abstract class AbstractPatcher {
 		bounds.setWidth(actionBounds.width().doubleValue());
 		bounds.setHeight(actionBounds.height().doubleValue());
 
-		final BpmnModelElementInstance container = context.getContainerElement();
+		final var diagramRoot = findDiagramRoot(context);
+		diagramRoot.addChildElement(di);
+	}
 
-		if (!(container instanceof final BaseElement containerElement)) {
-			throw new IllegalStateException("Container element is not a BaseElement, cannot create diagramElement");
+	protected DiagramElement findDiagramRoot(final PatcherContext context) {
+		final var collab = findRootElementByType(context.getModelInstance(), Collaboration.class)
+				.map(BaseElement::getDiagramElement);
+
+		if (collab.isPresent()) {
+			return collab.get();
 		}
 
-		final var diagramRoot = findRootElementByType(context.getModelInstance(), Collaboration.class)
-				.map(BaseElement::getDiagramElement)
-				.orElse(containerElement.getDiagramElement());
-		diagramRoot.addChildElement(di);
+		BpmnModelElementInstance container = context.getContainerElement();
+
+		while (container instanceof SubProcess) {
+			container = (BpmnModelElementInstance) container.getParentElement();
+		}
+
+		if (container instanceof final BaseElement containerElement) {
+			return containerElement.getDiagramElement();
+		}
+
+		throw new IllegalStateException("Container element is not a BaseElement, cannot create diagramElement");
 	}
 
 	protected void addSequenceFlow(final PatcherContext context, final String id,

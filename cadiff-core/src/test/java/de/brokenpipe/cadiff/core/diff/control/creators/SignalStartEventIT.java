@@ -1,7 +1,9 @@
-package de.brokenpipe.cadiff.core.diff.control;
+package de.brokenpipe.cadiff.core.diff.control.creators;
 
 import de.brokenpipe.cadiff.core.actions.*;
 import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
+import de.brokenpipe.cadiff.core.diff.control.AbstractComparePatchIT;
+import de.brokenpipe.cadiff.core.diff.control.BpmnFile;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.jupiter.api.Nested;
 

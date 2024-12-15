@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RequiredArgsConstructor
 public abstract class AbstractComparePatchIT {
 
-	final BpmnModelInstance from;
-	final BpmnModelInstance to;
+	protected final BpmnModelInstance from;
+	protected final BpmnModelInstance to;
 
 	protected abstract void verifyForwardChanges(final ActionCollectionAssertions changes);
 

@@ -25,7 +25,7 @@ public class InMappingIT {
 	@Nested
 	public class EnablePropagateAll extends AbstractComparePatchIT {
 
-		public EnablePropagateAll(@BpmnFile("in-mapping-none.bpmn") final BpmnModelInstance from,
+		public EnablePropagateAll(@BpmnFile("mapping-none.bpmn") final BpmnModelInstance from,
 				@BpmnFile("in-mapping-propagate-all.bpmn") final BpmnModelInstance to) {
 			super(from, to);
 		}
@@ -70,7 +70,7 @@ public class InMappingIT {
 	@Nested
 	public class EnablePropagateAllLocal extends AbstractComparePatchIT {
 
-		public EnablePropagateAllLocal(@BpmnFile("in-mapping-none.bpmn") final BpmnModelInstance from,
+		public EnablePropagateAllLocal(@BpmnFile("mapping-none.bpmn") final BpmnModelInstance from,
 				@BpmnFile("in-mapping-propagate-all-local.bpmn") final BpmnModelInstance to) {
 			super(from, to);
 		}
@@ -97,7 +97,7 @@ public class InMappingIT {
 	@Nested
 	public class AddValueMappings extends AbstractComparePatchIT {
 
-		public AddValueMappings(@BpmnFile("in-mapping-none.bpmn") final BpmnModelInstance from,
+		public AddValueMappings(@BpmnFile("mapping-none.bpmn") final BpmnModelInstance from,
 				@BpmnFile("in-mapping-values.bpmn") final BpmnModelInstance to) {
 			super(from, to);
 		}

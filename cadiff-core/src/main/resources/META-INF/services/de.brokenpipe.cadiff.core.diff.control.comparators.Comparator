@@ -10,3 +10,4 @@ de.brokenpipe.cadiff.core.diff.control.comparators.ExclusiveGatewayDefaultCompar
 de.brokenpipe.cadiff.core.diff.control.comparators.ConditionExpressionComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.DocumentationComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.InMappingAllComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.InMappingComparator

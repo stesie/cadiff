@@ -3,6 +3,7 @@ package de.brokenpipe.cadiff.core.assertions;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.processes.ChangeProcessAction;
 import de.brokenpipe.cadiff.core.actions.processes.ChangeSubProcessAction;
+import lombok.Getter;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,7 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ActionCollectionAssertions {
 
+	@Getter
 	private final Collection<Action> actions;
+
 	private final Iterator<Action> actionsIterator;
 
 	public ActionCollectionAssertions(final Collection<Action> actions) {

@@ -20,7 +20,7 @@ public class ChangeInMappingAllPatcher extends AbstractPatcher implements Patche
 				.filter(x -> "all".equals(x.getCamundaVariables()))
 				.findFirst();
 
-		if (action.newValue().enabled() == Boolean.FALSE) {
+		if (!action.newValue().enabled()) {
 			existingIMA.ifPresent(extEl::removeChildElement);
 			return;
 		}

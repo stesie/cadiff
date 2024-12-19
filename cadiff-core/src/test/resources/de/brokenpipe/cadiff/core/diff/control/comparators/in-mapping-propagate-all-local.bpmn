@@ -2,7 +2,7 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1dcr4i7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
   <bpmn:process id="Process_14ftleg" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" />
-    <bpmn:callActivity id="CallActivity_1" name="in mapping">
+    <bpmn:callActivity id="CallActivity_1" name="do stuff">
       <bpmn:extensionElements>
         <camunda:in local="true" variables="all" />
       </bpmn:extensionElements>

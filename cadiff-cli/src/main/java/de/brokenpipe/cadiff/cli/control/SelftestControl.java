@@ -26,8 +26,8 @@ public class SelftestControl {
 	private final BpmnModelInstance expectation;
 	private final ChangeSet changeSet;
 
-	private final Set<ModelElementType> ignoreIfEmpty;
-	private final Set<ModelElementType> compareByName;
+	private final Collection<ModelElementType> ignoreIfEmpty;
+	private final Collection<ModelElementType> compareByName;
 
 	public SelftestControl(final BpmnModelInstance from, final BpmnModelInstance to, final ChangeSet changeSet) {
 		this.test = from.clone();
@@ -35,9 +35,9 @@ public class SelftestControl {
 		this.changeSet = changeSet;
 
 		ignoreIfEmpty =
-				Set.of(ExtensionElements.class, CamundaFormData.class).stream()
+				Stream.of(CamundaInputOutput.class, ExtensionElements.class, CamundaFormData.class)
 						.map(expectation.getModel()::getType)
-						.collect(Collectors.toSet());
+						.toList();
 		compareByName = Set.of(CamundaInputParameter.class, CamundaOutputParameter.class).stream()
 				.map(expectation.getModel()::getType)
 				.collect(Collectors.toSet());
@@ -109,15 +109,22 @@ public class SelftestControl {
 		compareChildren(expected, actual, path);
 	}
 
+	private boolean isEmpty(final DomElement element) {
+		if (ignoreIfEmpty.stream().noneMatch(type ->
+				type.getTypeNamespace().equals(element.getNamespaceURI())
+						&& type.getTypeName().equals(element.getLocalName()))) {
+			return false;
+		}
+
+		return element.getChildElements().isEmpty()
+				|| element.getChildElements().stream().allMatch(this::isEmpty);
+	}
+
 	private void compareChildren(final DomElement expected, final DomElement actual, final String path) {
-		ignoreIfEmpty.forEach(type -> {
-			Stream.of(expected, actual)
-					.flatMap(el -> el.getChildElements().stream())
-					.filter(c -> c.getChildElements().isEmpty())
-					.filter(c -> type.getTypeNamespace().equals(c.getNamespaceURI()))
-					.filter(c -> type.getTypeName().equals(c.getLocalName()))
-					.forEach(c -> c.getParentElement().removeChild(c));
-		});
+		Stream.of(expected, actual)
+				.flatMap(el -> el.getChildElements().stream())
+				.filter(this::isEmpty)
+				.forEach(c -> c.getParentElement().removeChild(c));
 
 		if (expected.getChildElements().size() != actual.getChildElements().size()) {
 			throw new SelftestException("Number of child elements mismatching", path);

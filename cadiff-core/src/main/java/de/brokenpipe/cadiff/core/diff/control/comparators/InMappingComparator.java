@@ -12,10 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-/**
- * Comparator for execution listeners. We don't try to identify updates. Just compare from and to lists and create add
- * and remove actions as needed.
- */
 public class InMappingComparator implements Comparator {
 	@Override
 	public Stream<Action> apply(final CompareContext<? extends BaseElement> compareContext) {

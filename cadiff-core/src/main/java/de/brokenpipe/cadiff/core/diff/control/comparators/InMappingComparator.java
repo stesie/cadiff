@@ -58,7 +58,10 @@ public class InMappingComparator implements Comparator {
 	private static List<CamundaIn> extractCamundaIns(final BaseElement el) {
 		return Optional.ofNullable(el.getExtensionElements())
 				.map(x -> x.getElementsQuery().filterByType(CamundaIn.class).list())
-				.orElse(Collections.emptyList());
+				.orElse(Collections.emptyList())
+				.stream()
+				.filter(x -> !"all".equals(x.getCamundaVariables()))
+				.toList();
 	}
 
 }

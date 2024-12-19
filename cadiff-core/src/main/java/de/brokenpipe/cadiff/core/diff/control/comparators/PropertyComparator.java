@@ -37,14 +37,14 @@ public class PropertyComparator  {
 		}
 
 		if (accessor.apply(compareContext.from()) == null) {
-			return Stream.of(actionCreator.apply(compareContext.to().getId(), null, accessor.apply(compareContext.to())));
+			return Stream.of(actionCreator.apply(compareContext.id(), null, accessor.apply(compareContext.to())));
 		}
 
 		if (accessor.apply(compareContext.from()).equals(accessor.apply(compareContext.to()))) {
 			return Stream.empty();
 		}
 
-		return Stream.of(actionCreator.apply(compareContext.to().getId(), accessor.apply(compareContext.from()), accessor.apply(
+		return Stream.of(actionCreator.apply(compareContext.id(), accessor.apply(compareContext.from()), accessor.apply(
 				compareContext.to())));
 	}
 

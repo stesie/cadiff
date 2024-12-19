@@ -1,18 +1,15 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
-import de.brokenpipe.cadiff.core.actions.Action;
-import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsAction;
-import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsCardinalityAction;
-import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsIsSequentialAction;
+import de.brokenpipe.cadiff.core.actions.*;
+import de.brokenpipe.cadiff.core.diff.control.StreamUtils;
 import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
+import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.CallActivity;
 import org.camunda.bpm.model.bpmn.instance.MultiInstanceLoopCharacteristics;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -34,45 +31,38 @@ public class LoopCharacteristicsComparator extends UpcastComparator<CallActivity
 			return Stream.empty();
 		}
 
-		final List<Action> actions = new ArrayList<>();
+		Optional<Action> activate = Optional.empty();
 
 		if (compareContext.from().getLoopCharacteristics() == null) {
 			// added
-			final var activate = new ChangeLoopCharacteristicsAction(compareContext.to().getId(),
-					Boolean.FALSE, Boolean.TRUE);
-			activate.patcher().accept(PatcherContext.of(compareContext.fromInstance(), compareContext.fromContainer()));
-			actions.add(activate);
+			activate = Optional.of(new ChangeLoopCharacteristicsAction(compareContext.to().getId(),
+					Boolean.FALSE, Boolean.TRUE));
+			activate.get().patcher().accept(PatcherContext.of(compareContext.fromInstance(), compareContext.fromContainer()));
 		}
 
-		if (!(compareContext.from().getLoopCharacteristics() instanceof final MultiInstanceLoopCharacteristics fromConfig)) {
-			throw new IllegalStateException("LoopCharacteristics is not a MultiInstanceLoopCharacteristics");
-		}
+		final CompareContext<MultiInstanceLoopCharacteristics> milcCompareContext = compareContext
+				.mapValue(Activity::getLoopCharacteristics)
+				.mapValue(MultiInstanceLoopCharacteristics.class::cast);
 
-		if (fromConfig.isSequential() != toConfig.isSequential()) {
-			actions.add(new ChangeLoopCharacteristicsIsSequentialAction(compareContext.to().getId(),
-					Boolean.valueOf(fromConfig.isSequential()), Boolean.valueOf(toConfig.isSequential())));
-		}
+		return StreamUtils.mergeStreams(List.of(
+				activate.stream(),
 
-		compareLoopCardinality(compareContext.to().getId(), fromConfig, toConfig).ifPresent(actions::add);
+				PropertyComparator.compareProperty(MultiInstanceLoopCharacteristics::isSequential,
+						Boolean.class, ChangeLoopCharacteristicsIsSequentialAction.class, milcCompareContext),
 
+				PropertyComparator.compareProperty(
+						x -> Optional.ofNullable(x.getLoopCardinality())
+								.map(ModelElementInstance::getTextContent).orElse(null),
+						String.class, ChangeLoopCharacteristicsCardinalityAction.class, milcCompareContext),
 
+				PropertyComparator.compareProperty(MultiInstanceLoopCharacteristics::getCamundaCollection,
+						String.class, ChangeLoopCharacteristicsCollectionAction.class, milcCompareContext),
 
-			// toConfig.isSequential()
-		// compareContext.from().getLoopCharacteristics()
-		return actions.stream();
+				PropertyComparator.compareProperty(MultiInstanceLoopCharacteristics::getCamundaElementVariable,
+						String.class, ChangeLoopCharacteristicsElementVariableAction.class, milcCompareContext)
+
+		));
+
 	}
 
-	private Optional<Action> compareLoopCardinality(final String id, final MultiInstanceLoopCharacteristics fromConfig,
-			final MultiInstanceLoopCharacteristics toConfig) {
-		final var from = Optional.ofNullable(fromConfig.getLoopCardinality())
-				.map(ModelElementInstance::getTextContent).orElse(null);
-		final var to = Optional.ofNullable(toConfig.getLoopCardinality())
-				.map(ModelElementInstance::getTextContent).orElse(null);
-
-		if (Objects.equals(from, to)) {
-			return Optional.empty();
-		}
-
-		return Optional.of(new ChangeLoopCharacteristicsCardinalityAction(id, from, to));
-	}
 }

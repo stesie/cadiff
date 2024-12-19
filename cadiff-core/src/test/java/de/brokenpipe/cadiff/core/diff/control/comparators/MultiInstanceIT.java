@@ -1,8 +1,6 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
-import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsAction;
-import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsCardinalityAction;
-import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsIsSequentialAction;
+import de.brokenpipe.cadiff.core.actions.*;
 import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
 import de.brokenpipe.cadiff.core.diff.boundary.DiffCommand;
 import de.brokenpipe.cadiff.core.diff.control.AbstractComparePatchIT;
@@ -158,6 +156,43 @@ public class MultiInstanceIT {
 					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsCardinalityAction::id)
 					.assertEquals(null, ChangeLoopCharacteristicsCardinalityAction::oldValue)
 					.assertEquals("3", ChangeLoopCharacteristicsCardinalityAction::newValue);
+
+		}
+	}
+
+
+	@Nested
+	class ChangeCollectionSettings extends AbstractComparePatchIT {
+
+		public static final String PROCESS_ID = "Process_14ftleg";
+		public static final String ELEMENT_ID = "CallActivity_1";
+
+		public ChangeCollectionSettings(@BpmnFile("multi-sequential.bpmn") final BpmnModelInstance from,
+				@BpmnFile("multi-collection.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions.assertSize(2);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeLoopCharacteristicsCollectionAction.class)
+					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsCollectionAction::id)
+					.assertEquals(null, ChangeLoopCharacteristicsCollectionAction::oldValue)
+					.assertEquals("${foos}", ChangeLoopCharacteristicsCollectionAction::newValue);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeLoopCharacteristicsElementVariableAction.class)
+					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsElementVariableAction::id)
+					.assertEquals(null, ChangeLoopCharacteristicsElementVariableAction::oldValue)
+					.assertEquals("foo", ChangeLoopCharacteristicsElementVariableAction::newValue);
 
 		}
 	}

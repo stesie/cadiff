@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsAction;
+import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsCardinalityAction;
 import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsIsSequentialAction;
 import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
 import de.brokenpipe.cadiff.core.diff.boundary.DiffCommand;
@@ -130,4 +131,35 @@ public class MultiInstanceIT {
 
 		}
 	}
+
+
+	@Nested
+	class ChangeCardinality extends AbstractComparePatchIT {
+
+		public static final String PROCESS_ID = "Process_14ftleg";
+		public static final String ELEMENT_ID = "CallActivity_1";
+
+		public ChangeCardinality(@BpmnFile("multi-sequential.bpmn") final BpmnModelInstance from,
+				@BpmnFile("multi-cardinality.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(ChangeLoopCharacteristicsCardinalityAction.class)
+					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsCardinalityAction::id)
+					.assertEquals(null, ChangeLoopCharacteristicsCardinalityAction::oldValue)
+					.assertEquals("3", ChangeLoopCharacteristicsCardinalityAction::newValue);
+
+		}
+	}
+
 }

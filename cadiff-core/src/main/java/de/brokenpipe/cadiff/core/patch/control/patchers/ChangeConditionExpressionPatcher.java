@@ -30,6 +30,7 @@ public class ChangeConditionExpressionPatcher extends AbstractPatcher implements
 
 		if (action.newValue() == null) {
 			targetElement.removeConditionExpression();
+			return;
 		}
 
 		final var conditionExpression = context.getModelInstance().newInstance(ConditionExpression.class);

@@ -59,7 +59,16 @@ public class LoopCharacteristicsComparator extends UpcastComparator<CallActivity
 						String.class, ChangeLoopCharacteristicsCollectionAction.class, milcCompareContext),
 
 				PropertyComparator.compareProperty(MultiInstanceLoopCharacteristics::getCamundaElementVariable,
-						String.class, ChangeLoopCharacteristicsElementVariableAction.class, milcCompareContext)
+						String.class, ChangeLoopCharacteristicsElementVariableAction.class, milcCompareContext),
+
+				PropertyComparator.compareProperty(MultiInstanceLoopCharacteristics::isCamundaAsyncBefore,
+						Boolean.class, ChangeLoopCharacteristicsAsyncBeforeAction.class, milcCompareContext),
+
+				PropertyComparator.compareProperty(MultiInstanceLoopCharacteristics::isCamundaAsyncAfter,
+						Boolean.class, ChangeLoopCharacteristicsAsyncAfterAction.class, milcCompareContext),
+
+				PropertyComparator.compareProperty(MultiInstanceLoopCharacteristics::isCamundaExclusive,
+						Boolean.class, ChangeLoopCharacteristicsExclusiveAction.class, milcCompareContext)
 
 		));
 

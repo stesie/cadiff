@@ -160,7 +160,6 @@ public class MultiInstanceIT {
 		}
 	}
 
-
 	@Nested
 	class ChangeCollectionSettings extends AbstractComparePatchIT {
 
@@ -193,6 +192,78 @@ public class MultiInstanceIT {
 					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsElementVariableAction::id)
 					.assertEquals(null, ChangeLoopCharacteristicsElementVariableAction::oldValue)
 					.assertEquals("foo", ChangeLoopCharacteristicsElementVariableAction::newValue);
+
+		}
+	}
+
+	@Nested
+	class ChangeAsyncBeforeAfter extends AbstractComparePatchIT {
+
+		public static final String PROCESS_ID = "Process_14ftleg";
+		public static final String ELEMENT_ID = "CallActivity_1";
+
+		public ChangeAsyncBeforeAfter(@BpmnFile("multi-collection.bpmn") final BpmnModelInstance from,
+				@BpmnFile("multi-collection-async.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions.assertSize(2);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeLoopCharacteristicsAsyncBeforeAction.class)
+					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsAsyncBeforeAction::id)
+					.assertEquals(Boolean.FALSE, ChangeLoopCharacteristicsAsyncBeforeAction::oldValue)
+					.assertEquals(Boolean.TRUE, ChangeLoopCharacteristicsAsyncBeforeAction::newValue);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeLoopCharacteristicsAsyncAfterAction.class)
+					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsAsyncAfterAction::id)
+					.assertEquals(Boolean.FALSE, ChangeLoopCharacteristicsAsyncAfterAction::oldValue)
+					.assertEquals(Boolean.TRUE, ChangeLoopCharacteristicsAsyncAfterAction::newValue);
+
+		}
+	}
+
+	@Nested
+	class ChangeAsyncExclusive extends AbstractComparePatchIT {
+
+		public static final String PROCESS_ID = "Process_14ftleg";
+		public static final String ELEMENT_ID = "CallActivity_1";
+
+		public ChangeAsyncExclusive(@BpmnFile("multi-collection.bpmn") final BpmnModelInstance from,
+				@BpmnFile("multi-collection-async-non-exclusive.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions.assertSize(2);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeLoopCharacteristicsAsyncAfterAction.class)
+					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsAsyncAfterAction::id)
+					.assertEquals(Boolean.FALSE, ChangeLoopCharacteristicsAsyncAfterAction::oldValue)
+					.assertEquals(Boolean.TRUE, ChangeLoopCharacteristicsAsyncAfterAction::newValue);
+
+			changeProcessActions.nextAction()
+					.assertInstanceOf(ChangeLoopCharacteristicsExclusiveAction.class)
+					.assertEquals(ELEMENT_ID, ChangeLoopCharacteristicsExclusiveAction::id)
+					.assertEquals(Boolean.TRUE, ChangeLoopCharacteristicsExclusiveAction::oldValue)
+					.assertEquals(Boolean.FALSE, ChangeLoopCharacteristicsExclusiveAction::newValue);
 
 		}
 	}

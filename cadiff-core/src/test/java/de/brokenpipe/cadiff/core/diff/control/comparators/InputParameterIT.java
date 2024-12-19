@@ -52,6 +52,10 @@ public class InputParameterIT extends AbstractComparePatchIT {
 		assertInstanceOf(Value.ListValue.class, inputList.newValue());
 		assertEquals(List.of("foo", "bar", "baz"), ((Value.ListValue) inputList.newValue()).values());
 
+		final var inputMap = actions.get("input_map");
+		assertInstanceOf(Value.MapValue.class, inputMap.newValue());
+		assertEquals(Map.of("foo", "foo_value", "bar", "bar_value"), ((Value.MapValue) inputMap.newValue()).entries());
+
 	}
 
 	

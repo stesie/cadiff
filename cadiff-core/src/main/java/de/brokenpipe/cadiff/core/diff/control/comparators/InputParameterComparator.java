@@ -57,10 +57,15 @@ public class InputParameterComparator implements Comparator {
 			@Override
 			protected Stream<Action> handleUpdated(final CamundaInputParameter ipFrom,
 					final CamundaInputParameter ipTo) {
-				return ipFrom.getTextContent().equals(ipTo.getTextContent())
-						? Stream.empty()
-						: Stream.of(new ChangeInputParameterAction(compareContext.to().getId(), ipFrom.getCamundaName(),
-								Value.of(ipFrom), Value.of(ipTo)));
+				final var valueFrom = Value.of(ipFrom);
+				final var valueTo = Value.of(ipTo);
+
+				if (valueFrom.equals(valueTo)) {
+					return Stream.empty();
+				}
+
+				return Stream.of(new ChangeInputParameterAction(compareContext.to().getId(), ipFrom.getCamundaName(),
+						valueFrom, valueTo));
 			}
 
 			@Override

@@ -2,6 +2,7 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsAction;
+import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsIsSequentialAction;
 import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import org.camunda.bpm.model.bpmn.instance.CallActivity;
@@ -39,7 +40,16 @@ public class LoopCharacteristicsComparator extends UpcastComparator<CallActivity
 			actions.add(activate);
 		}
 
-		// toConfig.isSequential()
+		if (!(compareContext.from().getLoopCharacteristics() instanceof final MultiInstanceLoopCharacteristics fromConfig)) {
+			throw new IllegalStateException("LoopCharacteristics is not a MultiInstanceLoopCharacteristics");
+		}
+
+		if (fromConfig.isSequential() != toConfig.isSequential()) {
+			actions.add(new ChangeLoopCharacteristicsIsSequentialAction(compareContext.to().getId(),
+					Boolean.valueOf(fromConfig.isSequential()), Boolean.valueOf(toConfig.isSequential())));
+		}
+
+			// toConfig.isSequential()
 		// compareContext.from().getLoopCharacteristics()
 		return actions.stream();
 	}

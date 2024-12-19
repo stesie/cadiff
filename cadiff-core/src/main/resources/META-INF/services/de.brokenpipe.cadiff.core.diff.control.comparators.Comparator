@@ -13,3 +13,4 @@ de.brokenpipe.cadiff.core.diff.control.comparators.DocumentationComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.InMappingAllComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.InMappingComparator
 de.brokenpipe.cadiff.core.diff.control.comparators.OutMappingAllComparator
+de.brokenpipe.cadiff.core.diff.control.comparators.LoopCharacteristicsComparator

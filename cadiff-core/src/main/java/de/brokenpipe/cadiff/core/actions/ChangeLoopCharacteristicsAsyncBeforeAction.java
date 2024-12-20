@@ -12,4 +12,10 @@ public record ChangeLoopCharacteristicsAsyncBeforeAction(String id, Boolean oldV
 				MultiInstanceLoopCharacteristics::isCamundaAsyncBefore,
 				MultiInstanceLoopCharacteristics::setCamundaAsyncBefore);
 	}
+
+	@Override
+	public String attributeName() {
+		return "[multi] asyncBefore";
+	}
+
 }

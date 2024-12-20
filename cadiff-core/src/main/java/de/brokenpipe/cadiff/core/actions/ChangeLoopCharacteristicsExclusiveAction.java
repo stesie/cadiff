@@ -12,4 +12,10 @@ public record ChangeLoopCharacteristicsExclusiveAction(String id, Boolean oldVal
 				MultiInstanceLoopCharacteristics::isCamundaExclusive,
 				MultiInstanceLoopCharacteristics::setCamundaExclusive);
 	}
+
+	@Override
+	public String attributeName() {
+		return "[multi] exclusive";
+	}
+
 }

@@ -9,4 +9,10 @@ public record ChangeLoopCharacteristicsAction(String id, Boolean oldValue, Boole
 	public Patcher patcher() {
 		return new ChangeLoopCharacteristicsPatcher(this);
 	}
+
+	@Override
+	public String attributeName() {
+		return "multi-instance";
+	}
+
 }

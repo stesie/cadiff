@@ -12,4 +12,10 @@ public record ChangeLoopCharacteristicsElementVariableAction(String id, String o
 				MultiInstanceLoopCharacteristics::getCamundaElementVariable,
 				MultiInstanceLoopCharacteristics::setCamundaElementVariable);
 	}
+
+	@Override
+	public String attributeName() {
+		return "[multi] elementVariable";
+	}
+
 }

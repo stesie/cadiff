@@ -10,4 +10,10 @@ public record ChangeLoopCharacteristicsCardinalityAction(String id, String oldVa
 	public Patcher patcher() {
 		return new ChangeLoopCharacteristicsCardinalityPatcher(this);
 	}
+
+	@Override
+	public String attributeName() {
+		return "[multi] loopCardinality";
+	}
+
 }

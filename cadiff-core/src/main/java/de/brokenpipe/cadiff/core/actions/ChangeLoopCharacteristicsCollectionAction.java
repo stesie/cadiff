@@ -12,4 +12,10 @@ public record ChangeLoopCharacteristicsCollectionAction(String id, String oldVal
 				MultiInstanceLoopCharacteristics::getCamundaCollection,
 				MultiInstanceLoopCharacteristics::setCamundaCollection);
 	}
+
+	@Override
+	public String attributeName() {
+		return "[multi] collection";
+	}
+
 }

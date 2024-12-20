@@ -10,4 +10,10 @@ public record ChangeLoopCharacteristicsIsSequentialAction(String id, Boolean old
 	public Patcher patcher() {
 		return new GenericLoopCharacteristicsPatcher<Boolean>(this, MultiInstanceLoopCharacteristics::isSequential, MultiInstanceLoopCharacteristics::setSequential);
 	}
+
+	@Override
+	public String attributeName() {
+		return "[multi] isSequential";
+	}
+
 }

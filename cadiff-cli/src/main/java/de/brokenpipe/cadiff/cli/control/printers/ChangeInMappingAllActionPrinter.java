@@ -28,10 +28,10 @@ public class ChangeInMappingAllActionPrinter extends AbstractActionPrinter imple
 			final ChangeType changeType) {
 		final var change = (ChangeInMappingAllAction) action;
 
-		printChangeLine("propagate all variables (in)", change.oldValue().enabled(), change.newValue().enabled(),
-				leader, changeType);
+		printChangeLine("propagate all variables (in)", Boolean.valueOf(change.oldValue().enabled()),
+				Boolean.valueOf(change.newValue().enabled()), leader, changeType);
 
-		if (Boolean.TRUE == change.newValue().enabled() &&
+		if (change.newValue().enabled() &&
 				!Objects.equals(change.oldValue().local(), change.newValue().local())) {
 			printChangeLine("`-> local", change.oldValue().local(), change.newValue().local(), leader,
 					changeType);

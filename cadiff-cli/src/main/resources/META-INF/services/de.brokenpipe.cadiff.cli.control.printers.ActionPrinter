@@ -15,3 +15,4 @@ de.brokenpipe.cadiff.cli.control.printers.AddTaskListenerActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.DeleteTaskListenerActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.ChangeInMappingAllActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.RemoveEventDefinitionActionPrinter
+de.brokenpipe.cadiff.cli.control.printers.ChangeOutMappingActionPrinter

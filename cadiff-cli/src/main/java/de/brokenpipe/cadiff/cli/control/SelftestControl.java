@@ -187,6 +187,14 @@ public class SelftestControl {
 							actual.getAttribute(attribute.getNamespaceUri(), attribute.getAttributeName()))
 					.orElse(defaultValue);
 
+			if ("local".equals(attribute.getAttributeName())
+					&& (type.getInstanceType().equals(CamundaOut.class)
+					|| type.getInstanceType().equals(CamundaIn.class))
+					&& expectedValue == null && "false".equals(actualValue)) {
+				// for camunda:out and camunda:in, for @local attribute, assume false and not present as equal
+				return;
+			}
+
 			compareString(expectedValue, actualValue, path + "/@" + attribute.getAttributeName());
 		});
 	}

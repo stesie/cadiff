@@ -10,6 +10,7 @@ import org.camunda.bpm.model.bpmn.instance.ThrowEvent;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public abstract class AbstractChangeEventDefinitionPatcher<ED extends EventDefinition> extends AbstractPatcher implements Patcher {
@@ -42,7 +43,7 @@ public abstract class AbstractChangeEventDefinitionPatcher<ED extends EventDefin
 			final Collection<EventDefinition> eventDefinitions) {
 
 		final ED def = eventDefinitions.stream()
-				.filter(x -> x.getId().equals(definitionId))
+				.filter(x -> Objects.equals(definitionId, x.getId()))
 				.findFirst()
 				.map(eventDefinition -> {
 					if (edClass.isInstance(eventDefinition)) {

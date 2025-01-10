@@ -12,7 +12,7 @@ import java.util.function.Function;
  * the changes as good as possible. There are "fallback" creators (with a low priority) that simply create the flow
  * nodes and sequence flows. More "specific" creators may use more "elegant" ways to describe the changes.
  */
-public interface Creator extends Function<VoteContext<? extends BaseElement>, Optional<AddAction>> {
+public interface Creator extends Function<VoteContext<String, ? extends BaseElement>, Optional<AddAction>> {
 
 	/**
 	 * Execution priority of the creator. The higher the value, the earlier it is run.

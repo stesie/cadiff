@@ -12,7 +12,7 @@ import java.util.ServiceLoader;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public class CreatorRegistry implements Function<VoteContext<? extends BaseElement>, Optional<AddAction>> {
+public class CreatorRegistry implements Function<VoteContext<String, ? extends BaseElement>, Optional<AddAction>> {
 
 	private final List<Creator> creators;
 
@@ -27,7 +27,7 @@ public class CreatorRegistry implements Function<VoteContext<? extends BaseEleme
 	}
 
 	@Override
-	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
+	public Optional<AddAction> apply(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return creators.stream()
 				.flatMap(creator -> creator.apply(voteContext).stream())
 				.findFirst();

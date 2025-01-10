@@ -22,7 +22,7 @@ public abstract class AbstractSimpleWalker<T> {
 
 	public Stream<Action> walk() {
 
-		final VoteContext<T> context = VoteContext.partition(this::extractId, from, to);
+		final VoteContext<String, T> context = VoteContext.partition(this::extractId, from, to);
 
 		return mergeStreams(List.of(
 				context.added().stream()

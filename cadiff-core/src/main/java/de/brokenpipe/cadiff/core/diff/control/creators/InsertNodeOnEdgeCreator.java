@@ -25,7 +25,7 @@ public class InsertNodeOnEdgeCreator implements Creator {
 	}
 
 	@Override
-	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
+	public Optional<AddAction> apply(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return Stream.concat(
 						findReplacedEdges(voteContext),
 						findRecycledEdges(voteContext))
@@ -72,12 +72,12 @@ public class InsertNodeOnEdgeCreator implements Creator {
 				.findFirst();
 	}
 
-	private Optional<List<String>> collectPath(final VoteContext<? extends BaseElement> voteContext,
+	private Optional<List<String>> collectPath(final VoteContext<String, ? extends BaseElement> voteContext,
 			final String sourceId, final String targetId) {
 		return walk(voteContext, List.of(sourceId), targetId);
 	}
 
-	private Optional<List<String>> walk(final VoteContext<? extends BaseElement> voteContext,
+	private Optional<List<String>> walk(final VoteContext<String, ? extends BaseElement> voteContext,
 			final List<String> path, final String targetId) {
 		final var lastElement = voteContext.toMap().get(path.getLast());
 		final Collection<SequenceFlow> candidates;
@@ -116,7 +116,7 @@ public class InsertNodeOnEdgeCreator implements Creator {
 	/**
 	 * Find edges that have been removed, but connected two nodes before, that remain in the model.
 	 */
-	private Stream<SequenceFlow> findReplacedEdges(final VoteContext<? extends BaseElement> voteContext) {
+	private Stream<SequenceFlow> findReplacedEdges(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return voteContext.removed().stream()
 				.map(removedId -> voteContext.fromMap().get(removedId))
 				.filter(SequenceFlow.class::isInstance)
@@ -129,7 +129,7 @@ public class InsertNodeOnEdgeCreator implements Creator {
 	 * Find <em>updated</em> edges with source or target changed, but connected two nodes before, that remain in the
 	 * model.
 	 */
-	private Stream<SequenceFlow> findRecycledEdges(final VoteContext<? extends BaseElement> voteContext) {
+	private Stream<SequenceFlow> findRecycledEdges(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return voteContext.updated().stream()
 				.map(updatedId -> voteContext.fromMap().get(updatedId))
 				.filter(SequenceFlow.class::isInstance)

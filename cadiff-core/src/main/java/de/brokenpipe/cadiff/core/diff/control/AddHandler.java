@@ -18,7 +18,7 @@ import java.util.Optional;
 public class AddHandler<T extends BaseElement> {
 
 	protected final CompareContext<Collection<T>> compareContext;
-	private final VoteContext<T> voteContext;
+	private final VoteContext<String, T> voteContext;
 
 	public List<Action> apply() {
 		final List<Action> actions = new ArrayList<>();

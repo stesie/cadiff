@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class RenameHandler<T extends BaseElement> {
 
-	private final VoteContext<T> context;
+	private final VoteContext<String, T> context;
 
 	public List<Action> apply() {
 		final List<Action> actions = new ArrayList<>();

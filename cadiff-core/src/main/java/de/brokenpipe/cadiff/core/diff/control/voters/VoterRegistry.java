@@ -23,7 +23,7 @@ public class VoterRegistry {
 						.toList());
 	}
 
-	public int apply(final String left, final String right, final VoteContext<? extends BaseElement> context)
+	public int apply(final String left, final String right, final VoteContext<String, ? extends BaseElement> context)
 			throws VetoVoteException {
 		int score = 0;
 

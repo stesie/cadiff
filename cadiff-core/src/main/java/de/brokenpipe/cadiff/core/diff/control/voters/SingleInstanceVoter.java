@@ -7,7 +7,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 public class SingleInstanceVoter implements Voter {
 
 	@Override
-	public Vote apply(final String removeId, final String addId, final VoteContext<? extends BaseElement> context) {
+	public Vote apply(final String removeId, final String addId, final VoteContext<String, ? extends BaseElement> context) {
 		if (context.removed().size() == 1 && context.added().size() == 1 && context.updated().isEmpty()) {
 			return Vote.UP;
 		}

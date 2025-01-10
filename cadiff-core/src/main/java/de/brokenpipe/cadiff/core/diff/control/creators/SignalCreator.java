@@ -15,7 +15,7 @@ public class SignalCreator implements Creator {
 	}
 
 	@Override
-	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
+	public Optional<AddAction> apply(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return voteContext.added().stream()
 				.map(addId -> voteContext.toMap().get(addId))
 				.filter(Signal.class::isInstance)

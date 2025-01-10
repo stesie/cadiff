@@ -25,7 +25,7 @@ abstract class AbstractVoteAddWalker<T extends BaseElement> {
 
 	public Stream<Action> walk() {
 
-		final VoteContext<T> voteContext = VoteContext.partition(BaseElement::getId, compareContext.from(), compareContext.to()); // partitionElements();
+		final VoteContext<String, T> voteContext = VoteContext.partition(BaseElement::getId, compareContext.from(), compareContext.to()); // partitionElements();
 
 		return mergeStreams(List.of(
 				new RenameHandler<>(voteContext).apply().stream(),

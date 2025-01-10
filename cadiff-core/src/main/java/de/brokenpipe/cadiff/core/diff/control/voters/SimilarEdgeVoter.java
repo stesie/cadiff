@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class SimilarEdgeVoter implements Voter {
 
 	@Override
-	public Vote apply(final String removeId, final String addId, final VoteContext<? extends BaseElement> context) {
+	public Vote apply(final String removeId, final String addId, final VoteContext<String, ? extends BaseElement> context) {
 		final var removed = context.fromMap().get(removeId);
 		final var added = context.toMap().get(addId);
 

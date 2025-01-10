@@ -7,5 +7,5 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 
 @FunctionalInterface
 public interface Voter {
-	Vote apply(String removeId, String addId, VoteContext<? extends BaseElement> context) throws VetoVoteException;
+	Vote apply(String removeId, String addId, VoteContext<String, ? extends BaseElement> context) throws VetoVoteException;
 }

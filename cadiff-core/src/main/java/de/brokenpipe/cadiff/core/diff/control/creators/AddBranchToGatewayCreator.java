@@ -26,7 +26,7 @@ public class AddBranchToGatewayCreator implements Creator {
 	}
 
 	@Override
-	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
+	public Optional<AddAction> apply(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return findUpdatedGateways(voteContext)
 				.flatMap(updatedGateway -> {
 					final String sourceId = updatedGateway.getId();
@@ -66,7 +66,7 @@ public class AddBranchToGatewayCreator implements Creator {
 				.findFirst();
 	}
 
-	private Optional<List<String>> walk(final VoteContext<? extends BaseElement> voteContext,
+	private Optional<List<String>> walk(final VoteContext<String, ? extends BaseElement> voteContext,
 			final List<String> path) {
 		final var lastElement = voteContext.toMap().get(path.getLast());
 		final Stream<SequenceFlow> candidates;
@@ -106,7 +106,7 @@ public class AddBranchToGatewayCreator implements Creator {
 	/**
 	 * Find newly added outgoing branches from updated gateways.
 	 */
-	private Stream<Gateway> findUpdatedGateways(final VoteContext<? extends BaseElement> voteContext) {
+	private Stream<Gateway> findUpdatedGateways(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return voteContext.updated().stream()
 				.map(id -> voteContext.fromMap().get(id))
 				.filter(Gateway.class::isInstance)

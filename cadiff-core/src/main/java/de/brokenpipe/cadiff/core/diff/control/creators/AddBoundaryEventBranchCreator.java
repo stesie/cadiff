@@ -26,7 +26,7 @@ public class AddBoundaryEventBranchCreator implements Creator {
 	}
 
 	@Override
-	public Optional<AddAction> apply(final VoteContext<? extends BaseElement> voteContext) {
+	public Optional<AddAction> apply(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return findNewBoundaryEvents(voteContext)
 				.flatMap(boundaryEvent -> {
 					final String boundaryEventId = boundaryEvent.getId();
@@ -67,7 +67,7 @@ public class AddBoundaryEventBranchCreator implements Creator {
 				.findFirst();
 	}
 
-	private Optional<List<String>> walk(final VoteContext<? extends BaseElement> voteContext,
+	private Optional<List<String>> walk(final VoteContext<String, ? extends BaseElement> voteContext,
 			final List<String> path) {
 		final var lastElement = voteContext.toMap().get(path.getLast());
 		final Stream<SequenceFlow> candidates;
@@ -107,7 +107,7 @@ public class AddBoundaryEventBranchCreator implements Creator {
 	/**
 	 * Find newly added outgoing branches from updated gateways.
 	 */
-	private Stream<BoundaryEvent> findNewBoundaryEvents(final VoteContext<? extends BaseElement> voteContext) {
+	private Stream<BoundaryEvent> findNewBoundaryEvents(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return voteContext.added().stream()
 				.map(id -> voteContext.toMap().get(id))
 				.filter(BoundaryEvent.class::isInstance)

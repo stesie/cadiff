@@ -22,10 +22,10 @@ public class AddExecutionListenerActionPrinter extends AbstractActionPrinter {
 		indent();
 		System.out.printf("%s%23s : ", " -> ", "execution listener");
 		System.out.print(ansi().fg(Ansi.Color.GREEN));
-		writeProp("event", change.camundaEvent());
-		writeProp("class", change.camundaClass());
-		writeProp("delegateExpression", change.camundaDelegateExpression());
-		writeProp("expression", change.camundaExpression());
+		writeProp("event", change.key().camundaEvent());
+		writeProp("class", change.key().camundaClass());
+		writeProp("delegateExpression", change.key().camundaDelegateExpression());
+		writeProp("expression", change.key().camundaExpression());
 		System.out.println(ansi().reset());
 
 	}

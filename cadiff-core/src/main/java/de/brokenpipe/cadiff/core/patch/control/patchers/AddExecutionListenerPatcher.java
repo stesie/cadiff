@@ -16,10 +16,10 @@ public class AddExecutionListenerPatcher extends AbstractPatcher implements Patc
 		final ExtensionElements extEl = findExtensionElements(context, action.id());
 
 		final var ext = extEl.addExtensionElement(CamundaExecutionListener.class);
-		ext.setCamundaEvent(action.camundaEvent());
-		ext.setCamundaClass(action.camundaClass());
-		ext.setCamundaDelegateExpression(action.camundaDelegateExpression());
-		ext.setCamundaExpression(action.camundaExpression());
+		ext.setCamundaEvent(action.key().camundaEvent());
+		ext.setCamundaClass(action.key().camundaClass());
+		ext.setCamundaDelegateExpression(action.key().camundaDelegateExpression());
+		ext.setCamundaExpression(action.key().camundaExpression());
 	}
 
 }

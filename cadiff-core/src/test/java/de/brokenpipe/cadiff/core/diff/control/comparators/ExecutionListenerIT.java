@@ -38,8 +38,8 @@ public class ExecutionListenerIT {
 					.nextAction()
 					.assertInstanceOf(AddExecutionListenerAction.class)
 					.assertEquals(ELEMENT_ID, AddExecutionListenerAction::id)
-					.assertEquals("start", AddExecutionListenerAction::camundaEvent)
-					.assertEquals("${startListener}", AddExecutionListenerAction::camundaDelegateExpression);
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression());
 
 		}
 
@@ -59,8 +59,8 @@ public class ExecutionListenerIT {
 					.nextAction()
 					.assertInstanceOf(DeleteExecutionListenerAction.class)
 					.assertEquals(ELEMENT_ID, DeleteExecutionListenerAction::id)
-					.assertEquals("start", DeleteExecutionListenerAction::camundaEvent)
-					.assertEquals("${startListener}", DeleteExecutionListenerAction::camundaDelegateExpression);
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression());
 		}
 	}
 
@@ -86,8 +86,8 @@ public class ExecutionListenerIT {
 					.nextAction()
 					.assertInstanceOf(AddExecutionListenerAction.class)
 					.assertEquals(ELEMENT_ID, AddExecutionListenerAction::id)
-					.assertEquals("end", AddExecutionListenerAction::camundaEvent)
-					.assertEquals("${endListener}", AddExecutionListenerAction::camundaDelegateExpression);
+					.assertEquals("end", x -> x.key().camundaEvent())
+					.assertEquals("${endListener}", x -> x.key().camundaDelegateExpression());
 
 		}
 
@@ -107,8 +107,8 @@ public class ExecutionListenerIT {
 					.nextAction()
 					.assertInstanceOf(DeleteExecutionListenerAction.class)
 					.assertEquals(ELEMENT_ID, DeleteExecutionListenerAction::id)
-					.assertEquals("end", DeleteExecutionListenerAction::camundaEvent)
-					.assertEquals("${endListener}", DeleteExecutionListenerAction::camundaDelegateExpression);
+					.assertEquals("end", x -> x.key().camundaEvent())
+					.assertEquals("${endListener}", x -> x.key().camundaDelegateExpression());
 		}
 	}
 

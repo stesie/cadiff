@@ -1,5 +1,6 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
+import de.brokenpipe.cadiff.core.ExecutionListenerKey;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.AddExecutionListenerAction;
 import de.brokenpipe.cadiff.core.actions.DeleteExecutionListenerAction;
@@ -35,13 +36,8 @@ public class ExecutionListenerComparator implements Comparator {
 			@Override
 			protected Stream<Action> handleAdded(final CamundaExecutionListener executionListener) {
 				// FIXME synthetically call update
-				return Stream.of(new AddExecutionListenerAction(
-						listenerContext.id(),
-						executionListener.getCamundaEvent(),
-						executionListener.getCamundaClass(),
-						executionListener.getCamundaDelegateExpression(),
-						executionListener.getCamundaExpression()
-				));
+				return Stream.of(new AddExecutionListenerAction(listenerContext.id(),
+						ExecutionListenerKey.of(executionListener)));
 			}
 
 			@Override
@@ -53,22 +49,10 @@ public class ExecutionListenerComparator implements Comparator {
 
 			@Override
 			protected Stream<Action> handleRemoved(final CamundaExecutionListener executionListener) {
-				return Stream.of(new DeleteExecutionListenerAction(
-						listenerContext.id(),
-						executionListener.getCamundaEvent(),
-						executionListener.getCamundaClass(),
-						executionListener.getCamundaDelegateExpression(),
-						executionListener.getCamundaExpression()
-				));
+				return Stream.of(new DeleteExecutionListenerAction(listenerContext.id(),
+						ExecutionListenerKey.of(executionListener)));
 			}
 		}.walk();
 	}
 
-	record ExecutionListenerKey(String camundaEvent, String camundaClass,
-								String camundaDelegateExpression, String camundaExpression) {
-		static ExecutionListenerKey of(final CamundaExecutionListener listener) {
-			return new ExecutionListenerKey(listener.getCamundaEvent(), listener.getCamundaClass(),
-					listener.getCamundaDelegateExpression(), listener.getCamundaExpression());
-		}
-	}
 }

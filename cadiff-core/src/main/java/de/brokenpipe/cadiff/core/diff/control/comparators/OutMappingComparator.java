@@ -19,7 +19,7 @@ public class OutMappingComparator implements Comparator {
 		
 		return new AbstractSimpleWalker<>(z.from(), z.to()) {
 			@Override
-			protected String extractId(final CamundaOut element) {
+			protected String extractKey(final CamundaOut element) {
 				return element.getCamundaTarget();
 			}
 

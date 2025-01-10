@@ -15,14 +15,14 @@ import static de.brokenpipe.cadiff.core.diff.control.StreamUtils.mergeStreams;
  * @param <T>
  */
 @RequiredArgsConstructor
-public abstract class AbstractSimpleWalker<T> {
+public abstract class AbstractSimpleWalker<K, T> {
 
 	private final Collection<T> from;
 	private final Collection<T> to;
 
 	public Stream<Action> walk() {
 
-		final VoteContext<String, T> context = VoteContext.partition(this::extractId, from, to);
+		final VoteContext<K, T> context = VoteContext.partition(this::extractKey, from, to);
 
 		return mergeStreams(List.of(
 				context.added().stream()
@@ -32,7 +32,7 @@ public abstract class AbstractSimpleWalker<T> {
 				context.removed().stream().flatMap(id -> handleRemoved(context.fromMap().get(id)))));
 	}
 
-	protected abstract String extractId(final T element);
+	protected abstract K extractKey(final T element);
 
 	protected abstract Stream<Action> handleAdded(final T added);
 

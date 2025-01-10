@@ -40,7 +40,7 @@ public class InputParameterComparator implements Comparator {
 
 		return new AbstractSimpleWalker<>(fromInputs, toInputs) {
 			@Override
-			protected String extractId(final CamundaInputParameter element) {
+			protected String extractKey(final CamundaInputParameter element) {
 				return element.getCamundaName();
 			}
 

@@ -40,7 +40,7 @@ public class OutputParameterComparator implements Comparator {
 
 		return new AbstractSimpleWalker<>(fromOutputs, toOutputs) {
 			@Override
-			protected String extractId(final CamundaOutputParameter element) {
+			protected String extractKey(final CamundaOutputParameter element) {
 				return element.getCamundaName();
 			}
 

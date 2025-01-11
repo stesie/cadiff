@@ -282,4 +282,63 @@ public class ExecutionListenerIT {
 							ChangeExecutionListenerFieldAction::newValue);
 		}
 	}
+
+
+	@Nested
+	public class AddNewListenerWithFieldInjection extends AbstractComparePatchIT {
+
+		public AddNewListenerWithFieldInjection(@BpmnFile("mapping-none.bpmn") final BpmnModelInstance from,
+				@BpmnFile("execution-listener-start-add-field-value.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions.assertSize(2);
+
+			changeProcessActions.assertExactlyOneInstanceOf(AddExecutionListenerAction.class)
+					.assertEquals(ELEMENT_ID, AddExecutionListenerAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression());
+
+			changeProcessActions
+					.assertExactlyOneInstanceOf(ChangeExecutionListenerFieldAction.class)
+					.assertEquals(ELEMENT_ID, ChangeExecutionListenerFieldAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression())
+					.assertEquals("foo", ChangeExecutionListenerFieldAction::fieldName)
+					.assertEquals(null, ChangeExecutionListenerFieldAction::oldValue)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSource("foo-value"),
+							ChangeExecutionListenerFieldAction::newValue);
+
+		}
+
+		@Test
+		void shouldCreateCorrectReverseChanges() {
+			final ChangeSet changeSet = new DiffCommand(to, from).execute();
+			final var changes = new ActionCollectionAssertions(changeSet.changes());
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions
+					.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(DeleteExecutionListenerAction.class)
+					.assertEquals(ELEMENT_ID, DeleteExecutionListenerAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression());
+		}
+	}
+
 }

@@ -38,9 +38,12 @@ public class ExecutionListenerComparator implements Comparator {
 
 			@Override
 			protected Stream<Action> handleAdded(final CamundaExecutionListener executionListener) {
-				// FIXME synthetically call update
-				return Stream.of(new AddExecutionListenerAction(listenerContext.id(),
-						ExecutionListenerKey.of(executionListener)));
+				final ExecutionListenerKey key = ExecutionListenerKey.of(executionListener);
+
+				return Stream.concat(
+					Stream.of(new AddExecutionListenerAction(listenerContext.id(), key)),
+					new FieldWalker(listenerContext.id(), key, Collections.emptyList(),
+							executionListener.getCamundaFields()).walk());
 			}
 
 			@Override

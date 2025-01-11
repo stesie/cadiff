@@ -6,7 +6,7 @@ import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaField;
 
 public record ChangeExecutionListenerFieldAction(String id, ExecutionListenerKey key, String fieldName,
-												 Config oldValue, Config newValue) implements Action {
+												 Config oldValue, Config newValue) implements SingleIdRelatedAction {
 	@Override
 	public Patcher patcher() {
 		return new ChangeExecutionListenerFieldPatcher(this);

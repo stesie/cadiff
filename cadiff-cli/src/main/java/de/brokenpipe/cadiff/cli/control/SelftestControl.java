@@ -157,8 +157,18 @@ public class SelftestControl {
 						for (int i = 0; i < expectedChildren.size(); i++) {
 							final var expectedChildId = expectedChildren.get(i).getAttribute("id");
 
-							compareElements(expectedChildren.get(i), actualChildren.get(i),
-									path + "/" + localName + (expectedChildId == null ? "" : "#" + expectedChildId));
+							if (expectedChildId == null) {
+								// if no id available, compare by index
+								compareElements(expectedChildren.get(i), actualChildren.get(i), path + "/" + localName);
+							} else {
+								// search actual element by id
+								final String ptr = path + "/" + localName + "#" + expectedChildId;
+								final var actualChild = actualChildren.stream()
+										.filter(c -> expectedChildId.equals(c.getAttribute("id")))
+										.findFirst()
+										.orElseThrow(() -> new SelftestException("Child element missing", ptr));
+								compareElements(expectedChildren.get(i), actualChild, ptr);
+							}
 						}
 					});
 		});

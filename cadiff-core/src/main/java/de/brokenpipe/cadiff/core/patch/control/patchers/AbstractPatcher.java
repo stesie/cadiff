@@ -1,6 +1,8 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
+import de.brokenpipe.cadiff.core.ExecutionListenerKey;
 import de.brokenpipe.cadiff.core.Waypoint;
+import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.PatchNotApplicableException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.TargetElementNotFoundException;
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.UnexpectedTargetElementTypeException;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
@@ -8,12 +10,14 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaExecutionListener;
 import org.camunda.bpm.model.bpmn.instance.dc.Bounds;
 import org.camunda.bpm.model.bpmn.instance.di.DiagramElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public abstract class AbstractPatcher {
@@ -181,4 +185,16 @@ public abstract class AbstractPatcher {
 					return newExtEl;
 				});
 	}
+
+	protected CamundaExecutionListener findExecutionListener(final ExtensionElements extEl,
+			final ExecutionListenerKey key) {
+
+		final Optional<CamundaExecutionListener> existingListener = extEl.getElementsQuery()
+				.filterByType(CamundaExecutionListener.class).list().stream()
+				.filter(x -> Objects.equals(key, ExecutionListenerKey.of(x)))
+				.findFirst();
+
+		return existingListener.orElseThrow(() -> new PatchNotApplicableException("Execution listener not found"));
+	}
+
 }

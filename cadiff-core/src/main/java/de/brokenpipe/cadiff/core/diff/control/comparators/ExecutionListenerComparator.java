@@ -3,12 +3,15 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 import de.brokenpipe.cadiff.core.ExecutionListenerKey;
 import de.brokenpipe.cadiff.core.actions.Action;
 import de.brokenpipe.cadiff.core.actions.AddExecutionListenerAction;
+import de.brokenpipe.cadiff.core.actions.ChangeExecutionListenerFieldAction;
 import de.brokenpipe.cadiff.core.actions.DeleteExecutionListenerAction;
 import de.brokenpipe.cadiff.core.diff.control.AbstractSimpleWalker;
 import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaExecutionListener;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaField;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,8 +46,10 @@ public class ExecutionListenerComparator implements Comparator {
 			@Override
 			protected Stream<Action> handleUpdated(final CamundaExecutionListener from,
 					final CamundaExecutionListener to) {
-				// FIXME handle camunda script & fields, maybe create update when fields are changed !?
-				return Stream.empty();
+				// FIXME handle camunda script
+				return new FieldWalker(listenerContext.id(), ExecutionListenerKey.of(from),
+						from.getCamundaFields(), to.getCamundaFields())
+						.walk();
 			}
 
 			@Override
@@ -53,6 +58,50 @@ public class ExecutionListenerComparator implements Comparator {
 						ExecutionListenerKey.of(executionListener)));
 			}
 		}.walk();
+	}
+
+	static class FieldWalker extends AbstractSimpleWalker<String, CamundaField> {
+
+		private final String id;
+		private final ExecutionListenerKey key;
+
+		public FieldWalker(final String id, final ExecutionListenerKey key, final Collection<CamundaField> from,
+				final Collection<CamundaField> to) {
+			super(from, to);
+
+			this.id = id;
+			this.key = key;
+		}
+
+		@Override
+		protected String extractKey(final CamundaField element) {
+			return element.getCamundaName();
+		}
+
+		@Override
+		protected Stream<Action> handleAdded(final CamundaField added) {
+			return Stream.of(new ChangeExecutionListenerFieldAction(id, key, added.getCamundaName(),
+					null, ChangeExecutionListenerFieldAction.Config.from(added)));
+		}
+
+		@Override
+		protected Stream<Action> handleUpdated(final CamundaField from, final CamundaField to) {
+			final var fromConfig = ChangeExecutionListenerFieldAction.Config.from(from);
+			final var toConfig = ChangeExecutionListenerFieldAction.Config.from(to);
+
+			if (fromConfig.equals(toConfig)) {
+				return Stream.empty();
+			}
+
+			return Stream.of(new ChangeExecutionListenerFieldAction(id, key, from.getCamundaName(),
+					fromConfig, toConfig));
+		}
+
+		@Override
+		protected Stream<Action> handleRemoved(final CamundaField removed) {
+			return Stream.of(new ChangeExecutionListenerFieldAction(id, key, removed.getCamundaName(),
+					ChangeExecutionListenerFieldAction.Config.from(removed), null));
+		}
 	}
 
 }

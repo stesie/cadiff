@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
 import de.brokenpipe.cadiff.core.actions.AddExecutionListenerAction;
+import de.brokenpipe.cadiff.core.actions.ChangeExecutionListenerFieldAction;
 import de.brokenpipe.cadiff.core.actions.DeleteExecutionListenerAction;
 import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
 import de.brokenpipe.cadiff.core.diff.boundary.DiffCommand;
@@ -112,4 +113,173 @@ public class ExecutionListenerIT {
 		}
 	}
 
+	@Nested
+	public class AddExpressionFieldToExistingListener extends AbstractComparePatchIT {
+
+		public AddExpressionFieldToExistingListener(@BpmnFile("execution-listener-start.bpmn") final BpmnModelInstance from,
+				@BpmnFile("execution-listener-start-add-field-expression.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions
+					.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(ChangeExecutionListenerFieldAction.class)
+					.assertEquals(ELEMENT_ID, ChangeExecutionListenerFieldAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression())
+					.assertEquals("foo", ChangeExecutionListenerFieldAction::fieldName)
+					.assertEquals(null, ChangeExecutionListenerFieldAction::oldValue)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSourceExpression("${fooExpression}"),
+							ChangeExecutionListenerFieldAction::newValue);
+
+		}
+
+		@Test
+		void shouldCreateCorrectReverseChanges() {
+			final ChangeSet changeSet = new DiffCommand(to, from).execute();
+			final var changes = new ActionCollectionAssertions(changeSet.changes());
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions
+					.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(ChangeExecutionListenerFieldAction.class)
+					.assertEquals(ELEMENT_ID, ChangeExecutionListenerFieldAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression())
+					.assertEquals("foo", ChangeExecutionListenerFieldAction::fieldName)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSourceExpression("${fooExpression}"),
+							ChangeExecutionListenerFieldAction::oldValue)
+					.assertEquals(null, ChangeExecutionListenerFieldAction::newValue);
+		}
+	}
+
+	@Nested
+	public class AddStringFieldToExistingListener extends AbstractComparePatchIT {
+
+		public AddStringFieldToExistingListener(@BpmnFile("execution-listener-start.bpmn") final BpmnModelInstance from,
+				@BpmnFile("execution-listener-start-add-field-value.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions
+					.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(ChangeExecutionListenerFieldAction.class)
+					.assertEquals(ELEMENT_ID, ChangeExecutionListenerFieldAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression())
+					.assertEquals("foo", ChangeExecutionListenerFieldAction::fieldName)
+					.assertEquals(null, ChangeExecutionListenerFieldAction::oldValue)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSource("foo-value"),
+							ChangeExecutionListenerFieldAction::newValue);
+
+		}
+
+		@Test
+		void shouldCreateCorrectReverseChanges() {
+			final ChangeSet changeSet = new DiffCommand(to, from).execute();
+			final var changes = new ActionCollectionAssertions(changeSet.changes());
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions
+					.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(ChangeExecutionListenerFieldAction.class)
+					.assertEquals(ELEMENT_ID, ChangeExecutionListenerFieldAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression())
+					.assertEquals("foo", ChangeExecutionListenerFieldAction::fieldName)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSource("foo-value"),
+							ChangeExecutionListenerFieldAction::oldValue)
+					.assertEquals(null, ChangeExecutionListenerFieldAction::newValue);
+		}
+	}
+
+	@Nested
+	public class ChangeFieldOfExistingListener extends AbstractComparePatchIT {
+
+		public ChangeFieldOfExistingListener(@BpmnFile("execution-listener-start-add-field-expression.bpmn") final BpmnModelInstance from,
+				@BpmnFile("execution-listener-start-add-field-value.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions
+					.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(ChangeExecutionListenerFieldAction.class)
+					.assertEquals(ELEMENT_ID, ChangeExecutionListenerFieldAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression())
+					.assertEquals("foo", ChangeExecutionListenerFieldAction::fieldName)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSourceExpression("${fooExpression}"),
+							ChangeExecutionListenerFieldAction::oldValue)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSource("foo-value"),
+							ChangeExecutionListenerFieldAction::newValue);
+
+		}
+
+		@Test
+		void shouldCreateCorrectReverseChanges() {
+			final ChangeSet changeSet = new DiffCommand(to, from).execute();
+			final var changes = new ActionCollectionAssertions(changeSet.changes());
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions
+					.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(ChangeExecutionListenerFieldAction.class)
+					.assertEquals(ELEMENT_ID, ChangeExecutionListenerFieldAction::id)
+					.assertEquals("start", x -> x.key().camundaEvent())
+					.assertEquals("${startListener}", x -> x.key().camundaDelegateExpression())
+					.assertEquals("foo", ChangeExecutionListenerFieldAction::fieldName)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSource("foo-value"),
+							ChangeExecutionListenerFieldAction::oldValue)
+					.assertEquals(ChangeExecutionListenerFieldAction.Config.ofSourceExpression("${fooExpression}"),
+							ChangeExecutionListenerFieldAction::newValue);
+		}
+	}
 }

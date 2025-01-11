@@ -5,7 +5,6 @@ import de.brokenpipe.cadiff.core.diff.control.StreamUtils;
 import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import org.camunda.bpm.model.bpmn.instance.Activity;
-import org.camunda.bpm.model.bpmn.instance.CallActivity;
 import org.camunda.bpm.model.bpmn.instance.MultiInstanceLoopCharacteristics;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
@@ -13,14 +12,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class LoopCharacteristicsComparator extends UpcastComparator<CallActivity> {
+public class LoopCharacteristicsComparator extends UpcastComparator<Activity> {
 	@Override
-	protected Class<CallActivity> getClassType() {
-		return CallActivity.class;
+	protected Class<Activity> getClassType() {
+		return Activity.class;
 	}
 
 	@Override
-	protected Stream<Action> compare(final CompareContext<CallActivity> compareContext) {
+	protected Stream<Action> compare(final CompareContext<Activity> compareContext) {
 		if (!(compareContext.to().getLoopCharacteristics() instanceof final MultiInstanceLoopCharacteristics toConfig)) {
 			if (compareContext.from().getLoopCharacteristics() != null) {
 				// removed

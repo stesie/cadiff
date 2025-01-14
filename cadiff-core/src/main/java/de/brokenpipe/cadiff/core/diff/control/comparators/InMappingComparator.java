@@ -57,6 +57,7 @@ public class InMappingComparator implements Comparator {
 				.orElse(Collections.emptyList())
 				.stream()
 				.filter(x -> !"all".equals(x.getCamundaVariables()))
+				.filter(x -> x.getCamundaBusinessKey() == null)
 				.toList();
 	}
 

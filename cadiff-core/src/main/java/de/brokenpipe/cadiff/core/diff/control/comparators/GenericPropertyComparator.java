@@ -3,9 +3,11 @@ package de.brokenpipe.cadiff.core.diff.control.comparators;
 import de.brokenpipe.cadiff.core.actions.*;
 import de.brokenpipe.cadiff.core.diff.entity.CompareContext;
 import org.camunda.bpm.model.bpmn.instance.*;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaIn;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -13,6 +15,16 @@ import java.util.stream.Stream;
 public class GenericPropertyComparator implements Comparator {
 
 	private static final Collection<GenericPropertyMappingRecord<?, ?>> MAPPINGS = List.of(
+
+			new GenericPropertyMappingRecord<BaseElement, String>(BaseElement.class,
+					el -> Optional.ofNullable(el.getExtensionElements())
+							.stream()
+							.flatMap(x -> x.getElementsQuery().filterByType(CamundaIn.class).list().stream())
+							.map(CamundaIn::getCamundaBusinessKey)
+							.filter(Objects::nonNull)
+							.findFirst()
+							.orElse(null),
+					String.class, ChangeCamundaBusinessKeyAction.class),
 
 			new GenericPropertyMappingRecord<>(BusinessRuleTask.class, BusinessRuleTask::getCamundaDecisionRef,
 					String.class, ChangeCamundaDecisionRefAction.class),

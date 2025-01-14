@@ -1,5 +1,6 @@
 package de.brokenpipe.cadiff.core.diff.control.comparators;
 
+import de.brokenpipe.cadiff.core.actions.ChangeCamundaBusinessKeyAction;
 import de.brokenpipe.cadiff.core.actions.ChangeInMappingAction;
 import de.brokenpipe.cadiff.core.actions.ChangeInMappingAllAction;
 import de.brokenpipe.cadiff.core.assertions.ActionCollectionAssertions;
@@ -135,6 +136,34 @@ public class InMappingIT {
 			assertTrue(actions.get("target-local").newValue().local());
 			assertFalse(actions.get("target-expression").newValue().local());
 			assertTrue(actions.get("target-expression-local").newValue().local());
+		}
+	}
+
+
+	@Nested
+	public class AddBusinessKeyMapping extends AbstractComparePatchIT {
+
+		public AddBusinessKeyMapping(@BpmnFile("mapping-none.bpmn") final BpmnModelInstance from,
+				@BpmnFile("mapping-business-key.bpmn") final BpmnModelInstance to) {
+			super(from, to);
+		}
+
+		@Override
+		protected void verifyForwardChanges(final ActionCollectionAssertions changes) {
+
+			final ActionCollectionAssertions changeProcessActions = changes
+					.assertSize(1)
+					.assertExactlyOneChangeProcessAction()
+					.assertId(PROCESS_ID)
+					.actions();
+
+			changeProcessActions.assertSize(1)
+					.nextAction()
+					.assertInstanceOf(ChangeCamundaBusinessKeyAction.class)
+					.assertEquals(ELEMENT_ID, ChangeCamundaBusinessKeyAction::id)
+					.assertEquals(null, ChangeCamundaBusinessKeyAction::oldValue)
+					.assertEquals("#{execution.processBusinessKey}", ChangeCamundaBusinessKeyAction::newValue);
+
 		}
 	}
 }

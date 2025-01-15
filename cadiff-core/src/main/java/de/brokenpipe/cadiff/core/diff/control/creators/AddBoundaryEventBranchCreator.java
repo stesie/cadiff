@@ -111,7 +111,9 @@ public class AddBoundaryEventBranchCreator implements Creator {
 		return voteContext.added().stream()
 				.map(id -> voteContext.toMap().get(id))
 				.filter(BoundaryEvent.class::isInstance)
-				.map(BoundaryEvent.class::cast);
+				.map(BoundaryEvent.class::cast)
+				// if the attachedTo element is still in the added list, defer creation of the boundary event
+				.filter(boundaryEvent -> !voteContext.added().contains(boundaryEvent.getAttachedTo().getId()));
 	}
 
 }

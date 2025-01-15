@@ -16,10 +16,12 @@ public class AddBoundaryEventBranchActionPrinter extends AbstractActionPrinter i
 		final var change = (AddBoundaryEventBranchAction) action;
 
 		System.out.println();
+		indent();
 		System.out.print("Add new boundary event to: ");
 		printElementName(context.getTo().getModelElementById(change.attachedToId()));
 		System.out.println();
 
+		indent();
 		System.out.print("    Boundary Event: ");
 
 		// don't repeat attachedTo (we just printed it above)

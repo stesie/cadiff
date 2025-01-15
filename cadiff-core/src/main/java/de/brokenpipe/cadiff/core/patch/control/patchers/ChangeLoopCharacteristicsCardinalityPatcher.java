@@ -4,7 +4,7 @@ import de.brokenpipe.cadiff.core.actions.ChangeLoopCharacteristicsCardinalityAct
 import de.brokenpipe.cadiff.core.patch.control.patchers.exceptions.ValueMismatchException;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
-import org.camunda.bpm.model.bpmn.instance.CallActivity;
+import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.LoopCardinality;
 import org.camunda.bpm.model.bpmn.instance.MultiInstanceLoopCharacteristics;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
@@ -19,7 +19,7 @@ public class ChangeLoopCharacteristicsCardinalityPatcher extends AbstractPatcher
 
 	@Override
 	public void accept(final PatcherContext context) {
-		final CallActivity targetElement = findTargetWithType(context, action.id(), CallActivity.class);
+		final Activity targetElement = findTargetWithType(context, action.id(), Activity.class);
 
 		if (!(targetElement.getLoopCharacteristics() instanceof final MultiInstanceLoopCharacteristics milc)) {
 			throw new IllegalStateException("LoopCharacteristics is not a MultiInstanceLoopCharacteristics");

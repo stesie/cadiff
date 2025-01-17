@@ -29,12 +29,12 @@ abstract class AbstractVoteAddWalker<T extends BaseElement> {
 
 		return mergeStreams(List.of(
 				new RenameHandler<>(voteContext).apply().stream(),
+				handleRemoved(voteContext),
 				new AddHandler<>(compareContext, voteContext).apply().stream(),
 				voteContext.updated().stream()
 						.flatMap(id -> handleUpdated(
 								new CompareContext<>(compareContext.fromInstance(), compareContext.fromContainer(), voteContext.fromMap().get(id), voteContext.toMap().get(id))
-								)),
-				handleRemoved(voteContext)));
+								))));
 	}
 
 	protected abstract Stream<Action> handleUpdated(final CompareContext<T> context);

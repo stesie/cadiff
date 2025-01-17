@@ -45,6 +45,15 @@ public class FlowElementWalker extends AbstractVoteAddWalker<FlowElement> {
 
 		implicitEdgeDeletions.forEach(edgesToDelete::remove);
 
+		// if some of the implicitEdgeDeletions are on the updated list, we need to move them to the add list, so that
+		// they are re-created
+		implicitEdgeDeletions.stream()
+				.filter(voteContext.updated()::contains)
+				.forEach(id -> {
+					voteContext.updated().remove(id);
+					voteContext.added().add(id);
+				});
+
 		edgesToDelete.forEach((id, element) -> actions.add(new DeleteElementAction(id)));
 
 		return actions.stream();

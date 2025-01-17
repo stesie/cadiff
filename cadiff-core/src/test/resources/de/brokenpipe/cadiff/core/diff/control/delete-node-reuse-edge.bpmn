@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1hgeai9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.31.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="Process_1b6giix" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" />
+    <bpmn:exclusiveGateway id="Gateway_0iqitjy">
+      <bpmn:outgoing>Flow_asdf</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_asdf" sourceRef="Gateway_0iqitjy" targetRef="Activity_0n2dgs8" />
+    <bpmn:businessRuleTask id="Activity_0n2dgs8">
+      <bpmn:incoming>Flow_asdf</bpmn:incoming>
+    </bpmn:businessRuleTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1b6giix">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0iqitjy_di" bpmnElement="Gateway_0iqitjy" isMarkerVisible="true">
+        <dc:Bounds x="405" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rkebd6_di" bpmnElement="Activity_0n2dgs8">
+        <dc:Bounds x="510" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0dk25cw_di" bpmnElement="Flow_asdf">
+        <di:waypoint x="430" y="145" />
+        <di:waypoint x="430" y="230" />
+        <di:waypoint x="510" y="230" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

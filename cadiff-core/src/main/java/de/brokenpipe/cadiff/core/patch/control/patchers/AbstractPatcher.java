@@ -150,6 +150,12 @@ public abstract class AbstractPatcher {
 			sequenceFlow.getDiagramElement().getParentElement().removeChildElement(sequenceFlow.getDiagramElement());
 		}
 
+		// when target is a FlowNode, remove the incoming and outgoing edges implicitly
+		if (target instanceof final FlowNode flowNode) {
+			flowNode.getIncoming().forEach(incoming -> deleteElement(bpmnModelInstance, incoming.getId()));
+			flowNode.getOutgoing().forEach(outgoing -> deleteElement(bpmnModelInstance, outgoing.getId()));
+		}
+
 		target.getParentElement().removeChildElement(target);
 	}
 

@@ -32,6 +32,11 @@ public class ActionCollectionAssertions {
 		return this;
 	}
 
+	public ActionCollectionAssertions assertSize(final int count, final String message) {
+		assertEquals(count, actions.size(), message);
+		return this;
+	}
+
 	public ChangeProcessActionAssertions assertExactlyOneChangeProcessAction() {
 		final var process = findExactlyOneInstanceOf(ChangeProcessAction.class);
 		return new ChangeProcessActionAssertions(process);

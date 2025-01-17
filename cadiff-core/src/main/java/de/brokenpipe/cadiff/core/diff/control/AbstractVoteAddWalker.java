@@ -34,10 +34,14 @@ abstract class AbstractVoteAddWalker<T extends BaseElement> {
 						.flatMap(id -> handleUpdated(
 								new CompareContext<>(compareContext.fromInstance(), compareContext.fromContainer(), voteContext.fromMap().get(id), voteContext.toMap().get(id))
 								)),
-				voteContext.removed().stream().flatMap(id -> handleRemoved(voteContext.fromMap().get(id)))));
+				handleRemoved(voteContext)));
 	}
 
 	protected abstract Stream<Action> handleUpdated(final CompareContext<T> context);
+
+	protected Stream<Action> handleRemoved(final VoteContext<String, T> voteContext) {
+		return voteContext.removed().stream().flatMap(id -> handleRemoved(voteContext.fromMap().get(id)));
+	}
 
 	protected Stream<Action> handleRemoved(final T removed) {
 		return Stream.of(new DeleteElementAction(removed.getId()));

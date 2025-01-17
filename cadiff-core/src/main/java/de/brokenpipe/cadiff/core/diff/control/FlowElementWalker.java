@@ -59,6 +59,22 @@ public class FlowElementWalker extends AbstractVoteAddWalker<FlowElement> {
 		return actions.stream();
 	}
 
+	@Override
+	protected VoteContext<String, FlowElement> createVoteContext() {
+		final VoteContext<String, FlowElement> voteContext = super.createVoteContext();
 
+		// check if updated elements have changed their type, if so, delete and re-create them
+		voteContext.updated().stream()
+				.filter(id -> {
+					final FlowElement from = voteContext.fromMap().get(id);
+					final FlowElement to = voteContext.toMap().get(id);
+					return !from.getElementType().equals(to.getElementType());
+				})
+				.forEach(id -> {
+					voteContext.removed().add(id);
+					voteContext.added().add(id);
+				});
 
+		return voteContext;
+	}
 }

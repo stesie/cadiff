@@ -34,6 +34,10 @@ public @interface BpmnFile {
 					.orElseThrow(() -> new IllegalStateException("No annotation found"));
 
 			try (final var is = parameterContext.getDeclaringExecutable().getDeclaringClass().getResourceAsStream(annotation.value())) {
+				if (is == null) {
+					throw new IllegalArgumentException("Resource not found: " + annotation.value());
+				}
+
 				return Bpmn.readModelFromStream(is);
 			} catch (final IOException e) {
 				throw new RuntimeException(e);

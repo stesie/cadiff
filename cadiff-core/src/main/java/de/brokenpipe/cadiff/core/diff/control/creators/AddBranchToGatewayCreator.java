@@ -94,7 +94,15 @@ public class AddBranchToGatewayCreator implements Creator {
 
 					final var targetElement = voteContext.toMap().get(id);
 
-					if (!voteContext.added().contains(id) || targetElement instanceof ThrowEvent) {
+					if (!voteContext.added().contains(id)) {
+						// if nextPath has three elements only, and the target element already exists, then this is
+						// simply a new sequence flow element.
+						return nextPath.size() <= 3
+								? Stream.empty()
+								: Stream.of(nextPath);
+					}
+
+					if (targetElement instanceof ThrowEvent) {
 						return Stream.of(nextPath);
 					}
 

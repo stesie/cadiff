@@ -1,11 +1,13 @@
 package de.brokenpipe.cadiff.core.assertions;
 
 import de.brokenpipe.cadiff.core.actions.Action;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.function.Function;
 
+@Getter
 @RequiredArgsConstructor
 public class ActionAssertions<T extends Action> {
 

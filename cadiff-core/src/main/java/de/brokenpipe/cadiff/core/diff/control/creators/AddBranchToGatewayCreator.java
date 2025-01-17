@@ -7,7 +7,10 @@ import de.brokenpipe.cadiff.core.actions.AddBranchToGatewayAction;
 import de.brokenpipe.cadiff.core.actions.InsertNodeOnEdgeAction;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
 import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
-import org.camunda.bpm.model.bpmn.instance.*;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.Gateway;
+import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -102,7 +105,8 @@ public class AddBranchToGatewayCreator implements Creator {
 								: Stream.of(nextPath);
 					}
 
-					if (targetElement instanceof ThrowEvent) {
+					if (targetElement instanceof final FlowNode targetElementNode
+							&& targetElementNode.getOutgoing().isEmpty()) {
 						return Stream.of(nextPath);
 					}
 

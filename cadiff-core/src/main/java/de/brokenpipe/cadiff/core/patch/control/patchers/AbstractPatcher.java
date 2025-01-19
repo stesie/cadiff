@@ -102,9 +102,13 @@ public abstract class AbstractPatcher {
 				})
 				.forEach(di::addChildElement);
 
-		final var diagramRoot = findRootElementByType(context.getModelInstance(), Collaboration.class)
+		final ModelElementInstance diagramRoot = findRootElementByType(context.getModelInstance(), Collaboration.class)
 				.map(BaseElement::getDiagramElement)
-				.orElse(containerElement.getDiagramElement());
+				.map(ModelElementInstance.class::cast)
+				.orElse(containerElement instanceof SubProcess
+						// SubProcess has a Shape element itself, but the diagram elements just go to the plane.
+						? containerElement.getDiagramElement().getParentElement()
+						: containerElement.getDiagramElement());
 		diagramRoot.addChildElement(di);
 
 	}

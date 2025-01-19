@@ -120,8 +120,8 @@ public class AddFlowCreator implements Creator {
 				// accept only nodes at the start of a (new) flow
 				.filter(flowNode -> flowNode.getIncoming().isEmpty())
 				// if the attachedTo element is still in the added list, defer creation of the boundary event
-				.filter(flowNode -> flowNode instanceof final BoundaryEvent boundaryEvent
-						&& !voteContext.added().contains(boundaryEvent.getAttachedTo().getId()));
+				.filter(flowNode -> !(flowNode instanceof final BoundaryEvent boundaryEvent)
+						|| !voteContext.added().contains(boundaryEvent.getAttachedTo().getId()));
 	}
 
 }

@@ -8,6 +8,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -21,9 +22,7 @@ public class ChangeExclusiveGatewayDefaultActionPatcher extends AbstractPatcher 
 
 		final var oldValue = Optional.ofNullable(targetElement.getDefault()).map(BaseElement::getId).orElse(null);
 		
-		if (action.oldValue() == null
-				? oldValue != null
-				: !action.oldValue().equals(oldValue)) {
+		if (oldValue != null && !Objects.equals(oldValue, action.oldValue())) {
 			throw new ValueMismatchException(action.id(), oldValue, action.oldValue());
 		}
 

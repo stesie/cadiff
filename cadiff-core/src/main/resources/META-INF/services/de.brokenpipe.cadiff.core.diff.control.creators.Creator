@@ -2,7 +2,7 @@ de.brokenpipe.cadiff.core.diff.control.creators.SimpleFlowNodeCreator
 de.brokenpipe.cadiff.core.diff.control.creators.SimpleSequenceFlowCreator
 de.brokenpipe.cadiff.core.diff.control.creators.InsertNodeOnEdgeCreator
 de.brokenpipe.cadiff.core.diff.control.creators.AddBranchToGatewayCreator
-de.brokenpipe.cadiff.core.diff.control.creators.AddBoundaryEventBranchCreator
+de.brokenpipe.cadiff.core.diff.control.creators.AddFlowCreator
 de.brokenpipe.cadiff.core.diff.control.creators.ErrorCreator
 de.brokenpipe.cadiff.core.diff.control.creators.SignalCreator
 de.brokenpipe.cadiff.core.diff.control.creators.ParticipantCreator

@@ -3,7 +3,7 @@ package de.brokenpipe.cadiff.core.diff.control.creators;
 import de.brokenpipe.cadiff.core.Bounds;
 import de.brokenpipe.cadiff.core.Waypoint;
 import de.brokenpipe.cadiff.core.actions.AddAction;
-import de.brokenpipe.cadiff.core.actions.AddBoundaryEventBranchAction;
+import de.brokenpipe.cadiff.core.actions.AddFlowAction;
 import de.brokenpipe.cadiff.core.actions.InsertNodeOnEdgeAction;
 import de.brokenpipe.cadiff.core.diff.entity.VoteContext;
 import de.brokenpipe.cadiff.core.exceptions.NotImplementedException;
@@ -16,9 +16,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Creator for finding new boundary events with + flows following from it
+ * Creator for finding new flows, e.g. new boundary events with multiple nodes following after it.
  */
-public class AddBoundaryEventBranchCreator implements Creator {
+public class AddFlowCreator implements Creator {
 
 	@Override
 	public Integer getPriority() {
@@ -28,9 +28,9 @@ public class AddBoundaryEventBranchCreator implements Creator {
 	@Override
 	public Optional<AddAction> apply(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return findNewBoundaryEvents(voteContext)
-				.flatMap(boundaryEvent -> {
-					final String boundaryEventId = boundaryEvent.getId();
-					final var path = walk(voteContext, List.of(boundaryEventId));
+				.flatMap(originFlowNode -> {
+					final String originFlowNodeId = originFlowNode.getId();
+					final var path = walk(voteContext, List.of(originFlowNodeId));
 
 					if (path.isEmpty()) {
 						return Stream.empty();
@@ -60,7 +60,12 @@ public class AddBoundaryEventBranchCreator implements Creator {
 									})
 							.toList();
 
-					final AddAction action = new AddBoundaryEventBranchAction(boundaryEvent.getAttachedTo().getId(),
+					final AddAction action = new AddFlowAction(
+							Optional.of(originFlowNode)
+											.filter(BoundaryEvent.class::isInstance)
+											.map(BoundaryEvent.class::cast)
+											.map(BoundaryEvent::getAttachedTo)
+											.map(BaseElement::getId),
 							!voteContext.fromMap().containsKey(steps.getLast().id()), steps);
 					return Stream.of(action);
 				})
@@ -105,15 +110,18 @@ public class AddBoundaryEventBranchCreator implements Creator {
 	}
 
 	/**
-	 * Find newly added outgoing branches from updated gateways.
+	 * Find newly added flow nodes that are at the start of a flow (e.g. a boundary event or a process start event).
 	 */
-	private Stream<BoundaryEvent> findNewBoundaryEvents(final VoteContext<String, ? extends BaseElement> voteContext) {
+	private Stream<FlowNode> findNewBoundaryEvents(final VoteContext<String, ? extends BaseElement> voteContext) {
 		return voteContext.added().stream()
 				.map(id -> voteContext.toMap().get(id))
-				.filter(BoundaryEvent.class::isInstance)
-				.map(BoundaryEvent.class::cast)
+				.filter(FlowNode.class::isInstance)
+				.map(FlowNode.class::cast)
+				// accept only nodes at the start of a (new) flow
+				.filter(flowNode -> flowNode.getIncoming().isEmpty())
 				// if the attachedTo element is still in the added list, defer creation of the boundary event
-				.filter(boundaryEvent -> !voteContext.added().contains(boundaryEvent.getAttachedTo().getId()));
+				.filter(flowNode -> flowNode instanceof final BoundaryEvent boundaryEvent
+						&& !voteContext.added().contains(boundaryEvent.getAttachedTo().getId()));
 	}
 
 }

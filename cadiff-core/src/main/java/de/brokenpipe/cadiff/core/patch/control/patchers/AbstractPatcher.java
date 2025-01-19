@@ -29,7 +29,7 @@ public abstract class AbstractPatcher {
 		return addedElement;
 	}
 
-	protected void addFlowElement(final PatcherContext context, final String id, final String typeName,
+	protected BaseElement addFlowElement(final PatcherContext context, final String id, final String typeName,
 			final de.brokenpipe.cadiff.core.Bounds actionBounds) {
 		final ModelElementType elementType = context.getModelInstance().getModel().getTypes().stream()
 				.filter(x -> x.getTypeName().equals(typeName))
@@ -50,6 +50,8 @@ public abstract class AbstractPatcher {
 
 		final var diagramRoot = findDiagramRoot(context);
 		diagramRoot.addChildElement(di);
+
+		return addedElement;
 	}
 
 	protected DiagramElement findDiagramRoot(final PatcherContext context) {

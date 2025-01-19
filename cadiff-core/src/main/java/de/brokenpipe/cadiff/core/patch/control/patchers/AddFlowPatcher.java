@@ -1,14 +1,17 @@
 package de.brokenpipe.cadiff.core.patch.control.patchers;
 
-import de.brokenpipe.cadiff.core.actions.AddBoundaryEventBranchAction;
+import de.brokenpipe.cadiff.core.actions.AddFlowAction;
 import de.brokenpipe.cadiff.core.actions.InsertNodeOnEdgeAction;
 import de.brokenpipe.cadiff.core.patch.entity.PatcherContext;
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.model.bpmn.instance.Activity;
+import org.camunda.bpm.model.bpmn.instance.BaseElement;
+import org.camunda.bpm.model.bpmn.instance.BoundaryEvent;
 
 @RequiredArgsConstructor
-public class AddBoundaryEventBranchPatcher extends AbstractPatcher implements Patcher {
+public class AddFlowPatcher extends AbstractPatcher implements Patcher {
 
-	private final AddBoundaryEventBranchAction action;
+	private final AddFlowAction action;
 
 	@Override
 	public void accept(final PatcherContext context) {
@@ -19,10 +22,13 @@ public class AddBoundaryEventBranchPatcher extends AbstractPatcher implements Pa
 		// insert new nodes first
 		for (int i = 0; i < action.steps().size() - (action.finalElementIsNew() ? 0 : 1); i += 2) {
 			final InsertNodeOnEdgeAction.Step step = action.steps().get(i);
-			addFlowElement(context, step.id(), step.elementTypeName(),
+			final BaseElement addedElement = addFlowElement(context, step.id(), step.elementTypeName(),
 					step.bounds().orElseThrow());
 
-			// TODO attach boundaryEvent to underlying node
+			if (i == 0 && action.attachedToId().isPresent() && addedElement instanceof final BoundaryEvent boundaryEvent) {
+				final Activity attachedTo = findTargetWithType(context, action.attachedToId().get(), Activity.class);
+				boundaryEvent.setAttachedTo(attachedTo);
+			}
 		}
 
 		// insert new edges afterward

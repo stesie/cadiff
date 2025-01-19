@@ -1,16 +1,17 @@
 package de.brokenpipe.cadiff.core.actions;
 
-import de.brokenpipe.cadiff.core.patch.control.patchers.AddBoundaryEventBranchPatcher;
+import de.brokenpipe.cadiff.core.patch.control.patchers.AddFlowPatcher;
 import de.brokenpipe.cadiff.core.patch.control.patchers.Patcher;
 
 import java.util.List;
+import java.util.Optional;
 
-public record AddBoundaryEventBranchAction(String attachedToId, boolean finalElementIsNew, List<Step> steps)
+public record AddFlowAction(Optional<String> attachedToId, boolean finalElementIsNew, List<Step> steps)
 		implements AddAction {
 
 	@Override
 	public Patcher patcher() {
-		return new AddBoundaryEventBranchPatcher(this);
+		return new AddFlowPatcher(this);
 	}
 
 	@Override

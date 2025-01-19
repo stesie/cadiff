@@ -1,6 +1,7 @@
 package de.brokenpipe.cadiff.core.assertions;
 
 import de.brokenpipe.cadiff.core.actions.Action;
+import de.brokenpipe.cadiff.core.actions.ChangeAttachedToAction;
 import de.brokenpipe.cadiff.core.actions.processes.ChangeProcessAction;
 import de.brokenpipe.cadiff.core.actions.processes.ChangeSubProcessAction;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ActionCollectionAssertions {
 
@@ -56,6 +58,11 @@ public class ActionCollectionAssertions {
 		assertEquals(1, matches.size(), "only one action of type '%s' expected, but got %d"
 				.formatted(clazz.getSimpleName(), Long.valueOf(matches.size())));
 		return clazz.cast(matches.getFirst());
+	}
+
+	public void assertNoInstanceOf(final Class<ChangeAttachedToAction> clazz) {
+		assertTrue(actions.stream().noneMatch(clazz::isInstance), "no action of type '%s' expected"
+				.formatted(clazz.getSimpleName()));
 	}
 
 }

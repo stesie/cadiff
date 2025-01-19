@@ -7,7 +7,7 @@ de.brokenpipe.cadiff.cli.control.printers.AddSimpleSequenceFlowPrinter
 de.brokenpipe.cadiff.cli.control.printers.DeleteElementActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.InsertNodeOnEdgeActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.AddBranchToGatewayActionPrinter
-de.brokenpipe.cadiff.cli.control.printers.AddBoundaryEventBranchActionPrinter
+de.brokenpipe.cadiff.cli.control.printers.AddFlowActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.ChangeSequenceFlowActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.AddExecutionListenerActionPrinter
 de.brokenpipe.cadiff.cli.control.printers.DeleteExecutionListenerActionPrinter
